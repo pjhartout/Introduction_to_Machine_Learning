@@ -1,0 +1,227 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel} 
+\usepackage[usenames,dvipsnames,figures]{xcolor}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs}
+\usepackage[neverdecrease]{paralist}
+\usepackage[authoryear]{natbib}
+\usepackage[autostyle]{csquotes}  
+\usepackage[final]{pdfpages}
+\usepackage{mhchem}
+\usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+\RequirePackage{amsmath,amssymb,latexsym}
+\hypersetup{
+    colorlinks=false,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+
+\setlength\columnsep{26pt}
+
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+
+\pagestyle{fancy}
+\setlength{\headheight}{25pt} 
+\lhead{\textbf{Philip Hartout}}
+\rhead{\textbf{Introduction to Machine Learning - Summary}}
+\rfoot{}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\angstrom}{\mbox{\normalfont\AA}}
+\newlength{\drop}
+\newtheorem{definition}{Definition}[section]
+
+\title{Introduction to Machine Learning \\ Summary}
+\author{Philip Hartout}
+\date{\today}   
+
+\begin{document}
+
+\maketitle
+
+\section{Linear Regression}
+Objective, approximate:
+\begin{align*}
+    f(x) &= w_1x_1+\ldots+w_dx_d+w_0\\
+        &= \sum_{i=1}^{d}w_ix_i+w_0\\
+        &= \mathbf{w}^{T}\mathbf{x}+w_0
+\end{align*}
+$\forall \mathbf{x}, \mathbf{w}\in\mathbb{R}^{d}$. This expression can be further compressed to the homogeneous representation where $\forall \mathbf{\tilde{x}}, \mathbf{\tilde{w}}\in\mathbb{R}^{d+1}$, i.e. $\tilde{x}_{d+1}=1$. We have w.l.o.g.:
+\begin{align*}
+f(x) = \mathbf{w}^{T}\mathbf{x}
+\end{align*}
+Quantify errors using residuals:
+\begin{align*}
+    r_i &= y_i-f(x_i)\\
+        &= y_i-\mathbf{w}^{T}\mathbf{x_i}
+\end{align*}
+We can use squared residuals and sum over all residuals to get the cost:
+\begin{align}
+    \label{objective_lse}
+    \hat{R}(w) &= \sum_{i=1}^{n}r_i^2\\
+               &= \sum_{i=1}^{n}(y_i-\mathbf{w}^{T}\mathbf{x_i})^2
+\end{align}
+Optimization objective to find optimal weight vector $\mathbf{w}$ with least squares is the following:
+\begin{equation*}
+    \mathbf{w} = \arg\min_{\mathbf{w}}\displaystyle\sum_{i=1}^{n}\left(y_i-w^{T}x_i\right)^2
+\end{equation*}
+
+\subsection{Closed form solution}
+This can be solved in closed form:
+\begin{equation*}
+    \mathbf{\hat{w}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{y}
+\end{equation*}
+
+where:
+\begin{equation*}
+    X = 
+    \begin{bmatrix}
+        X_{1,1} & \ldots & X_{1,d}\\
+        \vdots & \ddots & \vdots\\
+        X_{n,1} & \ldots & X_{n,d}\\
+    \end{bmatrix}        
+    \text{ and }
+    y = 
+    \begin{bmatrix}
+        y_{1} \\
+        \vdots \\
+        y_{n}
+    \end{bmatrix}
+\end{equation*}
+
+\subsection{Optimization}
+\subsubsection{Requirements}
+Requires a convex objective function.
+\begin{definition}[Convexity]
+    A function is convex iff $\forall \mathbf{x},\mathbf{x}', \lambda\in[0,1] \text{ it holds that } f(\lambda x+(1-\lambda)x')\leq \lambda f(x)+(1-\lambda)f(x')$
+\end{definition}
+Note that the least squares objective function defined in \ref{objective_lse} is convex. 
+\subsubsection{Gradient descent}
+We start with an arbitrary $w_0\in\mathbb{R}^d$, then for $t=0,1,2,\ldots$ we perform the following operation:
+\begin{equation*}
+    w_{t+1} = w_t -\eta_t\nabla\hat{R}(w_t)
+\end{equation*}
+where $\eta_t$ is the learning rate.\\
+Under mild assumptions, if the step size is sufficiently small, the gradient descent procedure converges to a stationary point, where the gradient is zero. For convex objectives, it therefore finds the optimal solution. In the case of the squared loss and a constant step size (e.g. 0.5), the algorithm converges at linear rate. If you look at the difference in empirical value at iteration $t$ and compare that with the optimal value, then the gap is going to shrink at linear rate. If we look for a solution within a margin $\epsilon$, it is found in $\mathcal{O}(\ln(\frac{1}{\epsilon}))$ iterations.  The fact that the objective function congerges at linear rate can be formally described 
+as follows:
+
+\begin{equation*}
+    \exists t_0 \forall t\geq t_0, \exists \alpha<1 \text{ s.t. } (\hat{R}(w_{t+1})-\hat{R}(\hat{w}))\leq\alpha(\hat{R}(w_{t})-\hat{R}(\hat{w}))
+\end{equation*}
+
+where $\hat{w}$ is the optimal value for the hyperparameters.\\
+For computing the gradient, we recall that:
+\begin{equation*}
+    \nabla\hat{R}(\hat{w}) = 
+    \begin{bmatrix}
+        \frac{\partial}{\partial w_1}\hat{R}(w) & \ldots & \frac{\partial}{\partial w_d}\hat{R}(w)
+    \end{bmatrix}
+\end{equation*}
+In one dimension, we have that:
+\begin{align*}
+    \nabla\hat{R}(w) &= \frac{d}{dw}\hat{R}(w) = \frac{d}{dw}\sum_{i=1}^{n}(y_i-w\cdot x_i)^2\\
+    &= \sum_{i=1}^{n}\frac{d}{dw}(y_i-w\cdot x_i)^2\\
+    &=2(y_i-w\cdot x_i)\cdot(-x_i)\\
+    &=\sum_{i=1}^{n}2(y_i-w\cdot x_i)\cdot(-x_i)\\
+    &=-2\sum_{i=1}^{n}r_i x_i.\\
+\end{align*}
+In $d$-dimension, we have that:
+\begin{equation*}
+    \nabla\hat{R}(w)=-2\sum_{i=1}^{n}r_i x_i,
+\end{equation*}
+where $r_i\in\mathbb{R}$ and $x_i\in\mathbb{R}^d$
+
+\subsubsection{Adaptive step size for gradient descent}
+
+The step size can be updates adaptively, via either:
+\begin{enumerate}
+    \item \textbf{Line search}:\\
+    Suppose at iteration $t$, we have $w_t$, $g_t=\nabla\hat{R}(w_t)$. We then define:
+    \begin{equation*}
+        y_t^{*} = \arg\min_{y\in[0,\infty)}\hat{R}(w_t)-\eta g_t
+    \end{equation*}
+    \item \textbf{Bold driver heuristic}:
+    \begin{itemize}
+        \item If the function decreases, increase the step size.
+        \begin{equation*}
+            \text{If }\hat{R}(w_{t+1})<\hat{R}(w_{t}): \eta_{t+1}\leftarrow\eta_{t}\cdot c_{acc}
+        \end{equation*}
+        where $c_{acc}>1$
+        \item If the function increases, decrease the step size. 
+        \begin{equation*}
+            \text{If }\hat{R}(w_{t+1})>\hat{R}(w_{t}): \eta_{t+1}\leftarrow\eta_{t}\cdot c_{dec}
+        \end{equation*}
+        where $c_{dec}<1$.
+    \end{itemize}
+\end{enumerate}
+\subsubsection{Tradeoff between gradient descent and closed form}
+Several reasons:
+\begin{itemize}
+    \item Computational complexity:
+    \begin{equation*}
+        \hat{w}=(X^TX)^{-1}(X^Ty)
+    \end{equation*}
+    $(X^TX)$ can be computed in $\mathcal{O}(nd^2)$, $(X^TX)^{-1}$ can be computed in $\mathcal{O}(d^3)$.\\
+    By comparison, for gradient descent calculating $\nabla\hat{R}(w)=\sum_{i=1}^{n}(y_i-w^Tx_i)x_i$ can be computed in $\mathcal{O}(nd)$, where $n=\ln(\frac{1}{\epsilon})$
+    \item the problem may not require an optimal solution.
+    \item many problems do not admit a closed form solution.
+\end{itemize}
+\subsection{other loss functions}
+Least squares is part of a general case of the following general loss function, which is convex for $p\geq 1$.
+\begin{equation}
+    l_p(r)=|r|^p
+\end{equation}
+Least squares is where $p=2$.
+
+\section{Generalization and model validation}
+
+\subsection{Fitting nonlinear functions via linear regression}
+
+Using nonlinear features of our data (basis functions), we can fit nonlinear functions via linear regression. Then, the model takes on the form:
+
+\begin{equation}
+    f(\mathbf{x}) = \sum_{i=1}^{d}w_i\phi(\mathbf{x})
+\end{equation}
+
+where $\mathbf{x}\in\mathbb{R}^d$, $x\mapsto \tilde{x}=\phi(\mathbf{x})\in\mathbb{R}^d$ and $w\in\mathbb{R}^d$. 
+\begin{itemize}
+    \item 1 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
+        1,x, x^2, \ldots, x^k
+    \end{bmatrix}$
+    \item 2 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
+        1,x_1, x_2, x_1^2, x_2^2, \ldots, x_1^k, x_2^k
+    \end{bmatrix}$
+    \item p dim.: $\phi(\mathbf{x})$ vector of all monomials in $x_1,\ldots, x_p$ of degree up to $k$.
+\end{itemize}
+
+\section{Probability (interlude)}
+
+\subsection{Gaussians}
+
+The p.d.f. of a Gaussian distribution is given by:
+\begin{equation}
+    \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{x-\mu}{2\sigma^2}\right)
+\end{equation}
+The p.d.f. of a multivariate Gaussian distribution is given by:
+\begin{equation}
+    \frac{1}{2\pi\sqrt{|\sigma|}}\exp\left(-\frac{1}{2}(x-\mu)^T\sigma^{-1}(x-\mu)\right)
+\end{equation}
+where:
+\begin{equation}
+    \sigma = \begin{pmatrix}
+        \sigma_{1}^2, \sigma_{12}\\
+        \sigma_{21}, \sigma_{2}^2
+    \end{pmatrix}
+    \text{ and }
+    \begin{pmatrix}
+        \mu_1\\
+        \mu_2
+    \end{pmatrix}
+\end{equation}
+
+
+\end{document}
