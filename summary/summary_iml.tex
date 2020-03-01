@@ -43,6 +43,8 @@
 
 \maketitle
 
+\tableofcontents
+
 \section{Linear Regression}
 Objective, approximate:
 \begin{align*}
@@ -177,29 +179,7 @@ Least squares is part of a general case of the following general loss function, 
 \end{equation}
 Least squares is where $p=2$.
 
-\section{Generalization and model validation}
-
-\subsection{Fitting nonlinear functions via linear regression}
-
-Using nonlinear features of our data (basis functions), we can fit nonlinear functions via linear regression. Then, the model takes on the form:
-
-\begin{equation}
-    f(\mathbf{x}) = \sum_{i=1}^{d}w_i\phi(\mathbf{x})
-\end{equation}
-
-where $\mathbf{x}\in\mathbb{R}^d$, $x\mapsto \tilde{x}=\phi(\mathbf{x})\in\mathbb{R}^d$ and $w\in\mathbb{R}^d$. 
-\begin{itemize}
-    \item 1 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
-        1,x, x^2, \ldots, x^k
-    \end{bmatrix}$
-    \item 2 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
-        1,x_1, x_2, x_1^2, x_2^2, \ldots, x_1^k, x_2^k
-    \end{bmatrix}$
-    \item p dim.: $\phi(\mathbf{x})$ vector of all monomials in $x_1,\ldots, x_p$ of degree up to $k$.
-\end{itemize}
-
 \section{Probability (interlude)}
-
 \subsection{Gaussians}
 
 The p.d.f. of a Gaussian distribution is given by:
@@ -222,6 +202,222 @@ where:
         \mu_2
     \end{pmatrix}
 \end{equation}
+\subsection{Expectations}
+Expected value of a random variable can be calculated as follows:
+\begin{equation*}
+    \mathbb{E}=\begin{cases}
+        \sum_{x}xp(x)\qquad\text{if }X\text{ is discrete}\\
+        \int xp(x)dx\qquad\text{if }X\text{ is continuous}\\
+    \end{cases}
+\end{equation*}
+Expectations respect linear properties, i.e. let $X, Y$ be random variable and 
+$a,b\in\mathbb{R}$, then we have $\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]$.
 
+\section{Generalization and model validation}
+
+\subsection{Fitting nonlinear functions via linear regression}
+
+Using nonlinear features of our data (basis functions), we can fit nonlinear functions via linear regression. Then, the model takes on the form:
+
+\begin{equation}
+    f(\mathbf{x}) = \sum_{i=1}^{d}w_i\phi(\mathbf{x})
+\end{equation}
+
+where $\mathbf{x}\in\mathbb{R}^d$, $x\mapsto \tilde{x}=\phi(\mathbf{x})\in\mathbb{R}^d$ and $w\in\mathbb{R}^d$. 
+\begin{itemize}
+    \item 1 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
+        1,x, x^2, \ldots, x^k
+    \end{bmatrix}$
+    \item 2 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
+        1,x_1, x_2, x_1^2, x_2^2, \ldots, x_1^k, x_2^k
+    \end{bmatrix}$
+    \item p dim.: $\phi(\mathbf{x})$ vector of all monomials in $x_1,\ldots, x_p$ of degree up to $k$.
+\end{itemize}
+
+\subsection{Achieving generalization}
+\subsubsection{Independence and identical distribution}
+A fundamental assumption needs to be met: the dataset is generated from an independently and identically distributed from some unknown distribution $P$, i.e:
+\begin{equation*}
+    (x_i, y_i)\sim P(\mathbf{X},Y).
+\end{equation*}
+
+The i.i.d. assumption is invalid when:
+\begin{itemize}
+    \item we deal with time series data
+    \item spatially correlated data
+    \item correlated noise
+\end{itemize}
+If violated, we can still use ML but the interpretation of the results needs to be carefully analyzed. The most important thing is to choose the train/test split to assess the desired generalization properties of the trained model. 
+
+\subsection{Expected error and generalization error}
+Once the iid assumption is verified, our goal is then to minimize the expected error (true risk) under $P$, i.e.:
+\begin{align*}
+    R(\mathbf{w})&=\int P(\mathbf{x},y)(y-\mathbf{w}^T\mathbf{x})^2dxdy\\
+    & =\mathbb{E}[(y-\mathbf{w}^T\mathbf{x})^2]
+\end{align*}
+The true risk can be estimated by the empirical risk on a sample dataset $D$:
+\begin{equation*}
+    \hat{R}_D(\mathbf{w})=\frac{1}{|D|}\sum_{\mathbf{x}, y\in D}(y-\mathbf{w}^T\mathbf{x})^2
+\end{equation*}
+The reason behind this approximation is because of the law of large numbers
+\begin{definition}[Law of large numbers]
+    $\hat{R}_D(\mathbf{w})\rightarrow R_D(\mathbf{w})$ for any fixed $\mathbf{w}$ as $|D|\rightarrow\infty$.
+\end{definition}
+\begin{equation}
+    \label{empirical_risk}
+    \mathbf{\hat{w}}_D=\arg\min_{\mathbf{w}}\hat{R}_D(\mathbf{w})
+\end{equation}
+
+\begin{equation}
+    \label{true_risk}
+    \mathbf{w*}=\arg\min_{\mathbf{w}}\hat{R}(\mathbf{w})
+\end{equation}
+
+We don't want to minimize the empirical risk given in equation \ref{empirical_risk} but the true risk given in equation \ref{true_risk}, which are similar as the amount points in the dataset increases.
+
+\subsection{Uniform convergence}
+
+For learning via empirical risk minimization, uniform convergence is required, i.e.:
+\begin{equation*}
+    \sup_{\mathbf{w}}|R(\mathbf{w})-\hat{R}_D(\mathbf{w})|\rightarrow 0 \text{ as }|D|\rightarrow\infty
+\end{equation*}
+
+Note that this is not implied by the law of large numbers alone, but depends on model class. It holds for instance for squared loss on data distributions with bouded support. Statistical learning theory is required to define these properties.
+
+\subsection{Evaluation of performance on training data}
+
+In general in holds that:
+\begin{equation*}
+    \mathbb{E}_D[\hat{R}_D(\hat{\mathbf{w}}_D)]\leq\mathbb{E}_D[R_D(\hat{\mathbf{w}}_D)]
+\end{equation*}
+\begin{proof}[Proof]
+    \begin{align*}
+        \mathbb{E}[\hat{R}_D(\hat{\mathbf{w}}_D)] &= \mathbb{E}_D[\min_{\mathbf{w}}\hat{R}_D(\mathbf{w})]\qquad\text{(ERM)}\\
+        &\leq \min_{\mathbf{w}}\mathbb{E}_D[\hat{R}_D(\mathbf{w})]\qquad\text{(Jensen's inequality)}\\
+        &= \min_{\mathbf{w}}\mathbb{E}_D[\frac{1}{|D|}\sum_{i=1}^{|D|}(y_i-wx_i)^2]\qquad\text{(Definition of $\hat{R}_D(.)$)}\\
+        &= \min_{\mathbf{w}}\mathbb{E}_D[\frac{1}{|D|}\sum_{i=1}^{|D|}(y_i-wx_i)^2]\qquad\text{(linear expectations)}\\
+        &= \min_{\mathbf{w}}R(\mathbf{w})\leq\mathbb{E}[R(\hat{w}_D)]\\
+    \end{align*}
+\end{proof}
+Thus, we obtain an overly optimistic estimate. A more realistic evaluation would be to use a separate test set from the same distribution $P$. Then:
+\begin{itemize}
+    \item Optimize $w$ on training set:
+    \begin{equation*}
+        \mathbf{\hat{w}}_{D_{\text{train}}} = \arg\min_{\mathbb{w}} \hat{R}_{\text{train}}(\mathbb{w})
+    \end{equation*}
+    \item Evaluate on test set:
+    \begin{equation*}
+        \hat{R}_{\text{test}}(\mathbf{\hat{w}})=\frac{1}{|D_{\text{test}}|}\sum_{\mathbf{x},y\in D_{\text{test}}}^{}(y-\hat{\mathbf{w}}^T\mathbf{x})^2
+    \end{equation*}
+    \item Then:
+    \begin{equation*}
+        \mathbb{E}_{D_{\text{train}}, D_{\text{test}}}[\hat{R}_{D_{\text{test}}}(\hat{\mathbf{w}}_{D_{\text{train}}})]=\mathbb{E}_{D_{\text{train}}}[R(\mathbf{\hat{w}}_{D_{\text{train}}})]
+    \end{equation*}
+\end{itemize}
+\begin{proof}[Proof]
+    Let $D_train=D$, $D_test=V$ and $D,V\sim P$. Then:
+    \begin{align*}
+        \mathbb{E}_{D,V}[\hat{R}_V(\hat{\mathbf{w}}_D)] &= \mathbb{E}_D[\mathbb{E}_V[\hat{R}_V(\hat{\mathbf{w}}_D)]]\qquad\text{independence of $D,V$}\\
+        &=\mathbb{E}_D[\mathbb{E}_V[\frac{1}{|V|}\sum_{i=1}^{|V|}(y_i-\hat{\mathbf{w}}_D^Tx_i)^2]]\qquad\text{(Definition of $\hat{R}_D(.)$)}\\
+        &=\mathbb{E}_D[\frac{1}{|V|}\sum_{i=1}^{|V|}\mathbb{E}_{x_i, y_i}(y_i-\hat{\mathbf{w}}_D^Tx_i)^2]\qquad\text{since $(x_i,y_i)\bot D$}\\
+        &=\mathbb{E}_D[R(\mathbf{\hat{w}}_D)]   
+    \end{align*}
+\end{proof}
+\subsection{Evaluation for model selection}
+For each candidate model $m$, we repeat the following procedure for $i=1:k$:
+\begin{itemize}
+    \item We split the same dataset into training and validation sets:
+    \begin{equation*}
+        D=D_{\text{train}}^{(i)}\biguplus D_{\text{val}}^{(i)}
+    \end{equation*}
+    \item We train the model:
+    \begin{equation*}
+        \hat{\mathbb{w}}_[i,m]=\arg\min_{\mathbf{w}}\hat{R}_{\text{train}}^{(i)}(\mathbf{w})
+    \end{equation*}
+    \item Then we estimate the error:
+    \begin{equation*}
+        \hat{R}_{m}^{(i)}=\hat{R}_{\text{val}}^{(i)}(\hat{\mathbf{w}}_i)
+    \end{equation*}
+\end{itemize}
+Finally, select the model:
+\begin{equation*}
+    \hat{m}=\arg\min_{m}\frac{1}{k}\sum_{i=1}^{k}\hat{R}_{m}^{(i)}
+\end{equation*}
+\subsection{Splitting the data for model selection}
+This splitting can be done randomly through Monte Carlo cross-validation. 
+\begin{itemize}
+    \item Pick training set of given size uniformly at random
+    \item Validate on remaining points
+    \item Estimate prediction error by averaging the validation error over multiple random trials.
+\end{itemize}
+It can also be achieved through $k$-fold cross-validation, which is the default choice.
+\begin{itemize}
+    \item Partition the data into $k$ folds
+    \item Train on $k-1$ folds, evaluating on remaining fold.
+    \item Estimate prediction error by averaging the validation error obtained while varying the validation fold.
+\end{itemize}
+Note that the cross-validation error is almost unbiased for large enough $k$. The following should be considered to pick $k$:
+\begin{itemize}
+    \item Too small: 
+    \begin{itemize}
+        \item Risk of overfitting on test set
+        \item Using too little data for training
+        \item Risk of underfitting to training set
+    \end{itemize}
+    \item Too large:
+    \begin{itemize}
+        \item In general, leads to better performance. $k=n$ is perfectly fine, specific instance called leave-one-out cross-validation
+        \item Higher computational complexity.
+    \end{itemize}
+\end{itemize} 
+In practice, $k=5$ or $k=10$ is ofen used and works well.
+\subsection{Best practice for evaludating models in supervised learning}
+Follow the following steps:
+\begin{itemize}
+    \item Split data set into training and test set
+    \item Never look at test set when fitting the model. For example, use $k$-fold cross-validation on training set
+    \item Report final accuracy on test set, but never optimize on it.
+\end{itemize}
+Note that this procedure only works if the data is i.i.d. I.e. one should be careful if there are temporal trends or other dependencies.
+
+\section{Regularization}
+We want to avoid having overly complex models when minimizing the loss function. This can be achieved through regularization, which encourages small weights via penalty functions, which are called regularizers.
+
+\subsection{Ridge regression}
+This is a regularized optimization problem:
+\begin{equation*}
+    \min_{\mathbf{w}}\frac{1}{n}\sum_{i=1}^{n}(y_i-\mathbf{w}^Tx_i)^2+\lambda\norm{\mathbf{w}}^{2}_{2}=\sum_{j=1}^{d}\mathbf{w}_j^2\qquad\forall\lambda\geq 0
+\end{equation*}
+\subsubsection{Closed form solution}
+This can be optimized using the closed form solution or gradient descent. The closed form for Ridge regression is:
+\begin{equation*}
+    \mathbf{\hat{w}}=(\mathbf{X}^T\mathbf{X}+\lambda\mathbf{R})^{-1}\mathbf{X}^Ty
+\end{equation*}
+where $I\in\mathbb{R}^{d\times d}$ is the identity matrix.
+\subsubsection{Gradient descent}
+\begin{equation*}
+    \nabla\left(\frac{1}{n}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2 + \lambda\norm{\mathbf{w}}^{2}_{2}\right) = \nabla_{\mathbf{w}}\hat{R}(\mathbf{w})+\lambda \nabla_{\mathbf{w}}\norm{\mathbf{w}}^{2}_{2}
+\end{equation*}
+One step of the gradient descent is therefore performed as follows:
+\begin{align*}
+    w_{t+1}&\leftarrow w_t-\eta_t(\nabla_{\mathbf{w}}\hat{R}(\mathbf{w}_t)+2\lambda\mathbf{w}_t)\\
+    &=(1-2\lambda\eta_t)\mathbf{w}_t-\eta_t\nabla_{\mathbf{w}}\hat{R}(\mathbf{w}_t)
+\end{align*}
+Choosing the regularization parameter is done through cross-validation. Typically, the choice is between values of $\lambda$ values which are logarithmically spaced.
+\subsubsection{Generalization of a tradeoff in ML}
+A lot of supervised learning problems can be written in this way:
+\begin{equation*}
+    \min_{\mathbf{w}}\hat{R}(\mathbf{w})+\lambda C(\mathbf{w}).
+\end{equation*}
+It's possible to control complexity by varying regulzation parameter $\lambda$. 
+\subsection{Renormalizing data through standardization}
+This process ensures that each feature has zero mean and unit variance:
+\begin{equation*}
+    \tilde{x}_{i,j}=\frac{(x_{i,j})-\hat{\mu}_{j}}{\hat{\sigma}}_j
+\end{equation*}
+where $x_{i,j}$ is the value of the $j$\textsuperscript{th} feature of the $i$\textsuperscript{th} data point:
+\begin{equation*}
+    \hat{\mu}_j=\frac{1}{n}\sum_{i=1}^{n}x_{i,j} \qquad \sigma_j^2 = \frac{1}{n}\sum_{i=1}^{n}(x_{i,j}-\hat{\mu}_j)^2
+\end{equation*}
 
 \end{document}
