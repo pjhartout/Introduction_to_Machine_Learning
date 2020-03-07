@@ -1,0 +1,56 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel} 
+\usepackage[usenames,dvipsnames,figures]{xcolor}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs}
+\usepackage[neverdecrease]{paralist}
+\usepackage[authoryear]{natbib}
+\usepackage[autostyle]{csquotes}  
+\usepackage[final]{pdfpages}
+\usepackage{mhchem}
+\usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+\RequirePackage{amsmath,amssymb,latexsym}
+\hypersetup{
+    colorlinks=false,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+
+\setlength\columnsep{26pt}
+
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+
+\pagestyle{fancy}
+\setlength{\headheight}{25pt} 
+\lhead{\textbf{Philip Hartout}}
+\rhead{\textbf{Introduction to Machine Learning - Summary}}
+\rfoot{}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\angstrom}{\mbox{\normalfont\AA}}
+\newlength{\drop}
+\newtheorem{definition}{Definition}[section]
+
+\title{Introduction to Machine Learning \\ Summary}
+\author{Philip Hartout}
+\date{\today}   
+
+\begin{document}
+
+\maketitle
+
+\section{Linear Regression}
+Objective, approximate:
+\begin{align*}
+    f(x) &= w_1x_1+\ldots+w_dx_d+w_0\\
+        &= \sum_{i=1}^{d}w_ix_i+w_0\\
+        &= \mathbf{w}^{T}\mathbf{x}+w_0
+\end{align*}
+$\forall \mathbf{x}, \mathbf{w}\in\mathbb{R}^{d}$
+
+
+\end{document}
