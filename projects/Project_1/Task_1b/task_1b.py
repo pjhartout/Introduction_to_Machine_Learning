@@ -119,7 +119,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CLI args for folder and file directories')
     parser.add_argument("--train", "-tr", type=str, required=True,
-                        helpp="path to the CSV file containing the training data")
+                        help="path to the CSV file containing the training data")
     parser.add_argument("--weights", "-w", type=str, required=True,
                         help="path where the CSV file where weights should be written")
     FLAGS = parser.parse_args()
