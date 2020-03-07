@@ -16,9 +16,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-import numpy as np
 import argparse
-import os
 
 __author__ = "Josephine Yates; Philip Hartout; Flavio Rump"
 __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
@@ -42,26 +40,26 @@ def main():
     df_train = pd.read_csv(FLAGS.train, header=0, index_col=0)
 
     # Process for modelling
-    X_train, y_train = df_train.drop(['y'], axis=1).values, df_train['y'].values
+    x_train, y_train = df_train.drop(['y'], axis=1).values, df_train['y'].values
 
     # regularization parameters
     alphas = [0.01, 0.1, 1, 10, 100]
 
     # preprocessing of the data (regularization)
     scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
+    x_train = scaler.fit_transform(x_train)
 
     # cross validation
     rmse_list = [0] * len(alphas)
     for i, alpha in enumerate(alphas):
         # cross validation iterator
         kf = KFold(n_splits=10)
-        for train_index, test_index in kf.split(X_train):
-            X_cv, X_test_cv = X_train[train_index], X_train[test_index]
+        for train_index, test_index in kf.split(x_train):
+            x_cv, x_test_cv = x_train[train_index], x_train[test_index]
             y_cv, y_test_cv = y_train[train_index], y_train[test_index]
             # fit the model
-            model = Ridge(alpha=alpha).fit(X_cv, y_cv)
-            y_pred = model.predict(X_test_cv)
+            model = Ridge(alpha=alpha).fit(x_cv, y_cv)
+            y_pred = model.predict(x_test_cv)
             # average RMSE computation
             rmse_list[i] += rmse(y_test_cv, y_pred) / 10
 
