@@ -102,7 +102,7 @@ def main():
     X_train, y_train = df_train.drop(['y'], axis=1),df_train['y'].values
 
     # Scale the data
-    scaler = StandardScaler()
+    scaler = StandardScaler(with_mean=True, with_std=True)
     X_train = pd.DataFrame(scaler.fit_transform(X_train))
 
     # Create the dataset with transformed features
