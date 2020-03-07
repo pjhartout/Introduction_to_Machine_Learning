@@ -9,6 +9,9 @@ Example usage from CLI:
 
 For help, run:
  $ python3 task_1b.py -h
+
+To do:
+- Improve score to meet hard baseline from project
 """
 
 from sklearn.linear_model import LinearRegression
@@ -23,13 +26,30 @@ import os
 __author__ = "Josephine Yates; Philip Hartout; Flavio Rump"
 __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
 
-def RMSE(y_true,y_pred):
-    # calculate root mean squared error
-    return mean_squared_error(y_true, y_pred)**0.5
+def rmse(y_true,y_pred):
+    """This function computes the RMSE of a vector of predicted and true labels
+
+    Args:
+        y_true (numpy.ndarray): Vector of true labels.
+        y_pred (numpy.ndarray): Vector of predicted labels.
+
+    Returns:
+        float: the computed root mean square error
+    """
+    return mean_squared_error(y_true, y_pred) ** 0.5
 
 def feature_transformation(X):
-    # calculate new df with transformed features - linear, quadratic,
-    # exponential, cosine and constant - starting with X = [x1,x2,x3,x4,x5]
+    """This function calculates new df with transformed features - linear,
+    quadratic, exponential, cosine and constant - starting with
+    X = [x1,x2,x3,x4,x5]
+
+    Args:
+        y_true (numpy.ndarray): Vector of true labels.
+        y_pred (numpy.ndarray): Vector of predicted labels.
+
+    Returns:
+        pd.DataFrame: the transformed features
+    """
     # apply function to df
     qX = X.apply(np.square)
     # rename columns
@@ -48,8 +68,17 @@ def feature_transformation(X):
     return pd.concat([X,qX,eX,cX,cst],axis=1)
 
 def evaluate_regression(X_train,y_train):
+    """This function computes the average RMSE based on k-fold cross-validation
+
+    Args:
+        y_train (numpy.ndarray): Matrix of training samples.
+        y_train (numpy.ndarray): Vector of training labels.
+
+    Returns:
+        float: the average root mean square error
+    """
     kf = KFold(n_splits=10)
-    RMSE_avg=0
+    rmse_avg=0
     for train_index, test_index in kf.split(X_train):
         # separate for cross validation
         X_cv, X_test_cv = X_train[train_index], X_train[test_index]
@@ -59,7 +88,7 @@ def evaluate_regression(X_train,y_train):
         # predict
         y_pred = model.predict(X_test_cv)
         # calculate average RMSE
-        RMSE_avg +=RMSE(y_test_cv,y_pred)/10
+        rmse_avg +=rmse(y_test_cv,y_pred)/10
     return RMSE_avg
 
 def main():
