@@ -114,12 +114,12 @@ def main():
 
     # export to .csv
     weight_df = pd.DataFrame(weights)
-    weight_df.to_csv(FLAGS.w, sep=" ", index=False, header=False, float_format='%.2f')
+    weight_df.to_csv(FLAGS.weights, sep=" ", index=False, header=False, float_format='%.2f')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CLI args for folder and file directories')
     parser.add_argument("--train", "-tr", type=str, required=True,
-                        help="path to the CSV file containing the training data")
+                        helpp="path to the CSV file containing the training data")
     parser.add_argument("--weights", "-w", type=str, required=True,
                         help="path where the CSV file where weights should be written")
     FLAGS = parser.parse_args()
