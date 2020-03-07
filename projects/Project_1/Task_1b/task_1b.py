@@ -38,17 +38,17 @@ def rmse(y_true,y_pred):
     """
     return mean_squared_error(y_true, y_pred) ** 0.5
 
+
 def feature_transformation(X):
     """This function calculates new df with transformed features - linear,
     quadratic, exponential, cosine and constant - starting with
     X = [x1,x2,x3,x4,x5]
 
     Args:
-        y_true (numpy.ndarray): Vector of true labels.
-        y_pred (numpy.ndarray): Vector of predicted labels.
+        X (pandas.core.frame.DataFrame): Matrix containing the training data.
 
     Returns:
-        pd.DataFrame: the transformed features
+        pandas.core.frame.DataFrame: the transformed features
     """
     # apply function to df
     qX = X.apply(np.square)
@@ -67,6 +67,7 @@ def feature_transformation(X):
 
     return pd.concat([X,qX,eX,cX,cst],axis=1)
 
+
 def evaluate_regression(X_train,y_train):
     """This function computes the average RMSE based on k-fold cross-validation
 
@@ -77,7 +78,8 @@ def evaluate_regression(X_train,y_train):
     Returns:
         float: the average root mean square error
     """
-    kf = KFold(n_splits=10)
+    n_splits = 10
+    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     rmse_avg=0
     for train_index, test_index in kf.split(X_train):
         # separate for cross validation
@@ -88,8 +90,9 @@ def evaluate_regression(X_train,y_train):
         # predict
         y_pred = model.predict(X_test_cv)
         # calculate average RMSE
-        rmse_avg +=rmse(y_test_cv,y_pred)/10
-    return rmse_avg
+        rmse_avg +=rmse(y_test_cv,y_pred)
+    return rmse_avg/n_splits
+
 
 def main():
     # Load training set
@@ -97,22 +100,23 @@ def main():
 
     # Process for modelling
     X_train, y_train = df_train.drop(['y'], axis=1),df_train['y'].values
-    # create the dataset with transformed features
+
+    # Scale the data
+    scaler = StandardScaler()
+    X_train = pd.DataFrame(scaler.fit_transform(X_train))
+
+    # Create the dataset with transformed features
     X_train = feature_transformation(X_train).values
 
-    # scale the data
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-
-    # train the model and get models
+    # Train the model and get models
     model = LinearRegression().fit(X_train,y_train)
     weights = model.coef_
     reg_score = model.score(X_train,y_train)
-    print("The reg score is ",reg_score)
+    print(f"The reg score is {reg_score}")
     score = evaluate_regression(X_train, y_train)
-    print("Average RMSE on 10-fold cv is ",score)
+    print(f"Average RMSE on 10-fold cv is {score}")
 
-    # export to .csv
+    # Export to .csv
     weight_df = pd.DataFrame(weights)
     weight_df.to_csv(FLAGS.weights, sep=" ", index=False, header=False, float_format='%.2f')
 
