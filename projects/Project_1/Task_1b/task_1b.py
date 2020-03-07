@@ -89,7 +89,7 @@ def evaluate_regression(X_train,y_train):
         y_pred = model.predict(X_test_cv)
         # calculate average RMSE
         rmse_avg +=rmse(y_test_cv,y_pred)/10
-    return RMSE_avg
+    return rms_avg
 
 def main():
     # Load training set
