@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-This script is for project1, task b, which endeavours to perform linear regression with 
+This script is for project1, task b, which endeavours to perform linear regression with
 feature transformation
 
 Example usage from CLI:
- $ python3 task_1b.py --train ~/path/to/train/dir/ --w ~/path/to/weights/file 
+ $ python3 task_1b.py --train ~/path/to/train/dir/ --weights ~/path/to/weights/file
 
 For help, run:
  $ python3 task_1b.py -h
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CLI args for folder and file directories')
     parser.add_argument("--train", "-tr", type=str, required=True,
                         help="path to the CSV file containing the training data")
-    parser.add_argument("--w", type=str, required=True,
+    parser.add_argument("--weights", "-w", type=str, required=True,
                         help="path where the CSV file where weights should be written")
     FLAGS = parser.parse_args()
     main()
