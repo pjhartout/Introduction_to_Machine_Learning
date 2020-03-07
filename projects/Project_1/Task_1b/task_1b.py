@@ -21,7 +21,6 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 import argparse
-import os
 
 __author__ = "Josephine Yates; Philip Hartout; Flavio Rump"
 __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
