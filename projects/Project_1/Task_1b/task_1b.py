@@ -15,6 +15,7 @@ To do:
 """
 
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import RidgeCV,Ridge
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
@@ -61,11 +62,11 @@ def feature_transformation(x):
     cx = x.apply(np.cos)
     cx.columns = ["phi16", "phi17", "phi18", "phi19", "phi20"]
 
-    cst = pd.DataFrame(np.ones((X.shape[0],)), columns=["phi21"])
+    cst = pd.DataFrame(np.ones((x.shape[0],)), columns=["phi21"])
 
     x.columns = ["phi1", "phi2", "phi3", "phi4", "phi5"]
 
-    return pd.concat([X, qx, ex, cx, cst], axis=1)
+    return pd.concat([x, qx, ex, cx, cst], axis=1)
 
 
 def evaluate_regression(x_train, y_train):
@@ -78,7 +79,7 @@ def evaluate_regression(x_train, y_train):
     Returns:
         float: the average root mean square error
     """
-    n_splits = 10
+    n_splits = 50
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     rmse_avg=0
     for train_index, test_index in kf.split(x_train):
@@ -109,13 +110,18 @@ def main():
     x_train = feature_transformation(x_train).values
 
     # Train the model and get models
-    model = LinearRegression().fit(x_train, y_train)
+    """model = LinearRegression().fit(x_train, y_train)
     weights = model.coef_
     reg_score = model.score(x_train, y_train)
     print(f"The reg score is {reg_score}")
     score = evaluate_regression(x_train, y_train)
-    print(f"Average RMSE on 10-fold cv is {score}")
-
+    print(f"Average RMSE on 10-fold cv is {score}")"""
+    model = RidgeCV(alphas=(0.01,0.1,1,10,100),fit_intercept=True,normalize=True,scoring=None,
+                        cv=None,gcv_mode=None,store_cv_values=True).fit(x_train, y_train)
+    errors = model.cv_values_
+    alpha = model.alpha_
+    weights = model.coef_
+    print("The estimated alpha is {}".format(alpha))
     # export to .csv
     weight_df = pd.DataFrame(weights)
     weight_df.to_csv(FLAGS.weights, sep=" ", index=False, header=False, float_format='%.2f')
