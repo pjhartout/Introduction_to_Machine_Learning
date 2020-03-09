@@ -198,6 +198,6 @@ if __name__ == "__main__":
     parser.add_argument("--weights", "-w", type=str, required=True,
                         help="path where the CSV file where weights should be written")
     parser.add_argument("--method", "-m", type=str, required=True,
-                        help="method used for optimization, can be LR (classical Linear Regression), ridge (ridge regr with CV with RMSE) or ridgeCV (ridge regr with LOOCV with LS)")
+                        help="method used for optimization, can be LR (classical Linear Regression), ridge (ridge regr with CV with RMSE), ridgeCV (ridge regr with LOOCV with LS) or lasso (lasso regr with CV with RMSE)")
     FLAGS = parser.parse_args()
     main(FLAGS.method)
