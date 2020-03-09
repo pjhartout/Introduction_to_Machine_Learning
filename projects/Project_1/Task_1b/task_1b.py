@@ -15,10 +15,11 @@ To do:
 """
 
 from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import RidgeCV,Ridge
+from sklearn.linear_model import RidgeCV,LassoCV,Ridge,Lasso
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import argparse
@@ -69,7 +70,7 @@ def feature_transformation(x):
     return pd.concat([x, qx, ex, cx, cst], axis=1)
 
 
-def evaluate_regression(x_train, y_train):
+def evaluate_model(x_train, y_train, alpha, model_train):
     """This function computes the average RMSE based on k-fold cross-validation
 
     Args:
@@ -79,7 +80,7 @@ def evaluate_regression(x_train, y_train):
     Returns:
         float: the average root mean square error
     """
-    n_splits = 50
+    n_splits = 10
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     rmse_avg=0
     for train_index, test_index in kf.split(x_train):
@@ -87,15 +88,44 @@ def evaluate_regression(x_train, y_train):
         x_cv, x_test_cv = x_train[train_index], x_train[test_index]
         y_cv, y_test_cv = y_train[train_index], y_train[test_index]
         # fit the model
-        model = LinearRegression().fit(x_cv, y_cv)
+        if model_train=="ridge":
+            model = Ridge(alpha=alpha).fit(x_cv,y_cv)
+        elif model_train=="lasso":
+            model = Lasso(alpha=alpha).fit(x_cv,y_cv)
         # predict
         y_pred = model.predict(x_test_cv)
         # calculate average RMSE
         rmse_avg += rmse(y_test_cv, y_pred)
     return rmse_avg/n_splits
 
+def plot_error_model(alphas,mean_errors):
+    """This function plots the mean error of CV vs the regularization parameter in ridge regression
 
-def main():
+    Args:
+        alphas (numpy.ndarray): regularization parameters tried out
+        mean_errors (numpy.ndarray): result of average error over cross validation for different alphas
+
+    Returns:
+        None
+    """
+    plt.plot(alphas,mean_errors)
+    plt.title("Mean cv error vs regularization parameter")
+    plt.xlabel("Alpha, regularization parameter")
+    plt.ylabel("Mean error")
+    plt.show()
+
+
+def main(method="ridge"):
+    """Fitting a linear regression to the data
+
+    Args:
+        method (string): the type of LR to use: can be "LR" for classical linear regression, "ridge" for ridge 
+        regression with RMSE as evaluation metric using 10-fold CV, or "ridgeCV" for ridge regression using 
+        LS as evaluation metric with LOOCV. 
+
+    Returns:
+        None
+    """
     # Load training set
     df_train = pd.read_csv(FLAGS.train, header=0, index_col=0)
 
@@ -110,18 +140,52 @@ def main():
     x_train = feature_transformation(x_train).values
 
     # Train the model and get models
-    """model = LinearRegression().fit(x_train, y_train)
-    weights = model.coef_
-    reg_score = model.score(x_train, y_train)
-    print(f"The reg score is {reg_score}")
-    score = evaluate_regression(x_train, y_train)
-    print(f"Average RMSE on 10-fold cv is {score}")"""
-    model = RidgeCV(alphas=(0.01,0.1,1,10,100),fit_intercept=True,normalize=True,scoring=None,
-                        cv=None,gcv_mode=None,store_cv_values=True).fit(x_train, y_train)
-    errors = model.cv_values_
-    alpha = model.alpha_
-    weights = model.coef_
-    print("The estimated alpha is {}".format(alpha))
+    if method=="LR":
+        print("Starting regression with classical linear regression...")
+        model = LinearRegression().fit(x_train, y_train)
+        weights = model.coef_
+        reg_score = model.score(x_train, y_train)
+        print(f"The reg score is {reg_score}")
+        score = evaluate_regression(x_train, y_train)
+        print(f"Average RMSE on 10-fold cv is {score}")
+
+    elif method=="ridge":
+        print("Starting regression with ridge regression...")
+        alphas = np.arange(12700,12750,0.1)
+        rmse=[]
+        for alpha in alphas:
+            rmse.append(evaluate_model(x_train,y_train,alpha,"ridge"))
+        plot_error_model(alphas,rmse)
+        alpha = alphas[np.argmin(rmse)]
+        print("Alpha is {}".format(alpha))
+        model = Ridge(alpha=alpha).fit(x_train,y_train)
+        weights = model.coef_
+
+    elif method=="ridgeCV":
+        print("Starting regression with ridge LOOCV...")
+        alphas = np.arange(1.0,15,0.1)
+        model = RidgeCV(alphas=alphas,fit_intercept=True,normalize=True,scoring=None,
+                            cv=None,gcv_mode=None,store_cv_values=True).fit(x_train, y_train)
+        errors = model.cv_values_
+        print(errors.shape)
+        mean_errors = [np.mean(errors[:,i]) for i in range(errors.shape[1])]
+        alpha = model.alpha_
+        weights = model.coef_
+        plot_error_model(alphas,mean_errors)
+        print("The estimated alpha is {}".format(alpha))
+    
+    elif method=="lasso":
+        print("Starting regression with lasso regression...")
+        alphas = np.arange(0.01,5,0.01)
+        rmse=[]
+        for alpha in alphas:
+            rmse.append(evaluate_model(x_train,y_train,alpha,"lasso"))
+        plot_error_model(alphas,rmse)
+        alpha = alphas[np.argmin(rmse)]
+        print("Alpha is {}".format(alpha))
+        model = Lasso(alpha=alpha).fit(x_train,y_train)
+        weights = model.coef_
+
     # export to .csv
     weight_df = pd.DataFrame(weights)
     weight_df.to_csv(FLAGS.weights, sep=" ", index=False, header=False, float_format='%.2f')
@@ -133,5 +197,7 @@ if __name__ == "__main__":
                         help="path to the CSV file containing the training data")
     parser.add_argument("--weights", "-w", type=str, required=True,
                         help="path where the CSV file where weights should be written")
+    parser.add_argument("--method", "-m", type=str, required=True,
+                        help="method used for optimization, can be LR (classical Linear Regression), ridge (ridge regr with CV with RMSE) or ridgeCV (ridge regr with LOOCV with LS)")
     FLAGS = parser.parse_args()
-    main()
+    main(FLAGS.method)
