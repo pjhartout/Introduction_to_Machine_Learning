@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -10,6 +10,8 @@
 \usepackage{mhchem}
 \usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+
+\newtheorem{theorem}{Theorem}
 
 \RequirePackage{amsmath,amssymb,latexsym}
 \hypersetup{
@@ -412,12 +414,118 @@ A lot of supervised learning problems can be written in this way:
 It's possible to control complexity by varying regulzation parameter $\lambda$. 
 \subsection{Renormalizing data through standardization}
 This process ensures that each feature has zero mean and unit variance:
+
 \begin{equation*}
     \tilde{x}_{i,j}=\frac{(x_{i,j})-\hat{\mu}_{j}}{\hat{\sigma}}_j
 \end{equation*}
+
 where $x_{i,j}$ is the value of the $j$\textsuperscript{th} feature of the $i$\textsuperscript{th} data point:
+
 \begin{equation*}
     \hat{\mu}_j=\frac{1}{n}\sum_{i=1}^{n}x_{i,j} \qquad \sigma_j^2 = \frac{1}{n}\sum_{i=1}^{n}(x_{i,j}-\hat{\mu}_j)^2
 \end{equation*}
 
+\section{Classification}
+\begin{definition}[Classification]
+    Classification is an instance of supervised learning where $Y$ is discrete (categorical). We wanto to assign data points $X$ (documents, queries, images, user visits) a label $Y$ (spam/not spam, topic such as sports, politics, entertainment, click/no-click etc).
+\end{definition}
+
+The input of the model is labeled data set with positive and negative examples, see Figure \ref{binary_classification}. The output is a decision rule, i.e. a hypothesis.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/binary_classification.png}
+    \caption{Illustration of binary classification}
+    \label{binary_classification}
+\end{figure}
+Given a dataset $D=\left\{(x_1, y_1), \ldots(x_n, y_n)\right\}$, we have:
+\begin{equation*}
+    y\approx h_{\mathbf{w}}(x)= \text{sign}(w^Tx)
+\end{equation*}
+Linear classification works well in high-dimensional settings when using the right features; prediction is typically very efficient despite linear classification seeming very restrictive at first.
+
+\subsection{Finding linear separators}
+
+Writing the search for a classifier can be seen as an optimization problem:
+we seek the set of weights $\mathbf{w}$ that minimizes the number of mistakes, i.e.:
+\begin{align*}
+    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^Tx_i)]\\
+    =\begin{cases}
+        1\text{ if } y_i\neq \text{sign}(w^Tx_i)\\
+        0\text{ otherwise.}
+    \end{cases}
+\end{align*}
+
+The goal is then to optimize the following function:
+\begin{align*}
+    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\frac{1}{n}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^Tx_i)]\\
+    &= \frac{1}{n}\sum_{i=1}^{n}\mathcal{l}(w; x_i,y_i)
+\end{align*}
+Note that this poses as challenge as it is not convex or even differentiable. Therefore we need to replace this loss by a tractable loss function for the sake of optimization/model fitting. When evaluating a model, we then use the original cost/performance function. The function we can use to optimize in this case is the surrogate loss:
+\begin{equation*}
+    l_P(\mathbf{w}; y_i, x_i) = \max (0, -y_i\mathbf{w}^Tx_i)
+\end{equation*}
+which is also referred to as the perceptron loss.
+
+The gradient of the perceptron loss function can be computed as follows:
+\begin{align*}
+    \hat{R(w)}&=\sum_{i=1}^{n}\max (0, -y_iw^Tx_i)\\
+    \nabla\hat{R(w)}&=\sum_{i=1}^{n}\nabla_{\mathbf{w}}\max (0, -y_iw^Tx_i)\\
+    &=\begin{cases}
+        0\text{ if } y_iw^Tx_i\geq 0 \text{ i.e. correctly classified }
+        -y_ix_i\text{ otherwise} 
+    \end{cases}
+\end{align*}
+
+So we have the following update rule:
+\begin{equation*}
+    \mathbf{w}_{t+1} \leftarrow \mathbf{w}w_t+\eta_t\sum_{i:(x_i,y_i) {incorrectly classified by} w}^{x_iy_i}
+\end{equation*}
+
+\subsection{Stochastic gradient descent}
+Computing the gradient requires summing over all data, which is inefficient for large datasets. Additionally, our initial estimates are likely very wrong and we can get a good unbiased gradient estimate by evaluating the gradient on few points. In the worst case, we can evaluate only one randomly chosen point, which is a procedure called stochastic gradient descent. It consists of the following steps:
+\begin{enumerate}
+    \item Start at an arbitrary $\mathbf{w}_0\in\mathbb{R}^d$
+    \item For $t=1,2,\ldots$ do:
+    \begin{itemize}
+        \item Pick data point $(\mathbf{x}',y')\in D$ from training set uniformly at random (with replacement), and set:
+        \begin{equation*}
+            \mathbf{w}_{t+1}=\mathbf{w}_t-\eta_t\nabla\mathcal{l}(\mathbf{w}_t;\mathbf{x}',y')
+        \end{equation*}
+    \end{itemize}
+\end{enumerate}
+Where $\eta_t$ is called the learning rate. Guaranteed to converge under mild conditions, if:
+\begin{equation*}
+    \sum_{t}\eta_t=\infty \text{ and }\sum_{t}\eta_t^2<\infty
+\end{equation*}
+for instance $\eta_t=\frac{1}{t}$ and $\eta_t=\min (c, \frac{c'}{t})$.\\
+The perceptron algorithm is just stochastic gradient descent on the perceptron loss function $\mathcal{l}_P$ with learning rate 1.
+\begin{theorem}[Perceptron algorithm]
+    If the data is linearly separable, the perceptron will obtain a linear separator.
+\end{theorem}
+The variance of the gradient estimate can be reduced by averaging over the gradients w.r.t. multiple randomly selected points, which are called minibatches. Adaptive learning rates can be additionally applie. There exist various approaches for adaptively tuning the learning rate. Often times, these even use a different learning rate per feature. Examples of adaptive learning rate algorithms include AdaGrad, RMSProp, Adam, ...
+\subsection{Hinge loss vs. perceptron loss}
+The Hinge loss encourages the margin of the classifier, and is defined as follows:
+\begin{equation*}
+    \mathcal{l}_H(\mathbf{w}; \mathbf{x}, y)=\max\left\{0,1-y\mathbf{w}^T\mathbf{x}\right\}
+\end{equation*}
+
+\section{Support vector machines vs. perceptron}
+The optimization objective for the support vector machine is defined as minimizing Hinge loss while also adding another regularization term. There are several lines that need to be considered in the max. margin linear classification, which are summarised in figure \ref{planes_svm}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/max_margin_decision_boundaries.png}
+    \caption{Important elements and their defining equations for support vector machines.}
+    \label{planes_svm}
+\end{figure}
+
+Support vector machinea re widely used, very effective linear classifiers. They behave almost like a perceptron. The only differences include:
+\begin{itemize}
+    \item Optimize slightly different, shifted loss (hinge loss)
+    \item They regularize the weights
+\end{itemize}
+It can be optimized using a stochastic gradient descent. A safe choice for the learning rate is:
+\begin{equation*}
+    \eta_t=\frac{1}{\lambda t}
+\end{equation*}
 \end{document}
