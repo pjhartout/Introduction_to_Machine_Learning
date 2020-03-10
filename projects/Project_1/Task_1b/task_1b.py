@@ -116,28 +116,18 @@ def plot_error_model(alphas,mean_errors):
 
 
 def main(method="ridge"):
-    """Fitting a linear regression to the data
-
-    Args:
-        method (string): the type of LR to use: can be "LR" for classical linear regression, "ridge" for ridge 
-        regression with RMSE as evaluation metric using 10-fold CV, or "ridgeCV" for ridge regression using 
-        LS as evaluation metric with LOOCV. 
-
-    Returns:
-        None
-    """
     # Load training set
     df_train = pd.read_csv(FLAGS.train, header=0, index_col=0)
 
-    # Process for modelling
+   x # Process for modelling
     x_train, y_train = df_train.drop(['y'], axis=1), df_train['y'].values
-
-    # Scale the data
-    scaler = StandardScaler(with_mean=True, with_std=True)
-    x_train = pd.DataFrame(scaler.fit_transform(x_train))
 
     # Create the dataset with transformed features
     x_train = feature_transformation(x_train).values
+
+    # Scale the data
+    scaler = StandardScaler(with_mean=True, with_std=True)
+    x_train = pd.DataFrame(scaler.fit_transform(x_train)).values
 
     # Train the model and get models
     if method=="LR":
@@ -149,17 +139,23 @@ def main(method="ridge"):
         score = evaluate_regression(x_train, y_train)
         print(f"Average RMSE on 10-fold cv is {score}")
 
+    # score to beat: 4.89
     elif method=="ridge":
         print("Starting regression with ridge regression...")
-        alphas = np.arange(12700,12750,0.1)
+        alphas = np.arange(10000,10000,1)
         rmse=[]
         for alpha in alphas:
             rmse.append(evaluate_model(x_train,y_train,alpha,"ridge"))
-        plot_error_model(alphas,rmse)
+        #plot_error_model(alphas,rmse)
         alpha = alphas[np.argmin(rmse)]
         print("Alpha is {}".format(alpha))
         model = Ridge(alpha=alpha).fit(x_train,y_train)
         weights = model.coef_
+        score = np.min(rmse)
+        # plot_error_model(alphas,mean_errors)
+        print(f"Average RMSE on 10-fold cv is {score}")
+        #print("The estimated alpha is {}".format(alpha))
+
 
     elif method=="ridgeCV":
         print("Starting regression with ridge LOOCV...")
@@ -171,9 +167,11 @@ def main(method="ridge"):
         mean_errors = [np.mean(errors[:,i]) for i in range(errors.shape[1])]
         alpha = model.alpha_
         weights = model.coef_
-        plot_error_model(alphas,mean_errors)
-        print("The estimated alpha is {}".format(alpha))
-    
+        score = evaluate_regression(x_train, y_train)
+        # plot_error_model(alphas,mean_errors)
+        print(f"Average RMSE on 10-fold cv is {score}")
+        #print("The estimated alpha is {}".format(alpha))
+
     elif method=="lasso":
         print("Starting regression with lasso regression...")
         alphas = np.arange(0.01,5,0.01)
@@ -192,12 +190,18 @@ def main(method="ridge"):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='CLI args for folder and file directories')
+    parser = argparse.ArgumentParser(description='CLI args for folder and file \
+    directories')
     parser.add_argument("--train", "-tr", type=str, required=True,
-                        help="path to the CSV file containing the training data")
+                        help="path to the CSV file containing the training \
+                        data")
     parser.add_argument("--weights", "-w", type=str, required=True,
-                        help="path where the CSV file where weights should be written")
+                        help="path where the CSV file where weights should be \
+                        written")
     parser.add_argument("--method", "-m", type=str, required=True,
-                        help="method used for optimization, can be LR (classical Linear Regression), ridge (ridge regr with CV with RMSE), ridgeCV (ridge regr with LOOCV with LS) or lasso (lasso regr with CV with RMSE)")
+                        help="method used for optimization, can be LR \
+                        (classical Linear Regression), ridge (ridge regr with \
+                        CV with RMSE), ridgeCV (ridge regr with LOOCV with LS) \
+                        or lasso (lasso regr with CV with RMSE)")
     FLAGS = parser.parse_args()
     main(FLAGS.method)
