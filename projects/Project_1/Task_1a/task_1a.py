@@ -3,10 +3,8 @@
 """
 This script is for project1, task a, which uses a 10-fold cross validation to evaluate
 ridge regression with different regularization parameters.
-
 Example usage from CLI:
  $ python3 task_1a.py --train ~/path/to/train/dir/ --RMSE ~/path/to/RMSE/file
-
 For help, run:
  $ python3 task_1a.py -h
 """
@@ -24,11 +22,9 @@ __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.et
 
 def rmse(y_true, y_pred):
     """This function computes the RMSE of a vector of predicted and true labels
-
     Args:
         y_true (numpy.ndarray): Vector of true labels.
         y_pred (numpy.ndarray): Vector of predicted labels.
-
     Returns:
         float: the computed root mean square error
     """
