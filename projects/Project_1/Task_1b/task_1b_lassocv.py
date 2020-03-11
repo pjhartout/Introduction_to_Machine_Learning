@@ -14,6 +14,10 @@ To do:
 - Improve score to meet hard baseline from project
 """
 
+__author__ = "Josephine Yates; Philip Hartout; Flavio Rump"
+__email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
+
+
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import RidgeCV,LassoCV,Ridge,Lasso
 from sklearn.model_selection import GridSearchCV
@@ -24,9 +28,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import argparse
+import sys
 
-__author__ = "Josephine Yates; Philip Hartout; Flavio Rump"
-__email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
+sys.settrace
 
 def rmse(y_true, y_pred):
     """This function computes the RMSE of a vector of predicted and true labels
@@ -84,7 +88,12 @@ def main():
     x_train = pd.DataFrame(scaler.fit_transform(x_train)).values
 
     # Actual modelling
-    clf = RidgeCV(alphas=np.arange(3900,4000,0.01), cv=len(x_train)-1, scoring="neg_mean_squared_error").fit(x_train, y_train)
+    clf = LassoCV(eps=0.001, n_alphas=100, alphas=np.arange(10000,100000,1),\
+                   fit_intercept=True, normalize=False, precompute='auto', \
+                   max_iter=1000, tol=0.0001, copy_X=False, cv=10, \
+                   verbose=2, n_jobs=1, positive=False, random_state=42,\
+                   selection='cyclic').fit(x_train, y_train)
+
     print(f"Alpha chosen: {clf.alpha_}")
 
     # export to .csv
