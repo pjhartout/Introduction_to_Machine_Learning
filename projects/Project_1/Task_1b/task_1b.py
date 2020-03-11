@@ -80,7 +80,7 @@ def evaluate_model(x_train, y_train, alpha, model_train):
     Returns:
         float: the average root mean square error
     """
-    n_splits = 10
+    n_splits = 30
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     rmse_avg=0
     for train_index, test_index in kf.split(x_train):
@@ -119,9 +119,9 @@ def main(method="ridge"):
     # Load training set
     df_train = pd.read_csv(FLAGS.train, header=0, index_col=0)
 
-   x # Process for modelling
+    # Process for modelling
     x_train, y_train = df_train.drop(['y'], axis=1), df_train['y'].values
-
+    
     # Create the dataset with transformed features
     x_train = feature_transformation(x_train).values
 
@@ -142,16 +142,16 @@ def main(method="ridge"):
     # score to beat: 4.89
     elif method=="ridge":
         print("Starting regression with ridge regression...")
-        alphas = np.arange(10000,10000,1)
-        rmse=[]
+        alphas = np.arange(9000,10000,10)
+        rmse_list=[]
         for alpha in alphas:
-            rmse.append(evaluate_model(x_train,y_train,alpha,"ridge"))
-        #plot_error_model(alphas,rmse)
-        alpha = alphas[np.argmin(rmse)]
+            rmse_list.append(evaluate_model(x_train,y_train,alpha,"ridge"))
+        plot_error_model(alphas,rmse_list)
+        alpha = alphas[np.argmin(rmse_list)]
         print("Alpha is {}".format(alpha))
         model = Ridge(alpha=alpha).fit(x_train,y_train)
         weights = model.coef_
-        score = np.min(rmse)
+        score = np.min(rmse_list)
         # plot_error_model(alphas,mean_errors)
         print(f"Average RMSE on 10-fold cv is {score}")
         #print("The estimated alpha is {}".format(alpha))
@@ -159,27 +159,25 @@ def main(method="ridge"):
 
     elif method=="ridgeCV":
         print("Starting regression with ridge LOOCV...")
-        alphas = np.arange(1.0,15,0.1)
-        model = RidgeCV(alphas=alphas,fit_intercept=True,normalize=True,scoring=None,
+        alphas = np.arange(1.0,20,0.1)
+        model = RidgeCV(alphas=alphas,fit_intercept=True,normalize=True,scoring = 'neg_mean_squared_error',
                             cv=None,gcv_mode=None,store_cv_values=True).fit(x_train, y_train)
         errors = model.cv_values_
-        print(errors.shape)
         mean_errors = [np.mean(errors[:,i]) for i in range(errors.shape[1])]
         alpha = model.alpha_
         weights = model.coef_
-        score = evaluate_regression(x_train, y_train)
-        # plot_error_model(alphas,mean_errors)
-        print(f"Average RMSE on 10-fold cv is {score}")
-        #print("The estimated alpha is {}".format(alpha))
+        plot_error_model(alphas,mean_errors)
+        #print(f"Average R^2 on 10-fold cv is {score}")
+        print("The estimated alpha is {}".format(alpha))
 
     elif method=="lasso":
         print("Starting regression with lasso regression...")
-        alphas = np.arange(0.01,5,0.01)
-        rmse=[]
+        alphas = np.arange(0.1,1,0.005)
+        rmse_list=[]
         for alpha in alphas:
-            rmse.append(evaluate_model(x_train,y_train,alpha,"lasso"))
-        plot_error_model(alphas,rmse)
-        alpha = alphas[np.argmin(rmse)]
+            rmse_list.append(evaluate_model(x_train,y_train,alpha,"lasso"))
+        plot_error_model(alphas,rmse_list)
+        alpha = alphas[np.argmin(rmse_list)]
         print("Alpha is {}".format(alpha))
         model = Lasso(alpha=alpha).fit(x_train,y_train)
         weights = model.coef_
