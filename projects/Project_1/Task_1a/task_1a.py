@@ -58,7 +58,6 @@ def main():
             y_pred = model.predict(x_test_cv)
             # average RMSE computation
             rmse_list[i] += rmse(y_test_cv, y_pred) / 10
-
     # export to .csv
     rmse_df = pd.DataFrame(rmse_list)
     rmse_df.to_csv(FLAGS.score, sep=" ", index=False, header=False, float_format='%.2f')
