@@ -84,7 +84,7 @@ def main():
     x_train = pd.DataFrame(scaler.fit_transform(x_train)).values
 
     # Actual modelling
-    clf = RidgeCV(alphas=np.arange(3900,4000,0.01), cv=10).fit(x_train, y_train)
+    clf = RidgeCV(alphas=np.arange(3900,4000,0.01), cv=len(x_train)-1, scoring="neg_mean_squared_error").fit(x_train, y_train)
     print(f"Alpha chosen: {clf.alpha_}")
 
     # export to .csv
