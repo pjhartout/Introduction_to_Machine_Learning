@@ -20,18 +20,13 @@ __email__ = (
     "jyates@student.ethz.ch; phartout@student.ethz.ch; flrump@student.ethz.ch"
 )
 
-
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.linear_model import RidgeCV, LassoCV, Ridge, Lasso
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import KFold
-from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
+import argparse
 import pandas as pd
 import numpy as np
-import argparse
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.linear_model import RidgeCV
+from sklearn.preprocessing import StandardScaler
 
 
 def plot_error_model(alphas, mean_errors):
@@ -53,7 +48,7 @@ def plot_error_model(alphas, mean_errors):
     plt.show()
 
 
-def linear(x):
+def linear(input_vector):
     """Returns the same array as passed
 
     Args:
@@ -62,10 +57,10 @@ def linear(x):
     Returns:
         The same array
     """
-    return x
+    return input_vector
 
 
-def constant(x):
+def constant(input_vector):
     """Returns a vector containing ones the dimensions of the input array
 
     Args:
@@ -74,10 +69,19 @@ def constant(x):
     Returns:
         An array of ones of the same length as the input
     """
-    return np.ones((x.shape[0],)).reshape(-1, 1)
+    return np.ones((input_vector.shape[0],)).reshape(-1, 1)
 
 
 def main():
+    """Primary function reading, preprocessing, transforming, scaling and
+    transforming the data. Then fits a series of Ridge regression on it.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     # Load training set
     df_train = pd.read_csv(FLAGS.train, header=0, index_col=0)
 
@@ -118,10 +122,10 @@ def main():
         print(f"Selected value for alpha is: {reg.alpha_}")
 
     # flatten list coefficients
-    weights_list_flat = [item for sublist in weights_list for item in sublist]
+    weights_list = [item for sublist in weights_list for item in sublist]
 
     # export to .csv
-    weight_df = pd.DataFrame(weights_list_flat)
+    weight_df = pd.DataFrame(weights_list)
     weight_df.to_csv(
         FLAGS.weights, sep=" ", index=False, header=False, float_format="%.5f"
     )
