@@ -509,7 +509,8 @@ The Hinge loss encourages the margin of the classifier, and is defined as follow
     \mathcal{l}_H(\mathbf{w}; \mathbf{x}, y)=\max\left\{0,1-y\mathbf{w}^T\mathbf{x}\right\}
 \end{equation*}
 
-\section{Support vector machines vs. perceptron}
+\subsection{Support vector machines}
+
 The optimization objective for the support vector machine is defined as minimizing Hinge loss while also adding another regularization term. There are several lines that need to be considered in the max. margin linear classification, which are summarised in figure \ref{planes_svm}
 
 \begin{figure}
@@ -527,5 +528,503 @@ Support vector machinea re widely used, very effective linear classifiers. They 
 It can be optimized using a stochastic gradient descent. A safe choice for the learning rate is:
 \begin{equation*}
     \eta_t=\frac{1}{\lambda t}
+\end{equation*}
+
+\subsubsection{Stochastic gradient descent for support vector machines}
+
+Let's recall the ojective function:
+\begin{equation*}
+    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\mathcal{l}_{H}(\mathbf{w}_i; x_i,y_i) + \lambda\norm[{\mathbf{w}}_2^2
+\end{equation*}
+This requires taking care of the regularizer, as follows:
+\begin{equation*}
+    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\left(\mathcal{l}_{H}(\mathbf{w}_i; x_i,y_i) + \frac{\lambda}{n}\norm[{\mathbf{w}}_2^2\right)=f_i(\mathbf{w})
+\end{equation*}
+So, in order to estimate the gradient $\nabla_{\mathbf{w}}\hat{R}(\mathbf{w})$ which is equivalent to:
+\begin{equation*}
+    \nabla_{\mathbf{w}}\hat{R}(\mathbf{w})=\sum_{i=1}^{n}\nabla_{\mathbf{w}}f_{i}(\mathbf{w})
+\end{equation*}
+where:
+\begin{equation*}
+    \nabla_{\mathbf{w}}f_{i}(\mathbf{w}) = \nabla\mathcal{l}_{H}(\mathbf{w}+\frac{\lambda}{n}\nabla\norm{\mathbf{w}}_2^2)
+\end{equation*}
+so the gradient of the regularization term is just $2\mathbf{w}$. For the Hinge loss:
+\begin{equation*}
+    \nabla\mathcal{l}_H = \nabla\max(0,1-y_i\mathbf{w}^Tx_i)
+    = \begin{cases}
+        0\text{ if } y_iw^Tx_i\geq 1\\
+        -y_ix_i\text{ otherwise.}
+    \end{cases}
+\end{equation*}
+Therefore the entire update rule for stochastic gradient descent for SVM is:
+\begin{equation*}
+    \mathbf{w}_{t+1}\leftarrow w_t\left(1-\eta_t\frac{2\lambda}{n}\right)+\left[y_iw^Tx_i\right]
+\end{equation*}
+The regularization parameter can be picked via cross-validation just like in linear regression. Instead of using the Hinge loss for validation, the target performance metric needs to be used.
+
+\subsection{Key takeaways}
+The key takeaways are:
+\begin{itemize}
+    \item The perceptron is an algorithm for linear classification
+    \item It applies SGD on the perceptron loss
+    \item Mini-batches exploit parallelism and reduce variance compared to a single sample
+    \item The perceptron loss is a convex surrogate function for the 0-1 misclassification loss
+    \item It is guaranteed to produce a feasible solution if the data is separable
+    \item SGD is much more generally applicable
+    \item SVMs are closely related to Perceptron, they use a hinge loss and regularization.
+\end{itemize}
+Summary so far:
+\begin{itemize}
+    \item List of represnetations/features: linear hypotheses, nonlinear hypotheses with nonlinear feature transforms.
+    \item Model/Objective: loss function (squared loss, 0/1 loss, perceptron loss, Hinge loss) + regularization ($L^2$ norm)
+    \item Method: exact solution, gradient descent, mini-batch SGD, convex programming.
+    \item Evaluation metric: MSE, accuracy
+    \item Model selection: k-fold cross-validation, Monte Carlo CV.
+\end{itemize}
+
+\section{Feature selection}
+Reasons why we don't want to work with all potentially available features:
+\begin{itemize}
+    \item interpretability: understand which features are most important
+    \item generalizationL simpler models may generalize better
+    \item storage computation and cost: if we select the most important features we don't need to store, sum and acquire data for unused features. 
+\end{itemize}
+The naive way to select features is to try all subsets and pick the best features via cross-validation. Greedy feature selection, which is a general purpose approach, consists of greedily add or remove features to maximize cross-validated prediction accuracy and mutual information or other notions of informativeness not discussed here. It can be used for any method, not only linear regression or classifiers. 
+
+\subsection{General greedy approach}
+Consider the set of features $V=\left\{1,\ldots, d\right\}$. We then define the cost function for scoring subsets S of V. $\hat{L}(S)$ is the cross-validation error using features in S only. More precisely: 
+\begin{equation*}
+    \mathbf{x}_i=[x_{i,1},\ldots,x_{i,d}]\rightarrow\mathbf{x}_{S,i}=[x_{i,j},\ldots,x_{i,j_k}]
+\end{equation*}
+where $S$ is defined as:
+\begin{equation*}
+    S=\left\{j,\ldots,j_{k}\right\}, k=|k|
+\end{equation*}
+We then train the model on $\left\{x_{j,1},y_1,\ldots,x_{j,n},y_n\right\}$, in order to obtain an estimate based on the weights $\hat{\mathbf{w}}_S$ with associated loss $\hat{L}(S)$, which represents the cross-validated performance of the weight estimates $\hat{\mathbf{w}}_S$.
+
+\subsection{Greedy forward selection}
+Start with $S=\emptyset$ and $E_0=\infty$, then for $i=1:d$, we find the best element to add, i.e.:
+\begin{equation*}
+    s_i=\arg\min{j\in V \setminus S}\hat{L}()S\cup \left\{j\right\}
+\end{equation*}
+then we compute the error:
+\begin{equation*}
+    E_i=\hat{L}(S\cup\left\{s_i\right\})
+\end{equation*}
+if $E_i>E_{i-1}$ break, else set $S\leftarrow \cup\left\{s_i\right\}$
+
+\subsection{Greedy backward selection}
+Start with $S=V$ and $E_{d+1}=\infty$, then for $i=d:-1:1$, we find the best element to remove, i.e.:
+\begin{equation*}
+    s_i=\arg\min{j\in S}\hat{L}(S\setminus\left\{j\right\})
+\end{equation*}
+then we compute the error:
+\begin{equation*}
+    E_i=\hat{L}(S\setminus\left\{s_i\right\})
+\end{equation*}
+if $E_i>E_{i-1}$ break, else set $S\leftarrow \setminus\left\{s_i\right\}$
+
+\subsection{Advantages and drawbacks of forward vs. backward feature selection}
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        & Forward Feature Selection & Backward Feature Selection\\
+        \midrule
+        Method Advantages & Faster (if few relevant features) & Can handle ``dependent'' features\\
+        \midrule
+        Method drawback & Computational cost & Computational cost \\
+        \midrule
+        & Suboptimal & Suboptimal \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+We want a method that simultaneously solves the learning and the feature selection problem via a single optimization step. So far we have only done optimization via sparsity: i.e. explicitely select a subset of features. This is equivalent to constraining $\mathbf{w}$ to be sparse, i.e. contain at most $k$ non-zero entries. Alternatively, we can penalize the number of nonzero entries: 
+\begin{equation*}
+    \hat{\mathbf{w}} = \arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-w^Tx_i)^2+\lambda \norm{w}_0
+\end{equation*}
+However, this is a difficult combinatorial optimization problem. The key idea then is to replace $\norm{\mathbf{w}}_0$ by a more tractable term. 
+
+The idea here is to use $L_1$ as a surrogate for $L_0$, where:
+\begin{equation*}
+    \norm{w}_1=\sum_{i=1}^{d}|w_i|
+\end{equation*}
+and we use $\norm{w}_1$ instead of $\norm{w}_0$.
+
+\subsection{Lasso regression}
+
+In ridge regression, we use $\norm{\mathbf{w}}_2^2$ to control the weights. In Lasso, we replace $\norm{\mathbf{w}}_2^2$ by $\norm{\mathbf{w}}_1$, hence leading to the following L1-regularized regression:
+\begin{equation*}
+    \min_{\mathbf{w}}\lambda\norm{w}_1+\sum_{i=1}^{n}(y_i-\mathbf{w}^Tx_i)^2
+\end{equation*}
+This alternative penalty encourages coefficients to be exactly 0, which entails an automatic feature selection.
+
+The regularization parameter can be picked using cross-validation.
+
+\subsubsection{L1 regularization in SVM}
+The sparsity trick can be applied to SVMs as well:
+\begin{equation*}
+    \min_{\mathbf{w}}\norm{\mathbf{w}}_1+\sum_{i=1}^{n}\max(0,1-y_i\mathbf{w}^T\mathbf{x}_i)
+\end{equation*}
+This alternative penalty encourages coefficients to be exactly 0, which ignores thoses features as well, just like in Lasso regression.
+
+\subsection{Solving L1-regularized problems}
+The L1-norm is convex. Combined with convex losses, we can obtain convex optimization problems, which include Lasso and L1-SVM. Those problems can, in principle, be solved usng stochastic gradient descent. Convergence is, however, usually slow. and we rarely obtain exact 0 entries. Recent work in convex optimization deals with solving such problems very efficiently using proximal methods. 
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Method} & Greedy & L1-regularization \\
+        \midrule        
+        \textbf{Advantages} & \begin{tabular}{@{}c@{}} Applies to any\\ prediction method \end{tabular} & \begin{tabular}{@{}c@{}} Faster (training and\\ feature selection happen\\jointly) \end{tabular} \\
+        \midrule
+        \textbf{Disadvantages} & \begin{tabular}{@{}c@{}} Slower (need to\\ train many models \end{tabular} & \begin{tabular}{@{}c@{}} Only works for \\ linear model \end{tabular} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Non-linear prediction with kernels}
+
+\subsection{Revisiting the perceptron/SVM}
+
+There is a fundamental observation to be made here where the optimal hyperplace lies in the span of the data. 
+
+\begin{equation*}
+    \mathbf{\hat{w}}=\sum_{i=1}^{n}\alpha_iy_i\mathbf{x}_i
+\end{equation*}
+
+that means that the output of any of the models discussed so far can be rewritten as a linear combination of the feature inputs that we have seen so far. Proving this losely can be done by stating that SGD starts from 0 and constructs such a representation. A more abstract proof follows from the representer theorem.  
+
+\subsection{Reformulating the perceptron}
+
+In order to make the objective function only depend on the inner product of pairs of data point and work implicitely in high-dimensional spaces as long as we can do inner products efficiently, we need to reformula the optimization problem in terms of $\alpha$ instead of $\mathbf{w}$. Therefore, we do the following:
+
+\begin{align*}
+    \hat{\mathbf{w}}&\in\arg\min_{\mathbf{w}\in\mathbb{R}^d}\sum_{i=1}^{n}\max(0,-y_i\mathbf{w}^Tx_i)\text{ Note: we make the following anzats: }\hat{\mathbf{w}}=\sum_{j=1}^{n}\alpha_jy_jx_j\\
+    &= \sum_{i=1}^{n}\max(0,-y_i(\sum_{j=1}^{n}\alpha_jy_jx_j)^Tx_i)\\
+    &= \sum_{i=1}^{n}\max(0,-y_i\sum_{j=1}^{n}\alpha_jy_j(x_j^Tx_i))\\
+    \hat{\mathbf{\alpha}}&\in\arg\min_{\mathbf{\alpha}\in\mathbb{R}^n}\sum_{i=1}^{n}\max(0,-c)
+\end{align*}
+
+Often, computing $k(\mathbf{x}, \mathbf{x}')$ can be computed much more efficiently than $\phi(\mathbf{x})^T\phi(\mathbf{x}')$. For the polynomial kernel of degree 2, the computational complexity of computing the explicit feature map of the kernel function is in $\mathcal{O}(d^2)$ whereas it is in $\mathcal{O}(d)$ for the kernel computation.
+
+The perceptron can then be reformulated as follows:
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwResult{Trained vector $\hat{\alpha}$ used for prediction}
+    $\alpha_0\leftarrow 0$\;
+    \For{$t=1,\ldots$}{
+        Sample $(\mathbf{x}_i, y_i)\sim D$\;
+        \uIf{$y_i\sum_{j=1}^{n}\alpha_jy_jk(x_j^Tx_i)>0$}{
+            $\alpha_{t+1}\leftarrow\alpha_{t}$\;
+        }
+        \Else{
+            $\alpha_{t+1}\leftarrow\alpha_{t}$\;
+            $\alpha_{t+1,i}\leftarrow\alpha_{t+1,i}+\eta_t$\;
+        }
+    }
+    \caption{Kernelized perceptron}
+\end{algorithm}
+
+For a new point, we can predict:
+\begin{equation*}
+    \hat{y}=\text{sign}(\sum_{j=1}^{n}\alpha_jy_jk(\mathbf{x}_j,\mathbf{x}))
+\end{equation*}
+
+\subsection{The kernel trick}
+
+Non-linear decision boundaries can be found by using non-linear transformations of the feature vectors followed by linear classification. An important aspect to keep in mind when doing these feature transformation is the dimensionality of the data that is being used. We need, for instance, $\mathcal{O}(d^k)$ dimensions to represent multivariate polynomials of degree $k$ on $d$ features. The challenge then becomes to efficiently implicitely operate in such high-dimensional feature spaces withough ever explicitely computing the transformation.
+
+
+\begin{definition}[The kernel trick]
+    The kernel trick consists in expressing a problem such that it only depends on inter products, which can then be replaced by kernels.
+\end{definition}
+An example of such a kernel can be applied to the perceptron loss:
+\begin{align*}
+    \hat{\alpha} &=\arg\min_{\alpha_{1:n}}\frac{1}{n}\sum_{i=1}^{n}\max\left\{0 -\sum_{j=1}^{n}\alpha_jy_iy_jx_i^Tx_j\right\}\\
+    \Leftrightarrow \hat{\alpha} &= \arg\min_{\alpha_{1:n}}\frac{1}{n}\sum_{i=1}^{n}\max\left\{0 -\sum_{j=1}^{n}\alpha_jy_iy_jk(\mathbf{x}_j, \mathbf{x}_i)\right\}
+\end{align*}
+
+\subsection{The kernelized perceptron}  
+At training time, the problem can be solved as follows:
+\begin{itemize}
+    \item Initialize $\alpha_1=\ldots=\alpha_n=0$
+    \item For $t=1,2,\ldots$
+    \begin{itemize}
+        \item Pick data point $(x_i, y_i)$ uniformly at random
+        \item Predict:
+        \begin{equation*}
+            \hat{y} = \text{sign}(\sum_{j=1}^{n}\alpha_jy_jk(\mathbf{x}_j, \mathbf{x}_i))
+        \end{equation*}
+        \item If $\hat{y}\neq y_i$ set $\alpha\leftarrow \alpha_i+\eta_t$
+    \end{itemize}
+\end{itemize}
+At the time of prediction, for a new point $x$, we predict:
+\begin{equation*}
+    \hat{y} = \text{sign}(\sum_{j=1}^{n}\alpha_jy_jk(\mathbf{x}_j, \mathbf{x}_i))
+\end{equation*}
+\subsection{Kernel functions}
+\begin{definition}[Kernel functions]
+    Given a data space $X$, a kernel is a function $k:X\times X\rightarrow\mathbb{R}$ satisfying the following properties:
+    \begin{itemize}
+        \item \textbf{Symmetry}: for any pair of vectors $\mathbf{x}, \mathbf{x}'\in X$ it must hold that:
+        \begin{equation*}
+            k(\mathbf{x}, \mathbf{x}')=k(\mathbf{x}', \mathbf{x})
+        \end{equation*}
+        \item \textbf{Positive semi-definiteness}: for any $n$, any set $S=\left\{\mathbf{x}_1,\ldots\mathbf{x}_n\right\}\subseteq X$, the kernel (Gram) matrix defined as:
+        \begin{equation*}
+            K = \begin{bmatrix}
+                k(\mathbf{x}_1, \mathbf{x}_1) & \ldots & k(\mathbf{x}_1, \mathbf{x}_n)\\
+                \vdots & & \vdots\\
+                k(\mathbf{x}_n, \mathbf{x}_1) & \ldots & k(\mathbf{x}_n, \mathbf{x}_n)\\
+            \end{bmatrix}
+        \end{equation*}
+        must be positive semi-definite.
+    \end{itemize}
+\end{definition}
+
+A matrix is positive semidefinite iff:
+\begin{enumerate}[i]
+    \item $\forall x\in\mathbb{R}^n: \mathbf{x}^TM\mathbf{x}\geq 0$
+    \item All eigenvalues of $M\geq 0$
+\end{enumerate}
+
+Suppose the data space $X=\left\{1,\ldots,n\right\}$ is finite, and we are given a p.s.d. matrix $\mathbf{K}\in\mathbb{R}^{n\times n}$, then we can always construct a feature map:
+\begin{equation*}
+    \phi:Z\rightarrow \mathbb{R}^n 
+\end{equation*}
+such that $\mathbf{K}_{i,j}=\phi(i)^T\phi(j)$. 
+\begin{proof}[Proof]
+    $\mathbf{K}$ is p.s.d. $\Rightarrow\mathbf{K}=UDU^T$ where $D=\begin{bmatrix}
+        \lambda_1 & \ldots & 0\\
+        \vdots & \ddots & \vdots\\
+        0 & \ldots & \lambda_n
+    \end{bmatrix}$ and $\lambda_i\geq 0\forall i$
+    We then define a matrix $D=D^{1/2}TD^{1/2}$ where $D^{1/2}
+    \begin{bmatrix}
+        \sqrt{\lambda_1} & \ldots & 0\\
+        \vdots & \ddots & \vdots\\
+        0 & \ldots & \sqrt{\lambda_n}
+    \end{bmatrix}$ and $\lambda_i\geq 0\forall i
+    $. This gives us the following: $\mathbf{K}=UD^{1/2}D^{1/2}U^T=\phi^T\phi$ where $\phi=\left[\phi_1|\ldots|\phi_n\right]$. Now it holds that taking $k(i,j)=\mathbf{K}_{i,j}=\phi_i^T\phi_j$ which means that that $\phi: X\rightarrow \mathbb{R}^n$ and $\phi: i\rightarrow \phi_i$ which is a constructed valid feature map. It shows that for finite data spaces $X$, positive definiteness of the function is also a sufficient condition for it being a valid kernel.
+\end{proof}
+More generally:
+\begin{theorem}[Mercer's theorem]
+    Let $X$ be a compact subset of $\mathbb{R}^n$ and $k:X\times X\rightarrow \mathbb{R}^n$ a kernel function. Then one can expand $k$ in a uniformly convergent series of bounded functions  $\phi_i$ s.t.
+    \begin{equation*}
+        k(x, x')=\sum_{i=1}^{\infty}\lambda_i\phi_i(x)\phi_i(x').
+    \end{equation*}
+\end{theorem}
+
+\subsection{Examples of kernels}
+\begin{itemize}
+    \item Linear kernel: $k(\mathbf{x},\mathbf{x}')=\mathbf{x}^T\mathbf{x}'$
+    \item Polynomial kernel: $k(\mathbf{x},\mathbf{x}')=(\mathbf{x}^T\mathbf{x}'+1)^d$
+    \item Gaussian (RBF, squared exponential kernel): $k(\mathbf{x},\mathbf{x}')=\exp(-\norm{\mathbf{x}-\mathbf{x}'}_2^2)/h^2$ where $h^2$ is the bandwidth/length scale parameter.
+    \item Laplacian kernel: $k(\mathbf{x},\mathbf{x}')=\exp(-\norm{\mathbf{x}-\mathbf{x}'}_1/h)$
+\end{itemize}
+\subsection{Examples of non-kernels}
+\begin{itemize}
+    \item $k(\mathbf{x},\mathbf{x}') = \sin(\mathbf{x})cos(\mathbf{x}')$. It is not symmetric. Take for instance $x=0$ and $x'=\frac{\pi}{2}$
+    \item $k(\mathbf{x},\mathbf{x}') = \mathbf{x}^TM\mathbf{x}'\forall \mathbf{x},\mathbf{x}'\in\mathbb{R}^d, M\in\mathbb{R}^{d\times d}$
+    \begin{proof}[Proof]
+        If $M$ is symmetric: $k(\mathbf{x},\mathbf{x}')=\mathbf{x}^TM^T\mathbf{x}'= \mathbf{x}'^TM^T\mathbf{x}= k(\mathbf{x}', \mathbf{x})$. If $M$ is not symmetric, $k$ in general is not symmetric.
+        If $M$ is not positive semi-definite, then the kernel function is not definite, e.g. for the situation where $M=-1$ for the normal dot product.
+        If $M$ is positive semi-definite: $M=UD^{\frac{1}{2}}D^{\frac{1}{2}}TU^T=V^TV$ for $V=(UD^{\frac{1}{2}})^T$ then: $k(\mathbf{x}, \mathbf{x}')=\mathbf{x}^TM\mathbf{x}'=\mathbf{x}^TV^TV\mathbf{x}=)(V\mathbf{x})^T(V\mathbf{x}')=\phi (\mathbf{x})^T\phi (\mathbf{x'})$ for $\phi(\mathbf{x})=V\mathbf{x}$
+    \end{proof}
+\end{itemize}
+
+\subsection{Effect of kernel on function class}
+
+Given a kernel $k$, predictors for kernelized classification have the form:
+\begin{equation*}
+    \hat{y} = \text{sign}(\sum_{j=1}^{n}\alpha_jy_jk(\mathbf{x}_j,\mathbf{x}))
+\end{equation*}
+
+Grafically, it looks like in figure \ref{decision_function_kernelized}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/decision_function_kernelized.png}
+    \caption{This figure shows that the green line is nothing but a scaled version of the indidiual Gaussian distributions and the associated decision function sign.}
+    \label{decision_function_kernelized}
+\end{figure}
+
+\subsection{Graphical representations of kernels}
+
+The graphical representation of a sample gaussian and exponential kernel can be found in figures 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/gaussian_kernel.png}
+    \caption{Graphical representation of the Gaussian kernel.}
+    \label{gaussian_kernel}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/laplacian_kernel.png}
+    \caption{Graphical representation of the Laplacian kernel.}
+    \label{laplacian_kernel}
+\end{figure}
+
+\subsection{Objects where kernels can be used}
+The kernels can be defined on a variety of objects:
+\begin{itemize}
+    \item Sequence kernels
+    \item Graph kernels
+    \item Diffusion kernels
+    \item Kernels on probability distributions
+\end{itemize}
+
+Graph kernels can be used for measuring similarity between graphs by comparing random walks on both graphs. They can also be used to measure similarity among nodes in a graph via diffusion kernels not defined here.
+
+\subsection{Kernel engineering}
+
+Suppose we have two kernels:
+\begin{equation*}
+    k_1:\mathcal{X}\times \mathcal{X}\rightarrow \mathbb{R}\qquad k_2:\mathcal{X}\times \mathcal{X}\rightarrow \mathbb{R}
+\end{equation*}
+Then the following functions are valid kernels:
+\begin{itemize}
+    \item $k(\mathbf{x}, \mathbf{x}')=k_1(\mathbf{x}, \mathbf{x}')+k_2(\mathbf{x}, \mathbf{x}')$
+    \item $k(\mathbf{x}, \mathbf{x}')=k_1(\mathbf{x}, \mathbf{x}')k_2(\mathbf{x}, \mathbf{x}')$
+    \item $k(\mathbf{x}, \mathbf{x}')=ck_1(\mathbf{x}, \mathbf{x}')$ for $c>0$
+    \item $k(\mathbf{x}, \mathbf{x}')=f(k_1(\mathbf{x}, \mathbf{x}'))$ where $f$ is a polynomial with positive coefficients or the exponential function.
+\end{itemize}
+
+\subsection{The ANOVA kernel}
+\begin{equation*}
+    k(\mathbf{x}, \mathbf{x}')=\sum_{j=1}^{d}k_j(x_j, x_j')
+\end{equation*}
+where:
+\begin{equation*}
+    \mathbf{x}, \mathbf{x}'\in\mathbb{R}^d\qquad k:\mathbb{R}^d\times\mathbb{R}^d\rightarrow \mathbb{R}\qquad  k_j:\mathbb{R}\times\mathbb{R}\rightarrow\mathbb{R}
+\end{equation*}
+The functions modelled by this kernel can be shown by showing what forms $f(x)$ takes:
+\begin{align*}
+    f(x) &= \sum_{i=1}^{n}\alpha_i y_i k(x^(i),\mathbf{x})\\
+    &= \sum_{i=1}^{n}\alpha_i y_i \sum_{j=1}^{d}k_j(x^(i)_j,\mathbf{x}_j)\\
+    &= \sum_{j=1}^{d}\sum_{i=1}^{n}\alpha_i y_i k_j(x^(i)_j,\mathbf{x}_j)\\
+    &= \sum_{j=1}^{d}f_j(\mathbf{x}_j)
+\end{align*}
+which means that the function $f$ decomposes into functions that depend on individual coordinates only, i.e. it is additive decomposition of the function. This property can be useful for high dimensional domains.
+
+\subsection{Modelling pairwise data}
+
+Suppose we have the following two kernels:
+\begin{align}
+    k((x,z),(x', z')) &= k_x(x,x')\cdot k_z(z,z')\\
+    k((x,z),(x', z')) &= k_x(x,x') + k_z(z,z')\\
+\end{align}
+They can be used to represent the following data:
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/additive_and_multiplicative_effects_of_kernels.png}
+    \caption{The left figure can be used to represent a situation where multiplying the kernel could be useful and the right figure can be used to represent a situation where adding the kernel could be useful.}
+    \label{additive_and_multiplicative_effects_of_kernels}
+\end{figure}
+
+\subsection{Kernels as similarity functions}
+
+Kernels can be used as similarity measures. For instance, consider the Gaussian kernel \\$k(\mathbf{x}, \mathbf{x}')=\exp (-\norm{\mathbf{x}-\mathbf{x}'}^2/h^2)$. If a point $\mathbf{x}$ is close to $\mathbf{x}'$, then the value of $k(\mathbf{x}, \mathbf{x}')\approx 1$, else it is closer to $0$.
+
+\subsection{Comparing k-NN to kernel perceptron}
+
+The prediction for each point in $k$-NN is provided by:
+\begin{equation*}
+    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}[\mathbf{x}\text{ among $k$ nearest neighbors of }\mathbf{x}]\color{black})   
+\end{equation*}
+
+As we can see, it compares to the loss of the perceptron:
+
+\begin{equation*}
+    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}\alpha_ik(\mathbf{x}_i,\mathbf{x})\color{black})   
+\end{equation*}
+Note: choose $k$ in $k$-NN using cross-validation. 
+
+\begin{table}
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Method} & $k$-NN & Kernelized perceptron\\
+        \midrule
+        \textbf{Advantages} & No training required & \begin{tabular}{@{}l@{}} Optimized weights can lead to \\ improved performance, can capture \\ global trends with suitable kernels\\ Depends on wrongly classified examples only \end{tabular}\\
+        \textbf{Disadvantages} & Depends on all data & Training requires optimisation \\
+        \bottomrule
+    \end{tabular}
+\end{table} 
+
+\subsection{Deriving non-parametric models from parametric ones}
+
+Parametric models have a finite set of paramteters. Examples of such models include linear regression, linear perceptron, etc ...
+Nonparametric models grow in complexity with the size of the data. They have the potential to be much more expressive but also more computationally complex. Examples of such models include the kernelized perceptron, $k$-NN, etc... Kernels provide a principled way of deriving non-parametrics models from parametric ones.
+
+\subsection{Kernelized SVM}
+
+The SVM optimization step can be kernelized as follows:
+\begin{align*}
+    \hat{\mathbf{w}}=\arg\min_{\mathbf{w}}\frac{1}{n}\sum_{i=1}^{n}&\max\left\{0,1-y_i\mathbf{w}^T\mathbf{x}_i\right\}+\lambda\norm{\mathbf{w}}_2^2 \qquad \text{ assuming } \mathbf{w}=\sum_{j=1}^{n}\alpha_jy_jx_j\\
+    =&\max\left\{0,1-y_i(\sum_{j=1}^{n}\alpha_jy_jx_j)^Tx_i\right\}\\
+    =&\max\left\{0,1-y_i\sum_{j=1}^{n}\alpha_jy_j(x_j^Tx_i)\right\}\\
+    =&\max\left\{0,1-y_i\sum_{j=1}^{n}\alpha_jy_jk(x_j, x_i)\right\}\\
+    =&\max\left\{0,1-y_i\alpha^Tk_i\right\}\\
+\end{align*}
+where $k_i=\left[y_1k(\mathbf{x}_i, \mathbf{x}_1), \ldots, y_nk(\mathbf{x}_i, \mathbf{x}_n)\right]^T$ and $\alpha = \left[\alpha_1, \ldots, \alpha_n\right]^T$.
+
+The regularizer can be kernelized as follows:
+\begin{align*}
+    &\lambda\norm{\mathbf{w}}_2^2\\
+    =&\lambda\mathbf{w}\mathbf{w}^T=\lambda(\sum_{i=1}^{n}\alpha_iy_ix_i)^T(\sum_{j=1}^{n}\alpha_jy_jx_j)
+    =&\lambda\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jy_iy_jx_j^Tx_i\\
+    =&\lambda\alpha^T D_y\mathbf{K}D_y\alpha
+\end{align*}
+where $D_y=\begin{bmatrix}
+    y_1 & \ldots & 0\\
+    \vdots & \ddots & \vdots\\
+    0 & \ldots & y_n\\
+\end{bmatrix}$ and $\mathbf{K} = \begin{bmatrix}
+    k(x_1,x_1) & \ldots & k(x_1,x_n)\\
+    \vdots & \ddots & \vdots\\
+    k(x_n,x_1) & \ldots & k(x_n,x_n)\\
+\end{bmatrix}$
+
+\subsection{Kernelizing linear regression}
+
+Original parametric linear regresion optimization problem is stated as follows:
+\begin{equation*}
+    \hat{\mathbf{w}}=\arg\min_{\mathbf{w}}\frac{1}{n}\sum_{i=1}^{n}(\mathbf{w}^T\mathbf{x}_i-y_i)^2+\lambda\norm{\mathbf{w}}_2^2
+\end{equation*}
+
+We kernelize linear regression in two parts:
+
+\begin{align*}
+    =& \sum_{i=1}^{n}(\mathbf{w}^T\mathbf{x}_i-y_i)^2\\
+    =& \sum_{i=1}^{n}((\sum_{j=1}^{n}\alpha_jx_jx_i)^T\mathbf{x}_i-y_i)^2\\
+    =& \sum_{i=1}^{n}(\sum_{j=1}^{n}\alpha_j(x_j^Tx_i)\mathbf{x}_i-y_i)^2\\
+    =& \sum_{i=1}^{n}(\sum_{j=1}^{n}\alpha_j(x_j^Tx_i)\mathbf{x}_i-y_i)^2\\
+    =& (\alpha^2k_i-y_i)^2
+\end{align*}
+and 
+
+\begin{align*}
+    =& \sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jx_i^Tx_j
+    =& \alpha^T\mathbf{K}\alpha
+\end{align*}
+hence we have:
+\begin{align*}
+    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R^n}}\frac{1}{n}\sum_{i=1}^{n}(\alpha^Tk_i-y_i)^2+\lambda\alpha^T\mathbf{K}\alpha\\
+    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R^n}}\frac{1}{n}\norm{\alpha^T\mathbf{K}-\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha
+\end{align*}
+which has a closed-form solution:
+\begin{equation*}
+    \hat{\alpha}=(\mathbf{K}+n\lambda \mathbf{I})^{-1}\mathbf{y}
+\end{equation*} 
+For prediction, given a data point $\mathbf{x}$, we predict the response $y$ as:
+\begin{equation*}
+    \hat{y}=\sum_{i=1}^{n}\hat{\alpha_i}k(\mathbf{x_i},\mathbf{x})
 \end{equation*}
 \end{document}
