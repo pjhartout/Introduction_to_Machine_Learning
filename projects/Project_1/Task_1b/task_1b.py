@@ -31,7 +31,7 @@ from sklearn.preprocessing import StandardScaler
 
 def plot_error_model(alphas, mean_errors):
     """This function plots the mean error of CV vs the regularization parameter
-    of the model being evaludated.
+    of the model being evaluated.
 
     Args:
         alphas (numpy.ndarray): regularization parameters tried out

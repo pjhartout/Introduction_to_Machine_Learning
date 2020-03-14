@@ -41,9 +41,6 @@ def main():
     # regularization parameters
     alphas = [0.01, 0.1, 1, 10, 100]
 
-    # preprocessing of the data (regularization)
-    scaler = StandardScaler()
-    x_train = scaler.fit_transform(x_train)
 
     # cross validation
     rmse_list = [0] * len(alphas)
