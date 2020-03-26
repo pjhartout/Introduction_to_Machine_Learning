@@ -1011,7 +1011,7 @@ We kernelize linear regression in two parts:
 and 
 
 \begin{align*}
-    =& \sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jx_i^Tx_j
+    =& \sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jx_i^Tx_j\\
     =& \alpha^T\mathbf{K}\alpha
 \end{align*}
 hence we have:
@@ -1027,4 +1027,162 @@ For prediction, given a data point $\mathbf{x}$, we predict the response $y$ as:
 \begin{equation*}
     \hat{y}=\sum_{i=1}^{n}\hat{\alpha_i}k(\mathbf{x_i},\mathbf{x})
 \end{equation*}
+
+\subsubsection{Application: semi-parametric regression}
+
+Often, parametric models are too rigid and non-parametric models fail to extrapolate. The solution to this problem is to use additive combination of linear and non-linear kernel function as shown below:
+
+\begin{equation*}
+    k(\mathbf{x}, \mathbf{x}') = c_1\exp\left(\norm[]{\mathbf{x} - \mathbf{x}'}_2^2/h^2\right) + c_2\mathbf{x}^T\mathbf{x}'
+\end{equation*}
+
+The decision function is then defined as follows:
+
+\begin{align*}
+    f(\mathbf{x}) &= \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i, \mathbf{x})=\sum_{i=1}^{n}\left(\alpha_i(c_i \exp(-\norm[]{\mathbf{x}_i-\mathbf{x}}_2^2/h^2))+c_2\mathbf{x}_i\mathbf{x}'\right)\\
+    &= c_1 \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i,\mathbf{x}) = \sum_{i=1}^{n}\left(\alpha_i(c_1\exp\left(\norm[]{\mathbf{x_i-\mathbf{x}}_2^2/h^2}\right))+c_2\mathbf{x}_i^T\mathbf{x}'\right)\\
+    &= c_1\sum_{i=1}^{n}\alpha_i\exp\left(-\norm{\mathbf{x}_i-\mathbf{x}}_2^2/h^2\right) + \left(c_2\sum_{i=1}^{n}\alpha_ix_i\right)^T\mathbf{x}
+    &= f_1(\mathbf{x})+\mathbf{w}^T\mathbf{x}
+\end{align*}
+
+The efficiency of this methodology can be seen in the figure \ref{semiparametricregression}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/semi-parametric-regression.png}
+    \caption{Various learned models overlayed with the function that we wish to learn based on the available data. Clearly, a linear kernel and a periodic parametric model seem to fit best the pattern observed.}
+    \label{semiparametricregression}
+\end{figure}
+
+This approach can be used to design P450 chimeras, predict protein fitness landscapes, and various other protein engineering applications.
+
+\subsection{Choosing kernels \& risk of overfitting}
+
+Choosing correct kernels is a combination of domain knowledge, brute force or heuristic search using cross-validation. Since kernels map to very high dimensional spaces, it is difficult to see what we hope to be able to learn. Typically the number of parameters is drastically smaller than the number of dimensions. One way of tackling this problem is to set the number of parameters equal to that of the number of datapoints, which in this case would be called non-parametric learning. Another way of tackling this problem is to use regularization, which is built into kernelized linear regression and SVMs but not into the kernelized Perceptron. Recall the formulations of KLR and SVM:
+\begin{align*}
+    \hat{\alpha} &= \arg\min_{\alpha}\frac{1}{n}\norm[]{\alpha^T\mathbf{K}=\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha\\
+    \hat{\alpha} &= \arg\min_{\alpha}\frac{1}{n}\sum_{i=1}^{n}\max\left\{0,1-y_i\alpha^T\mathbf{k}_i\right\} + \lambda\alpha^T\mathbf{D}_{\mathbf{y}}\mathbf{K}\mathbf{D}_\mathbf{y}\alpha
+\end{align*}
+
+\section{Class imbalance}
+
+Often data looks very imbalanced, e.g. there are more false negatives than false positives, see figure \ref{imbalanced_data}. Sources of imbalanced data include fraud detection datasets, spam filtering, process monitoring, medical diagnosis, feedback in recommender systems. The main issues related with imbalanced data include \textit{performance metrics}, where the performance assessment of the model is not a good metric. It may be good to prefer certain mistakes over others, i.e. we trade false positives for false negatives. The minority class instance contribute little to the empirical risk. It therefore may be ignored during optimization. There are two solutions to the problem of imbalanced datasets:
+\begin{itemize}
+    \item \textbf{Subsampling}: this entails removing examples from the majority class (e.g. uniformly at random) such that the resulting dataset is balanced. 
+    \item \textbf{Upsampling}: this entails repeating data points from the minority class, possibly with small random perturbation to obtain a balanced data set.
+    \item It's also a possibility to use cost-sensitive classification methods to deal with these issues.
+\end{itemize}
+
+Illustrations of these two approaches are shown in figure \ref{up_and_downsampling}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/imbalanced_data.png}
+    \caption{Example of a dataset with imbalanced data.}
+    \label{imbalanced_data}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/up_and_down_sampling.png}
+    \caption{Illustration of subsampling (left) and upsampling (right).}
+    \label{up_and_downsampling}
+\end{figure}
+
+\subsection{Cost-sensitive classification}
+
+This entails modifying the perceptron/SVM to take class balance into account. The only different is in the cost function, where we add a class coefficient in front of the loss function:
+\begin{equation*}
+    \ell_{CS}(\mathbf{w};\mathbf{x},y)=\color{blue}c_y\color{black}\ell(\mathbf{w};\mathbf{x},y)
+\end{equation*}
+For the perceptron, this becomes
+\begin{equation*}
+    \ell_{CS}(\mathbf{w};\mathbf{x},y)=\color{blue}c_y\color{black}\max(0,-y\mathbf{w}^T\mathbf{x})
+\end{equation*}
+For the SVM, this becomes
+\begin{equation*}
+    \ell_{CS}(\mathbf{w};\mathbf{x},y)=\color{blue}c_y\color{black}\max(0,1-y\mathbf{w}^T\mathbf{x})
+\end{equation*}
+where, in all cases, $c_+, c_->0$ control the tradeoff to be made.
+
+An illustration of the adapted cost function can be seen in figure \ref{perceptron-class-sensitive-loss}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/perceptron-class-sensitive-loss.png}
+    \caption{Perceptron loss}
+    \label{perceptron-class-sensitive-loss}
+\end{figure}
+
+\subsection{Avoiding redundancy}
+
+Given that the empirical loss, given by:
+\begin{align*}
+    \hat{R}(\mathbf{w};c_+,c_-) &= \frac{1}{n}\sum_{i_{y_i=1}}c_+\ell(\mathbf{w};x_i,y_i)+\frac{1}{n}\sum_{i_{y_i=1}}c_-\ell(\mathbf{w};x_i,y_i)\\
+    \forall\alpha>0:\hat{R}(\mathbf{w};\alpha c_+, \alpha c_-) &=\alpha\hat{R}(\mathbf{w};c_+,c_-)\\
+    \Rightarrow \arg\min_{\mathbf{w}}\hat{R}(\mathbf{w};\alpha c_+, \alpha c_-)&=\arg\min_{\mathbf{w}}\alpha \hat{R}(\mathbf{w}; c_+, c_-)=\arg\min_{\mathbf{w}}\alpha \hat{R}(\mathbf{w}; \frac{c_+}{c_-}, 1)\\
+    \Rightarrow \text{w.l.o.g.: } \alpha&=\frac{1}{c_{-}}.
+\end{align*}
+
+Which basically means that the tradeoff to make for imbalanced datasets can be determined by one parameter.
+
+\subsection{Metrics for imbalanced datasets}
+
+A generally inappropriate metric for imbalanced datasets is accuracy, defined as 
+\begin{equation*}
+    \text{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN}=\frac{TP+TN}{N}
+\end{equation*}
+Other, more suitable metrics include:
+\begin{equation*}
+    \text{Precision}=\frac{TP}{TP+FP}=\frac{TP}{P+}
+\end{equation*}
+\begin{equation*}
+    \text{Recall}=\text{True positive rate (TPR)}=\frac{TP}{TP+FN}=\frac{TP}{N+}
+\end{equation*}
+\begin{equation*}
+    \text{F1 score}=\frac{2TP}{2TP+FN+FP}=\frac{2}{\frac{1}{\text{Prec}}+\frac{1}{\text{Rec}}}
+\end{equation*}
+\begin{equation*}
+    \text{False positive rate (FPR)} = \frac{FP}{TN+FP}
+\end{equation*}
+An interesting observation to make is that given the probability $p$ of observing a positive sample, we have:
+\begin{align*}
+    \mathbb{E}[\text{TPR}]&=\frac{\mathbb{E}[\text{TP}]}{n_+}=\frac{p\cdot n_+}{n_+}=p\\
+    \mathbb{E}[\text{TPR}]&=\frac{\mathbb{E}[\text{TP}]}{n_-}=\frac{p\cdot n_-}{n_-}=p
+\end{align*}
+
+The receiver operator characteristic (ROC) curve (see figure \ref{roc-curve}) can also be used to make an assessment of a classifier.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/roc_curve.png}
+    \caption{}
+    \label{roc-curve}
+\end{figure}
+
+Note that a performance measure associated to the precision recall curve is the area under the curve. A random classifier has an AUC of 0.5 and an ideal classifier has an AUC of 1.
+
+
+\subsection{Obtaining the optimal tradeoff}
+
+Two ways of obtaining a good tradeoff is to either use a cost sensitive classifier and vary the tradeoff parameter. The second option is to find a single classifier and vary the classification threshold $\tau$ in the following formula:
+\begin{equation*}
+    y=\text{sign}(\mathbf{w}^T\mathbf{x}-\tau)
+\end{equation*}
+
+The optimal value for the threshold can be determined using the precision-recall curve \ref{precision-recall-curve}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/precision_recall_curve.png}
+    \caption{An example of a precision-recall curve.}
+    \label{precision-recall-curve}
+\end{figure}
+
+An interesting note to make in terms of the relationship between the ROC curve and the precision recall curve is captured in the following theorem:
+
+\begin{theorem}
+    Algorithm 1 dominates Algorithm 2 in terms of ROC curve $\Leftrightarrow$ Algorithm 1 dominates Algorithm 2 in terms of precision recall curve.
+\end{theorem}
+
 \end{document}
