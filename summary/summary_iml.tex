@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -25,6 +25,14 @@
 \setlength\columnsep{26pt}
 
 \newcommand\norm[1]{\left\lVert#1\right\rVert}
+
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
 
 \pagestyle{fancy}
 \setlength{\headheight}{25pt} 
@@ -1160,8 +1168,23 @@ The receiver operator characteristic (ROC) curve (see figure \ref{roc-curve}) ca
     \label{roc-curve}
 \end{figure}
 
-Note that a performance measure associated to the precision recall curve is the area under the curve. A random classifier has an AUC of 0.5 and an ideal classifier has an AUC of 1.
+Note that a performance measure associated to the precision recall curve is the area under the curve. A random classifier has an AUC of 0.5 and an ideal classifier has an AUC of 1.s
 
+It is also important that the confusion matrix itself is also often used to evaluate the performance of a binary or even multi-class classifier.
+
+\begin{table}
+    \centering
+    \renewcommand\arraystretch{1.5}
+    \setlength\tabcolsep{0pt}
+    \begin{tabular}{c >{\bfseries}r @{\hspace{0.7em}}c @{\hspace{0.4em}}c @{\hspace{0.7em}}l}
+      \multirow{10}{*}{\parbox{1.1cm}{\bfseries\raggedleft actual\\ value}} & 
+        & \multicolumn{2}{c}{\bfseries Prediction outcome} & \\
+      & & \bfseries p & \bfseries n & \bfseries total \\
+      & p$'$ & \MyBox{True}{Positive} & \MyBox{False}{Negative} & P$'$ \\[2.4em]
+      & n$'$ & \MyBox{False}{Positive} & \MyBox{True}{Negative} & N$'$ \\
+      & total & P & N &
+    \end{tabular}        
+\end{table}
 
 \subsection{Obtaining the optimal tradeoff}
 
@@ -1174,7 +1197,7 @@ The optimal value for the threshold can be determined using the precision-recall
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/precision_recall_curve.png}
+    \includegraphics[width=.5\textwidth]{figures/precision_recall_curve.png}
     \caption{An example of a precision-recall curve.}
     \label{precision-recall-curve}
 \end{figure}
@@ -1184,5 +1207,131 @@ An interesting note to make in terms of the relationship between the ROC curve a
 \begin{theorem}
     Algorithm 1 dominates Algorithm 2 in terms of ROC curve $\Leftrightarrow$ Algorithm 1 dominates Algorithm 2 in terms of precision recall curve.
 \end{theorem}
+
+\section{Multiclass problems}
+
+A multiclass problem is defined as follows. Given a dataset $\mathcal{D}={(\mathbf{x}_1, y_1),\ldots, (\mathbf{x}_n, y_n)}$ for $y_i\in{1,\ldots, c}$, we want a function $f:\mathcal{X}\rightarrow \mathcal{Y}$ where $y_i\in\mathcal{Y}={1,\ldots,c}$ and $\mathbf{x}_i\in\mathcal{X}\subseteq\mathbb{R}^d$, as illustrated in figure \ref{multiclass-problem}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/multiclass-problem.png}
+    \caption{Illustration of a multiclass problem.}
+    \label{multiclass-problem}
+\end{figure}
+
+\subsection{One-vs-all}
+
+One approach to solve the problem is to solve $c$ binary classifiers, i.e. one for each class, where all positive samples are from class i and all negative samples represent all other points. We then classify using the classifier with the largest confidence. In other words, we fit $f^{(i)}:\mathcal{X}\rightarrow\mathbb{R}$ and $f^{(i)}(x)=\mathbf{w}^{(i)T}\mathbf{x}$ and we predict $\hat{y}=\arg\max_{i}f^{(i)}(\mathbf{x})=\arg\max_{i}\mathbf{w}^{(i)T}\mathbf{x}$. 
+
+\subsubsection{Confidence in a classification}
+
+The confidence in a classification decision can be visualized as in figure \ref{confidence-in-classification}. For $\alpha>0$, we have 
+\begin{equation*}
+    \text{sign}((\alpha\mathbf{w})^T\mathbf{x})=\text{sign}(\mathbf{w}^T\mathbf{x})
+\end{equation*}
+
+Thus although $\alpha\mathbf{w}$ and $\mathbf{w}$ implement the same decision boundary, they have a different confidence level. There are two solutions to this problem: 
+\begin{enumerate}
+    \item $\mathbf{w}\leftarrow \frac{\mathbf{w}}{\norm{\mathbf{w}}_2}$, i.e. this is normalized to unit length.
+    \item In practice, when using regularization, the magnitude of $\norm[]{\mathbf{w}}_2$ is kept under control. 
+\end{enumerate} 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/confidence-in-classification.png}
+    \caption{Illustration of the confidence in classification. We see that $\mathbf{w}^T\mathbf{x}_2>\mathbf{w}^T\mathbf{x}_1$ so that means that the label + is given with more confidence to $\mathbf{x}_2$ than for $\mathbf{x}_1$}
+    \label{confidence-in-classification}
+\end{figure}
+
+The decision boundary of the one-vs-all decision can be represented as in figure \ref{ova-decision-boundary}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/ova-decision-boundary.png}
+    \caption{One-vs-all decision boundary.}
+    \label{ova-decision-boundary}
+\end{figure}
+
+\subsubsection{Challenges}
+There are several challenges associated with the one-vs-all technique:
+\begin{itemize}
+    \item It only works if classifiers produce confidence scores on the same scale.
+    \item Individual binary classifier see imbalanced data, even if the whole data set is balanced.
+    \item One class might not be linearly separable from all other classes.
+\end{itemize}
+
+\subsection{One-vs-one}
+
+The idea is to train $c(c-1)/2$ binary classifiers, one for each pair of classes $(i,j)$. Positive examples contain all points from class $i$ and negative examples contain all points from class $j$. Then, we apply a voting scheme, i.e. the class with the highest number of positive prediction wins. A graphical representation of the one-vs-one classification is shown in figure \ref{one-vs-one}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/one-vs-one.png}
+    \caption{Illustration of the one-vs-one classification technique. Here, we see that each decision boundary is fit for each pair of classes ($i,j$).}
+    \label{one-vs-one}
+\end{figure}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Method} & \textit{One-vs-all} & \textit{One-vs-one} \\ 
+        \midrule
+        \textbf{Advantages} & Only $c$ classifiers needed (faster!) & No confidence needed\\
+        \textbf{Disadvantages} & Requires confidence + leads to class imbalance & Need to train $c(c-1)/2$)\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Encodings}
+
+There are other methods to tackle multiclass problems, e.g. using other encodings (error correcting output codes). There are also other explicit multiclass models, such as the multi-class perceptron/svm etc. Some models are naturally multi-class, such as nearest neighbors, generative probabilistic models, etc. However, one should keep in mind that one-vs-all/one-vs-one usually works very well. 
+
+A way to reduce the number of classes we need to work with can be reduce by using an encoding. The length of the encoding will then scale with the $log_{2}c$, see table \ref{binary-label-encoding}. Then in principle the multiclassfication problem is phrased as a decoding task of the class label, where each classifier predicts one bit, which in this case we would get away with $\mathcal{O}(\log c)$ classifiers. In this case, ideas from coding theory to do multi-class classification can be used to do multi-class classification.
+
+\begin{table}
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textit{Class} & \textit{Encoding} \\
+        \midrule
+        0 & [0,0,0,0]\\
+        1 & [0,0,0,1]\\
+        2 & [0,0,1,0]\\
+        \vdots & \vdots\\
+        $c-1$ & [1,1,1,1]\\
+        \bottomrule
+    \end{tabular}
+    \caption{Table containing the class name and corresponding encoding}
+    \label{binary-label-encoding}
+\end{table}
+
+\subsection{Multi-class SVMs}
+
+The key idea of multi-class SVMs is to maintain $c$ weight vectors $\mathbf{w}^{1},\ldots,\mathbf{w}^{c}$, one for each class. Then we predict using:
+\begin{equation*}
+    \hat{y} \leftarrow \arg\max_{i\in{1,\ldots,c}}\mathbf{w}^{(i)T}\mathbf{x}
+\end{equation*}
+Given each data point $(\mathbf{x},y)$, we want to achieve that:
+\begin{align}\label{multiclasssvm}
+    \mathbf{w}^{(y)}\mathbf{x}&\geq\mathbf{w}^{(i)}\mathbf{x}+1 \forall i\in\left\{1,\ldots, c\right\}\setminus{y}\\
+    \equiv \mathbf{w}^{(y)}\mathbf{x}&\geq\max_{i\in\left\{1,\ldots,c\right\}\setminus\left\{y\right\}}\mathbf{w}^{(i)}\mathbf{x}+1
+\end{align}
+
+\subsection{Multi-class Hinge loss}
+
+\begin{equation*}
+    \ell_{MC-H}(\mathbf{w}^{1},\ldots, \mathbf{w}^{c};\mathbf{x}, y)=\max(0,1+\max_{j\in\left\{1,\ldots, y-1,y+1, \ldots,c\right\}} \mathbf{w}^{(j)T}\mathbf{x}-\mathbf{w}^{(y)T}\mathbf{x})
+\end{equation*}
+which is equal to 0 when equation \ref{multiclasssvm} is satisfied. 
+
+The gradient of the Hinge loss is then defined as:
+\begin{equation*}
+    \nabla_{w^{(i)}}\ell_{MC-H}(\mathbf{w}^{(1:c)};\mathbf{x},y) = \begin{cases}
+        0 \text{ if equation \ref{multiclasssvm} is satisfied or } i\neq y\land i\neq \arg\max_{j}\mathbf{w}^{(j)T}\mathbf{x}\\
+        -\mathbf{x} \text{ if \ref{multiclasssvm} is not satisfied and } i=y\\
+        +\mathbf{x} \text{ otherwise.}
+    \end{cases}
+\end{equation*}
 
 \end{document}
