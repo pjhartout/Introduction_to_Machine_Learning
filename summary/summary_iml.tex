@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -10,6 +10,7 @@
 \usepackage{mhchem}
 \usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+\usetikzlibrary{matrix,chains,positioning,decorations.pathreplacing,arrows}
 
 \newtheorem{theorem}{Theorem}
 
@@ -1333,5 +1334,181 @@ The gradient of the Hinge loss is then defined as:
         +\mathbf{x} \text{ otherwise.}
     \end{cases}
 \end{equation*}
+
+\section{Neural networks}
+
+\subsection{Importance and characteristics of features}
+
+Succes in learning crucially depends on the quality of features. Hand-designing features however requires domain knowledge. However, kernels could be used to engineer features as they provide a rich set of feature maps, they can fit almost any function with infinite data. However, choosing the right kernel can be challenging and the computational complexity grows exponentially with the size of the data. The question then becomes whether or not we can learn good features from the data directly. The overall objective function for neural networks to optimize is the following:
+\begin{equation*}
+    \mathbf{w}* =\arg\min_{\mathbf{w}}\sum_{i=1}^{n}\ell(y_i;\sum_{j=1}^{m}w_j\phi_j(\mathbf{x}_j))=\arg\min_{\mathbf{w}}\sum_{i=1}^{n}\ell(y_i;f_i)
+\end{equation*}
+where $\ell(y_i,f_i)$ is usually defined as $\ell(y_i,f_i)=(y_i-f_i)^2$ (squared loss). A key idea then is to parametrize the feature maps, and optimize over the parameters, i.e. our optimization objective is to tune both the parameters and the weights to minimize the loss:
+\begin{equation*}
+    \mathbf{w}*=\arg\min_{\mathbf{w},\mathbf{\theta}}\sum_{i=1}^{n}\ell(y_i;\sum_{j=1}^{m}w_j\phi(\mathbf{x}_i,\mathbf{\theta}))
+\end{equation*}
+One possibility of achieving this optimization is to define the following feature map:
+\begin{equation*}
+    \phi(\mathbf{x},\mathbf{\theta})=\varphi(\mathbf{\theta}^T\mathbf{x})
+\end{equation*}
+where $\mathbf{\theta}\in\mathbb{R}^d$ and $\phi:\mathbb{R}\rightarrow\mathbb{R}$ is a nonlinear function, called an \textit{activation function}.
+An example of such an activation function is the sigmoid and tanh activation functions. The signmoid function is given by:
+\begin{equation*}
+    \varphi(z)=\frac{1}{1+\exp(-z)}
+\end{equation*}
+The tanh function is given by:
+\begin{equation*}
+    \varphi(z)=\tanh(z)=\frac{exp(z)-\exp(-z)}{exp(z)+\exp(-z)}
+\end{equation*}
+The rectified linear unit is also often used, which is defined as:
+\begin{equation*}
+    \phi(z)=\max(z,0)
+\end{equation*}
+The decision function of an artificial neural network is of the form:
+\begin{equation*}
+    f(\mathbf{x}_i; \mathbf{w}, \mathbf{\theta})=\sum_{j=1}^{m}w_j\varphi(\theta^T_j\mathbf{x})=\sum_{j=1}^{m}w_jv_j
+\end{equation*}
+More generally, the term artificial neural network refers to nonlinear functions which are nested compositions of variable linear functions composed with fixed nonlinearities.
+\subsection{Graphical representation}
+A neural network can be represented as shown in figure \ref{graphical-representation-ann}
+\begin{figure}
+    \centering
+        \begin{tikzpicture}[
+            init/.style={
+            draw,
+            circle,
+            inner sep=2pt,
+            font=\Huge,
+            join = by -latex
+            },
+            squa/.style={
+            draw,
+            inner sep=2pt,
+            font=\Large,
+            join = by -latex
+            },
+            start chain=2,node distance=13mm
+            ]
+            \node[on chain=2] 
+            (x2) {$x_2$};
+            \node[on chain=2,join=by o-latex] 
+            {$w_2$};
+            \node[on chain=2,init] (sigma) 
+            {$\displaystyle\Sigma$};
+            \node[on chain=2,squa,label=above:{\parbox{2cm}{\centering Activate \\ function}}]   
+            {$f$};
+            \node[on chain=2,label=above:Output,join=by -latex] 
+            {$y$};
+            \begin{scope}[start chain=1]
+            \node[on chain=1] at (0,1.5cm) 
+            (x1) {$x_1$};
+            \node[on chain=1,join=by o-latex] 
+            (w1) {$w_1$};
+            \end{scope}
+            \begin{scope}[start chain=3]
+            \node[on chain=3] at (0,-1.5cm) 
+            (x3) {$x_3$};
+            \node[on chain=3,label=below:Weights,join=by o-latex] 
+            (w3) {$w_3$};
+            \end{scope}
+            \node[label=above:\parbox{2cm}{\centering Bias \\ $b$}] at (sigma|-w1) (b) {};
+            
+            \draw[-latex] (w1) -- (sigma);
+            \draw[-latex] (w3) -- (sigma);
+            \draw[o-latex] (b) -- (sigma);
+            
+            \draw[decorate,decoration={brace,mirror}] (x1.north west) -- node[left=10pt] {Inputs} (x3.south west);
+        \end{tikzpicture}
+    \includegraphics[width=.5\textwidth]{figures/ann-graph-representation.png}
+    \includegraphics[width=.5\textwidth]{figures/two-layer-ann-representation.png}
+    \caption{Graphical representations of an artificial neural network.}
+    \label{graphical-representation-ann}
+\end{figure}
+Note that neural networks can have multiple outputs for multi-class prediction (one output per class or multi-output regression). They can also have more than one hidden layer -- networks with large amounts of neural networks with several hidden layers are called deep neural networks. Indexing in neural networks is done as shown in figure \ref{indexing-ann}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/indexing-ann.png}
+    \caption{Indexing convention of ANNs}
+    \label{indexing-ann}
+\end{figure}
+
+\subsection{Making predictions using ANNs}
+Suppose we have learned all paramters $w_{i,j}$. Given an input, we now make predictions using forward propagation. The forward propagation procedure is described as follows:
+\begin{enumerate}
+    \item For each unit $j$ on the input layer, we set its value to $v_j=x_j$.
+    \item For each layer $\ell=1:L-1$
+    \begin{enumerate}
+        \item For each unit $j$ on layer $\ell$ we set its value:
+        \begin{equation*}
+            v_j=\varphi\left(\sum_{i\in\text{Layer}_{\ell-1}}w_{j,i}v_i\right)
+        \end{equation*}
+    \end{enumerate}
+    \item For each unit $j$ on output layer, set its value:
+    \begin{equation*}
+        f_j=\sum_{i\in\text{Layer}_{L-1}}^{w_{j,i}v_i}
+    \end{equation*}
+    \item Predict $y_j=f_j$ for regression, and $y_j=\text{sign}(f_j)$ for regression. For multiclass problems, the prediction is made as $\hat{y}=\arg\max_{j}f_j$.
+\end{enumerate}
+
+Another way of writing the forward propagation algorithm is as follows:
+\begin{enumerate}
+    \item For input layer: $\mathbf{v}^{(0)}=\mathbf{x}$
+    \item For each layer $\ell=1:L-1$
+    \begin{align*}
+        \mathbf{z}^{(\ell)} &= \mathbf{W}^{(\ell)}\mathbf{x}^{(\ell-1)}, \mathbf{z}^{(\ell)}\in\mathbb{R}^{m^{(d)}}\\
+        \mathbf{v}^{(\ell)} &=\varphi(\mathbf{z}^{(\ell)})
+    \end{align*}
+    where $m^{(d)}$ is the number of units in the $\ell$\textsuperscript{th} layer. and $\varphi(\mathbf{z}^{(\ell)}) = [\varphi(\mathbf{z}_1^{(\ell)}), \varphi(\mathbf{z}_2^{(\ell)}),\ldots, \varphi(\mathbf{z}_m^{(\ell)})]$.
+    \item For the output layer: $f=\mathbf{W}^{L}\mathbf{v}^{L-1}$
+    \item Predict $y=f$ for regression, and $y=\text{sign}(f)$ for regression. For multiclass problems, the prediction is made as $\hat{y}=\arg\max_{i}f_i$.
+\end{enumerate}
+
+\subsection{Universal approximation theorem}
+
+Neural networks are powerful modelling tools, because any decision function can be modelled by a sufficiently complex artificial neural networ`k
+
+\begin{theorem}[Universal approximation theorem]
+    Let $\sigma$ be any continuous sigmoidal function. Then finite sums of the form:
+    \begin{equation*}
+        G(x)=\sum_{j=1}^{N}\alpha_j\sigma(y_j^Tx+\sigma_j)
+    \end{equation*}
+    are dense in $C(I_n)$. In other words, given any $f\in C(I_n)$ and $\epsilon>0$, there is a sum, $G(x)$m of the above form, for which:
+    \begin{equation*}
+        |G(x)-f(x)|<\epsilon\text{ for all }x\in I_n
+    \end{equation*}
+\end{theorem}
+
+\subsection{Training the weights of a neural network}
+
+Given a dataset $\mathcal{D} = {(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)}$, we optimize the weights $\mathbf{W}=(\mathbf{W}^{(1)}, \ldots, \mathbf{W}^{(L)})$ y applying a loss function (e.g. the perceptron loss, the multi-class hinge loss, square loss, etc.) to output:
+\begin{equation*}\label{empiricalriskminimisation}
+    \ell(\mathbf{W};\mathbf{y}, \mathbf{x})=\ell(\mathbf{y};f(\mathbf{x},\mathbf{x})).
+\end{equation*} 
+Then, we optimize the weights to minimise the loss over $\mathcal{D}$:
+\begin{equation*}
+    \mathbf{W}*=\arg\min_{\mathbf{W}}\sum_{i=1}^{n}\ell(\mathbf{W};\mathbf{y}_i,\mathbf{x}_i)
+\end{equation*}
+When predicting multiple outputs at the same time, we usually define the loss as a sum of per-output losses as follows:
+\begin{equation*}
+    \ell(\mathbf{W};\mathbf{y},\mathbf{x})=\sum_{i=1}^{p}\ell_i(\mathbf{W};y_i,\mathbf{x}).
+\end{equation*}
+For regression tasks we usually use the squared loss and for classification we use the perceptron or the hinge loss.
+
+Jointy optimizng over all weights for all layers as described in \ref{empiricalriskminimisation} is, in general, a non-convex optimization problem. We can nevertheless try to find a local optimum.
+
+This local optimum can be found, for instance, using stochastic gradient descent, described as follows:
+\begin{enumerate}
+    \item Initialize the weights $\mathbf{W}$.
+    \item For $t=1,2,\ldots$
+    \begin{enumerate}
+        \item Pick data point $(\mathbf{x}, \mathbf{y})\in\mathcal{D}$ uniformly at random.
+        \item Take a step in negative gradient direction:
+        \begin{equation*}
+            \mathbf{W}\leftarrow \mathbf{W}-\eta_t\nabla_{\mathbf{W}}\ell(\mathbf{W},\mathbf{y},\mathbf{x})
+        \end{equation*}
+    \end{enumerate}
+\end{enumerate}
+
 
 \end{document}
