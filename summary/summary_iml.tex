@@ -13,6 +13,7 @@
 \usetikzlibrary{matrix,chains,positioning,decorations.pathreplacing,arrows}
 
 \newtheorem{theorem}{Theorem}
+\newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily a}}}{=}}}
 
 \RequirePackage{amsmath,amssymb,latexsym}
 \hypersetup{
@@ -35,16 +36,19 @@
   }%
 }
 
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\angstrom}{\mbox{\normalfont\AA}}
+\newlength{\drop}
+\newtheorem{definition}{Definition}[section]
+
+% Set TOC depth to only show sections.
+\setcounter{tocdepth}{1}
+
 \pagestyle{fancy}
 \setlength{\headheight}{25pt} 
 \lhead{\textbf{Philip Hartout}}
 \rhead{\textbf{Introduction to Machine Learning - Summary}}
 \rfoot{}
-
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
-\newcommand{\angstrom}{\mbox{\normalfont\AA}}
-\newlength{\drop}
-\newtheorem{definition}{Definition}[section]
 
 \title{Introduction to Machine Learning \\ Summary}
 \author{Philip Hartout}
@@ -1649,4 +1653,133 @@ The vectorized implementation of the backpropagation algorithm can be phrased as
         \item Compute the gradient: $\nabla_{\mathbf{W}^{(\ell)}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})=\delta^{(\ell)}\mathbf{v}^{(\ell-1)T}$
     \end{itemize}
 \end{enumerate}
+
+\subsection{Initializing weights}
+
+Because the optimization problem is non-convex, the initialization of the weights matters, i.e. if we pick innapropriate weights we are more likely to converge towards a suboptimal point in the optimization landscape. Random initialization is often preferred. The rationale of this comes from the propagation of variance. In order to understand why this is the case, assume a node $v_i^{(\ell)}$ with inputs $v_1^{(\ell -1)},\ldots,v_{n_{in}}^{(\ell -1)}$. We know that we carry out the computation $z_i^{(\ell)}=\sum_{j=1}^{n_{in}}w_{ij}v_j^{(\ell-1)}\Rightarrow v_i^{(\ell)}=\phi(z_i^{(\ell)})$ where $\phi(z)=\max(0,z)$. 
+
+\subsubsection{Variance propagation}
+
+Now, we assume $\mathbb{E}[x_i]=\mathbb{E}[v_i^{(0)}]=0$ where $v_i^{(0)}$ is the input layer and we also assume that $\text{Var}[x_i]=\text{Var}[v_i^{(0)}]=1$. Let us further assume that the $X_1, \ldots, X_d$ are independent. Additionally, we assume that the weights are draw from a normal distribution, i.e. $w_{ij}\sim\mathcal{N}(0,1)$. Finally, we know that, supposing $X,Y$ are independent with $\mathbb{E}[X]=0$:
+\begin{enumerate}[a]
+    \item if $\mathbb{E}[Y]=0$, then $\text{Var}(X,Y)=\text{Var}(X)\text{Var}(Y)$
+    \item if $\mathbb{E}[Y]\neq 0$, then $\text{Var}(X,Y)=\text{Var}(X)\mathbb{E}[Y^2]$
+    \item For ReLU and symmetric $Y$: $\mathbb{E}[\phi(Y)^2]=\frac{1}{2}\text{Var}(Y)$
+\end{enumerate}
+
+We then compute:
+
+\begin{align*}
+    \mathbb{E}[z_i^{(1)}]&=\mathbb{E}\left[\sum_{j=1}^{n_{in}} w_{i,j}x_j\right]=\sum_{j}\mathbb{E}[w_{ij}]\mathbb{E}[x_j]=0\\
+    \text{Var}[z_i^{(1)}]&=\sum_{j}\text{Var}[w_{ij}x_j]\myeq\sum_{j}\text{Var}(w_{ij})\sum_{j}\text{Var}(x_{j})=n\cdot \sigma^{2}\\
+    \text{Var}[z_i^{(1)}]&=\sum_{j}\text{Var}\left[w_{ij}v_j^{(\ell - 1)}\right] = \sum_{j}\text{Var}(w_{ij})\mathbb{E}\left[v_j^{(\ell -1)2}\right]=\frac{1}{2}n_{\text{in}}\sigma^2\coloneqq 1\Rightarrow\sigma^2=\frac{2}{n_{\text{in}}}      
+\end{align*}
+
+This means that in this setting (of course heavily idealized), that the random variables will have the same scale with the same variance across each layer.
+
+\subsubsection{Weight initialization strategies}
+
+The goal of any weight initialization procedure is to keep the variance of weights approximately constant across layers to avoid vanishing and exploding gradients. Usually, random initialization works well, for instance:
+\begin{itemize}
+    \item Glorot initialization using tanh:
+    \begin{align*}
+        w_{i,j} &\sim\mathcal{N} (0,1/(n_{in}))\\
+        w_{i,j} &\sim\mathcal{N} (0,1/(n_{in}+n_{out}))\\
+    \end{align*}
+    \item He (ReLU):
+    \begin{equation*}
+        w_{i,j}\sim\mathcal{N}(0,2/n_{in})
+    \end{equation*}
+\end{itemize}
+
+The effect of improper initialization strategies is that the weights do not converge over time, as shown in figure \ref{weight-init-he-xavier}.
+
+\begin{figure}
+    \centering
+    \includegraphics[]{figures/weight-init-he-xavier.png}
+    \caption{Weight initialization procedure and effect on training}
+    \label{weight-init-he-xavier}
+\end{figure}
+
+\subsection{Learning rate}
+
+To implement the SGD rule, a learning rate needs to be chosen. Usually, its a good idea to start with a fixed small learing rate, and decrease slowly after some iteration, e.g.:
+\begin{equation*}
+    \eta_t=\min (0.1, 100/t)
+\end{equation*}
+Often, a piecewise constant learning rate schedules the drop in learning rate, e.g. drop after some number of epochs.
+
+Learning with momentum is a common extension to training with SGD as it can help to escale local minima. The idea behind this approach is to not only move into the direction of the gradient, but also in direction of the last weight update. In this case the weight update looks like this:
+
+\begin{align*}
+    a&\leftarrow m\cdot a+\eta_t\nabla\ell(\mathbf{W};\mathbf{y},\mathbf{x})
+    \mathbf{W}&\leftarrow\mathbf{W}-a
+\end{align*}
+
+This allows getting over flatter surfaces of the optimization function quicker while also avoiding oscillations towards the end of the optimization process as we near the optimal point, see figure \ref{oscillation-momentum}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/oscillation-momentum.png}
+    \caption{Oscillations of the optimization function.}
+    \label{oscillation-momentum}
+\end{figure}
+
+\subsection{Weight-space symmetries}\label{weight-space-symmetries}
+
+Multiple distinct weights compute the same prediction. I.e. given a network of the topology provided in figure \ref{weight-space-symmetries-fig}, and we define the following variables:
+\begin{align*}
+    v_i &= \phi(\mathbf{w}_i,x)\\
+    f &= w_1'v_1+w_2'v_2\\
+    \mathbf{w}=[w_i,w_i']_i&,\bar{\mathbf{w}}=[\bar{w_i},\bar{w_i'}]_i
+\end{align*} 
+
+Suppose $\bar{\mathbf{w}_2}=\mathbf{{w}}_1$, $\bar{\mathbf{w}_1}=\mathbf{{w}}_2$, $\bar{\mathbf{w}_1'}=\mathbf{{w}}_2'$, $\bar{\mathbf{w}_2'}=\mathbf{{w}}_1'$, we then have:
+\begin{equation*}
+    f(\mathbf{x};\bar{\mathbf{w}})=f(\mathbf{x};\mathbf{w})
+\end{equation*}
+which means that multiple local minima can be equivalent in terms of input-output mapping.
+
+For instance, this is valid for the tanh activation function, where $\varphi(z)=-\varphi(-z)$
+
+\begin{figure}
+    \centering
+    \includegraphics[]{figures/weight-symmetries.png}
+    \caption{Network topology used to illustrate weight-space symmetries shown in section \ref{weight-space-symmetries}.}
+    \label{weight-space-symmetries-fig}
+\end{figure}
+
+\subsection{Avoiding overfitting}
+
+Due to the fact that neural networks have multiple parameters, they have the potential of overfitting the data. There are several countermeasures that can be adopted to mitigate this phenomenon:
+\begin{itemize}
+    \item Early stopping: it consists in stopping SGD until it converges. This is done by monitoring the prediction performance on a validation set and stop trainign once the validation error starts to increase. 
+    \item Regularization: add penalty term to keep the weights small. 
+    \begin{equation*}
+        \hat{\mathbf{W}}=\arg\min_{\mathbf{W}}\sum_{i=1}^{n}\ell(\mathbf{W};\mathbf{x}_i,y_i)+\lambda\norm{W}_{F}^2
+    \end{equation*}
+    \item Dropout: the key idea here is to randomly ignore hidden units during each iteration of SGD with probability $p$. At test time, we then multiply the weights by the probability $p$.
+    \item Batch normalization: inputs are shifted and scaled through each layer. Batch normalization is a widely used technique that normalizes inputs to each layer according to mini-batch statistics.
+    \begin{itemize}
+        \item It reduces internal covariate shift
+        \item Enables larger learning rates
+        \item It helps with regularization.
+    \end{itemize}
+\end{itemize}
+
+The algorithm for batch normalization goes as follows:
+\begin{enumerate}
+    \item \textbf{Input}: values of $x$ over a mini-batch: $\mathcal{B}=\left\{x_1,\ldots,m\right\}$; Parameters to be learned: $\gamma,\beta$
+    \item \textbf{Output}: $\left\{y_i=\textnormal{BN}_{\gamma,\beta}(x_i)\right\}$
+    \begin{align*}
+        \mu_{\mathcal{B}}&\leftarrow\frac{1}{n}\sum_{i=1}^{m}x_i &\text{mini-batch mean}\\
+        \sigma_{\mathcal{B}}^2&\leftarrow\frac{1}{n}\sum_{i=1}^{m}(x_i-\mu_{\mathcal{B}})^2&\text{mini-batch variance}\\
+        \hat{x_i}&\leftarrow \frac{x_i-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^2+\epsilon}}&\text{normalize}\\
+        y_i&\leftarrow \gamma\hat{x}_i+\beta\equiv\text{BN}_{\gamma, \beta}(x_i)&\text{scale and shift}
+    \end{align*}
+\end{enumerate}
+After this procedure, $\phi(\mathbf{w}\mathbf{x})\rightarrow\phi(\mathbf{w}\textnormal{B}_{\gamma,\beta}(\mathbf{x}))$
+
+
+
 \end{document}
