@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools,tabulary}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -1780,6 +1780,102 @@ The algorithm for batch normalization goes as follows:
 \end{enumerate}
 After this procedure, $\phi(\mathbf{w}\mathbf{x})\rightarrow\phi(\mathbf{w}\textnormal{B}_{\gamma,\beta}(\mathbf{x}))$
 
+\subsection{Invariances}
+Predictions should be unchanged under some transformations of the data, e.g.
+\begin{itemize}
+    \item Classification of handwritten digits: the digit can be anywhere on the picture 
+    \item Speech recognition: the pitch should not matter for classification the speed of the speech should also not matter.
+\end{itemize} 
+A model can be encouraged to learn specific invariances via the following methods:
+\begin{itemize}
+    \item Augmentation of the training set
+    \item Special regularization terms
+    \item Invariance built into pre-processing
+    \item Implement invariance into structure of ANN, e.g. using convolutional neural networks.
+\end{itemize}
 
+\subsection{Convolutional neural networks}
+Convolutional neural networks are ANNs for specialized applications, e.g. for image recognition. The hidden layers closest to the input layer shares parameters: each hidden unit only depends on all closeby inputs, e.g. pixels and weights contrained to be identical across all units on the layer. This reduces the number of parameters, and encourages robustness against small amounts of translation. The weights can still be optimized using backpropagation.
+
+The typical CNN architecture that we see is that similar to the one shown in figure \ref{cnn-arch}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/cnn-arch.png}
+    \caption{Typical architecture of a CNN}
+    \label{cnn-arch}
+\end{figure}
+
+Important aspects of CNN have specific terminologies:
+\begin{itemize}
+    \item Filters/kernels: the size of the filter that passes over an image
+    \item Stride: the size of the step taken by the filter at each iteration
+    \item Padding: the distance between the border of the image and the first pixel to be processed. 
+\end{itemize}
+
+Computing the output dimensions of a CNN can be done as follows. Applying $m$ different $f\times f$ filtes to an $n\times n$ image with padding $p$ and stride $s$, we get an output measurement of $\ell=\frac{n+2p-f}{s}+1$. In some applications (e.g. image classification), it can make sense to aggregate several units to decrease the width of the network (and hence the number of parameters). 
+
+Pooling layers (equivalent to subsampling) can be added. In some applications, e.g. in image classification, it can make sense to aggregat several units to decrease the width of the network and hence the number of parameters. Usually, one considers either the average or the maximum value of the resulting output of the filter, see figure \ref{max-pooling-layers}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/max-pooling-layers.png}
+    \caption{Max pooling layers example.}
+    \label{max-pooling-layers}
+\end{figure}
+
+An example of CNN architecture can be found in figure \ref{cnn-arch}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/cnn-arch.png}
+    \caption{Typical CNN architecture.}
+    \label{cnn-arch}
+\end{figure}
+
+\subsection{Computational efficiency}
+
+A key operation for backpropagation training is the dense matrix vector multiplications. These are very suitable on general purpose GPUs and much work on special purpose hardware, for instance TPUs. They have been reponsible for large improvement in computations in recent years. 
+
+\subsection{Choice of parameters and architectures}
+
+Several possible activation functions are available. Popular in the past were sigmoid and tanh activations, because they were differentiable. Recently, however, rectified linear units (ReLUs) have been used. Despite being not differentiable, they are very fast to compute and gradients do not vanish, which is important for deep neural networks.
+
+A number of parameters have to be chosen:
+\begin{itemize}
+    \item The number and width of hidden layers 
+    \item Use convolution/pooling layers and how many
+    \item Skip connections
+    \item Type of activation functions
+    \item Weight initialization
+    \item Learning rate schedule
+    \item Regularization method
+\end{itemize}
+
+Frameworks for autodifferentiation, e.g. theano, torch and tensorflow. They can use cross-validation to compare models, but training is usually very expensive. They often use single validation (=development) set. Much work is also being done on ML-based experimentaion, i.e. AutoML.
+
+\subsection{ANNs vs. kernels}
+
+When using the tanh activation function, an ANN with a single hidden layer learns functions of the form:
+\begin{equation*}
+    f(\mathbf{x})=\sum_{i}w_i\tanh\theta^{T}_i\mathbf{x}
+\end{equation*}
+This is exactly the same type of functions learned with kernels, when using the tanh kernel.
+\begin{equation*}
+    f(\mathbf{x})=\sum_{i}\alpha_i\tanh\mathbf{x}_i^T\mathbf{x}
+\end{equation*}
+The difference is that kernels optimize $\alpha$'s only. It is therefore convex. ANNs, however, optimize both $\mathbf{w}'s$ and $\theta_i$, which is a non-convex problem. A more comprehensive comparison of ANNs and kernels is summerized in table \ref{kernels-vs-anns}.
+
+\begin{table}
+    \centering
+    \begin{tabulary}{\textwidth}{Lp{170pt}p{170pt}}
+        \toprule
+        \textbf{Method} & \textit{Method} & \textit{ANNs}\\
+        \midrule
+        \textbf{Advantages} & Convex optimization, no local minima, robust against noise, models grow with the size of the data & Flexible nonlinear models, with fixed parametrization. Multiple layers discover representations at multiple levels of abstraction\\
+        \textbf{Disadvantages} & Models grow with the size of data, don't allow multiple layers. & Many free parameters/architectural choices that need to be tuned. Often suffer from very noisy data.  \\
+    \end{tabulary}
+    \label{kernels-vs-anns}
+\end{table}
 
 \end{document}
