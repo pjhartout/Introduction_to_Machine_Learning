@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -1510,5 +1510,143 @@ This local optimum can be found, for instance, using stochastic gradient descent
     \end{enumerate}
 \end{enumerate}
 
+\subsection{Deep learning}
 
+Generally, deep learning refers to models with nested, layered non-linearities. Common examples of deep neural networks include:
+\begin{enumerate}
+    \item Classical ANN with multiple layers
+    \item Trained via SGD and variants
+    \item Some new algorithmic insights (e.g. dropout regularization) and exntensions (Convnets, resnets, RNNs, LSTMs, GRUs,\dots)
+\end{enumerate}
+Some deep learning success stories include the fact that deep neural networks achieve state of the art performance on some difficult classification tasks such as speech recognition, image recognision, natural language processing and speech translation. A lot of recent work on sequential models such as RNNs, LSTMs, GRUs,\dots have also proven to model data effectively.
+
+Some crucial questions to be answered when training a deep neural network include the following:
+
+\begin{itemize}
+    \item How can we compute the gradients?
+    \item How should we initialize the weights?
+    \item When should we terminate?
+    \item How do we choose parameters (number of units/layers/activation functions/learning rate/\dots)?
+    \item What about overfitting?
+\end{itemize}
+
+\subsection{Computing the gradient}
+In order to apply SGD, we need to compute:
+\begin{equation*}
+    \nabla_{\mathbf{W}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})
+\end{equation*}
+i.e. for each weight between any two connected units $i$ and $j$, we need to compute:
+\begin{equation*}
+    \frac{\partial}{\partial w_{i,j}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})
+\end{equation*}
+In a simple example, we have an ANN with 1 output, 1 hidden and 1 input unit: $\mathbf{W}=[\mathbf{w},\mathbf{w}']$ as shown in figure \ref{simple_ann_differentiation_example}. In this example we have that:
+\begin{equation*}
+    f(x,\mathbf{W}=w\varphi(w'x)
+\end{equation*}
+and a dataset containing 1 datapoint containing $\mathcal{D}={(x,y)}$. Then the loss is defined as:
+\begin{equation*}
+    L(\mathbf{w}',\mathbf{w}) \vcentcolon L = \ell(f,y)=\ell_y(f)
+\end{equation*}
+Note that $\ell_y(f)$ is computed using forward propagation. Differentiating the loss function w.r.t. the weights gives:
+\begin{align*}
+    \frac{\partial L}{\partial \mathbf{w}}&=\frac{\partial L}{\partial f}\frac{\partial f}{\partial \mathbf{w}}=\ell_y'(f)\cdot v\\
+    \frac{\partial L'}{\partial \mathbf{w}}&=\frac{\partial L}{\partial f}\frac{\partial f}{\partial \mathbf{v}}\frac{\partial \mathbf{v}}{\partial \mathbf{w}'}=\delta\cdot\mathbf{w}\cdot\phi'(z)\cdot \mathbf{x}.
+\end{align*}
+
+for instance in the case of the square loss:
+
+\begin{align*}
+    \ell_{y}(f)&=(f-y)^2\\
+    \Rightarrow l_y'(f)=2(f-y)
+\end{align*}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/simple_ann_differentiation_example.png}
+    \caption{The computation graph of a simple ANN}
+    \label{simple_ann_differentiation_example}
+\end{figure}
+
+For a slightly more complex example, as depicted in figure \ref{aan-loss-more-complex-example}, the loss is defined as follows:
+
+\begin{equation*}
+    L = \sum_{i=1}^{2}\ell_i(\sum_{j}w_{i,j} \varphi(\sum_{k}w'_{j,k} x_k)).
+\end{equation*}
+
+The weight vector $\mathbf{W}$ is defined as $\mathbf{W} = [(w_{i,j})_{i,j},(w'_{i,j})_{i,j}]$. The loss is then defined as:
+
+\begin{align*}
+    \frac{\partial L}{\partial w_{i,j}}&=\frac{\partial L}{\partial f_{i}}\frac{\partial f_{i}}{\partial w_{i,j}}=\ell'_i(f_i)\cdot v_j\\
+\end{align*}
+
+Note that $\ell'_i(f_i)$ and $\cdot v_j$ are computed using forward propagation.
+
+\begin{equation*}
+    \frac{\partial L}{\partial w'_{j,k}}=\sum_{i=1}^{2}\frac{\partial L}{\partial f_{i}}\frac{\partial f_i}{\partial v_j}\frac{\partial v_j}{\partial w'_{j,k}}=\sum_{i=1}^{2}\delta_i w_{i,j}\cdot\phi'(z_j)\cdot x_k
+\end{equation*}
+
+where $\delta_i=\frac{\partial L}{\partial f_{i}}$ and $\delta '_j=\delta_i w_{i,j}\cdot\phi'(z_j)\cdot x_k$
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/aan-loss-more-complex-example.png}
+    \caption{A more complex neural network.}
+    \label{aan-loss-more-complex-example}
+\end{figure}
+
+\subsubsection{Derivatives of activation functions}
+
+Sigmoid: 
+\begin{equation*}
+    \varphi(z)=\frac{1}{1+\exp(-z)}
+\end{equation*}
+
+\begin{equation*}
+    \phi'(z)=\frac{-1}{(1+\exp(-z))^2}\cdot e^{-z}\cdot (-1)=\frac{e^{-z}}{1+e^{-z}}\cdot\frac{1}{1+e^{-z}}=\phi(z)(1-\phi(z))
+\end{equation*}
+
+The advantage of this function is that it is differentiable everywhere, however $\phi(z)\approx 0$ unless $z=\approx 0$. This leads to a problem that is called a vanishing gradient for deep models. 
+
+Rectified linear unit (ReLU):
+\begin{equation*}
+    \varphi(z)=\max(z,0)
+\end{equation*}
+
+\begin{equation*}
+    \varphi'(z)=\begin{cases}
+        1 \text{ if }z>0\\
+        0 \text{ otherwise}
+    \end{cases}
+\end{equation*}
+
+The disadvantage of this function is that it is not differentiable at 0, but in practice this is not a problem. A huge advantage is $\varphi'(z)=1$ for all $z>0$ which helps with avoiding vanishing gradients.
+
+\subsection{Backpropagation}
+The unvectorized version of the backpropagation algorithm is as follows:
+\begin{enumerate}
+    \item For each unit $j$ on the output layer
+    \begin{itemize}
+        \item Compute the error signal $\delta_j=\ell_j'(f_j)$
+        \item For each unit $i$ on layer $L$, compute $\frac{\partial}{\partial w_{i,j}}=\delta_jv_i$
+    \end{itemize}
+    \item For each unit $j$ on hidden layer $\ell=L-1:-1:1$
+    \begin{itemize}
+        \item Compute the error signal: $\delta_j=\phi'(z_j)\sum_{i\in\text{Layer}_{\ell+1}}w_{i,j}\delta_i$
+        \item For each unit i on layer $\ell$, compute $\frac{\partial}{\partial w_{i,k}}=\delta_{j}v_i$
+    \end{itemize}
+\end{enumerate}
+
+The vectorized implementation of the backpropagation algorithm can be phrased as follows:
+\begin{enumerate}
+    \item For the output layer
+    \begin{itemize}
+        \item Compute the error $\delta^{L}=\mathbf{\ell'(f)}=[\ell'(f_!),\dots, \ell'(f_p)]$
+        \item Gradient: $\nabla_{\mathbf{W}^{(L)}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})=\delta^{(L)}\mathbf{v}^{(L-1)T}$
+    \end{itemize}
+    \item For each hidden layer $\ell=L-1:-1:1$
+    \begin{itemize}
+        \item Compute the error $\delta^{(\ell)}=\varphi'(\mathbf{z}^{(\ell)})\odot(\mathbf{W}^{(\ell +1) T}\delta^{(\ell+1)})$: 
+        \item Compute the gradient: $\nabla_{\mathbf{W}^{(\ell)}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})=\delta^{(\ell)}\mathbf{v}^{(\ell-1)T}$
+    \end{itemize}
+\end{enumerate}
 \end{document}
