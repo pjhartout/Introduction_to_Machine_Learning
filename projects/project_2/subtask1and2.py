@@ -13,6 +13,7 @@ For help, run:
 TODO:
     * Try using regular SVR to be able to use kernels
     * Clean up code to train one model per task ideally.
+    * Write docstrings
 
 Following Google style guide: http://google.github.io/styleguide/pyguide.html
 
@@ -147,9 +148,9 @@ def get_random_sample(X_train_resampled_set,y_train_resampled_set,size=100):
     return np.array(X_train_rd_set),np.array(y_train_rd_set)
 
 
-def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medical_tests, alpha=10, param_grid={"C": [1,10]}, typ="naïve", reduced=True, size=100):
+def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medical_tests, param_grid):
     """Function to obtain models for every set of medical test, either naïve or using CV Gridsearch
-    
+
         Parameters: X_train_resampled_set = np.array, set of size # of medical tests, with X_train for each
                     y_train_resampled_set = np.array, set of size # of medical tests, with y_train for each
                     alpha = float (for naïve) regularization parameter, ignored if typ is not naive
@@ -158,30 +159,19 @@ def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medica
                     reduced = boolean, default True, if random sampling of dataset to test of smaller dataset
                     size = int, size of selected sample, ignored if reduced == False
         Returns:
-                svr_models = list of Linear SVR models for each medical test, where svr_models[i] is the fitted 
+                svr_models = list of Linear SVR models for each medical test, where svr_models[i] is the fitted
                             model (best estimator in the case of gridsearch) for medical_test[i]
     """
     assert typ in ["naive","gridsearch","naive_non_lin","gridsearch_non_lin"], "typ must be in ['naive','gridsearch','naive_non_lin','gridsearch_non_lin']"
-    # if reduced:
-    #     X_train_resampled_set, y_train_resampled_set = get_random_sample(X_train_resampled_set,y_train_resampled_set,size=size)
     svm_models = []
     for i,test in enumerate(medical_tests):
         print("Starting iteration for test {}".format(test))
-        if typ=="naive":
-            # setting dual to false because n_samples>n_features
-            lin_svm = LinearSVC(C=alpha,dual=False)
-            lin_svm.fit(X_train_resampled_set[i],y_train_resampled_set[i])
-            svm_models.append(lin_svm)
-        elif typ=="gridsearch":
+        if typ=="gridsearch":
             cores=multiprocessing.cpu_count()-2
             gs_svm = GridSearchCV(estimator=LinearSVC(dual=False),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
             gs_svm.fit(X_train_resampled_set[i],y_train_resampled_set[i])
             print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,gs_svm.best_params_))
             svm_models.append(gs_svm.best_estimator_)
-        elif typ=="naive_non_lin":
-            lin_svm = SVC(C=alpha)
-            lin_svm.fit(X_train_resampled_set[i],y_train_resampled_set[i])
-            svm_models.append(lin_svm)
         elif typ=="gridsearch_non_lin":
             cores=multiprocessing.cpu_count()-2
             gs_svm = GridSearchCV(estimator=SVC(),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
@@ -191,25 +181,16 @@ def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medica
     return svm_models
 
 
-def get_model_sepsis(X_train_resampled,y_train_resampled, alpha=10, param_grid={"C": [1,10]}, typ="naïve", reduced=True, size=100):
+def get_model_sepsis(X_train_resampled,y_train_resampled, param_grid, typ="naïve"):
     svm = LinearSVC()
-    assert typ in ["naive","gridsearch","naive_non_lin","gridsearch_non_lin"], "typ must be in ['naive','gridsearch','naive_non_lin','gridsearch_non_lin']"
-    if reduced:
-        ind = sample(range(len(X_train_resampled)),size)
-        X_train_resampled, y_train_resampled = X_train_resampled[ind],y_train_resampled[ind]
-    if typ=="naive":
-        # setting dual to false because n_samples>n_features
-        svm = LinearSVC(C=alpha,dual=False)
-        svm.fit(X_train_resampled,y_train_resampled)
-    elif typ=="gridsearch":
+    assert typ in ["naive","gridsearch","naive_non_lin","gridsearch_non_lin"], \
+        "typ must be in ['naive','gridsearch','naive_non_lin','gridsearch_non_lin']"
+    if typ=="gridsearch":
         cores=multiprocessing.cpu_count()-2
         gs_svm = GridSearchCV(estimator=LinearSVC(dual=False),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
         gs_svm.fit(X_train_resampled,y_train_resampled)
         print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,gs_svm.best_params_))
         svm = gs_svm.best_estimator_
-    elif typ=="naive_non_lin":
-        svm = SVC(C=alpha)
-        svm.fit(X_train_resampled,y_train_resampled)
     elif typ=="gridsearch_non_lin":
         cores=multiprocessing.cpu_count()-2
         gs_svm = GridSearchCV(estimator=SVC(),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
@@ -281,6 +262,16 @@ def get_sepsis_predictions(X_test,test_pids,svm,sepsis,reduced=False,nb_patients
     return df
 
 
+def get_sampling_medical_tests(logger, X_train, y_train_set_med):
+    X_train_resampled_set_med, y_train_resampled_set_med = [0] * len(y_train_set_med), [0] * len(y_train_set_med)
+    number_of_tests = len(y_train_set_med)
+    for i in range(number_of_tests):
+        X_train_resampled_set_med[i], y_train_resampled_set_med[i] = \
+            oversampling_strategies(X_train, y_train_set_med[i], strategy=FlAGS.sampling_strategy)
+        logger.info('Performing oversampling for {} of {} medical tests.'.format(i, number_of_tests))
+    return X_train_resampled_set_med, y_train_resampled_set_med
+
+
 def main(logger):
     """Primary function reading, preprocessing and modelling the data
 
@@ -328,31 +319,26 @@ def main(logger):
     y_train_sepsis = df_train_preprocessed_merged['LABEL_Sepsis'].values
 
     # compute resampled data for all medical tests
-    X_train_resampled_set_med, y_train_resampled_set_med = [0]*len(y_train_set_med),[0]*len(y_train_set_med)
-
-    logger.info('Beginning sampling Strategy')
-    number_of_tests = len(y_train_set_med)
-    for i in range(number_of_tests):
-        X_train_resampled_set_med[i], y_train_resampled_set_med[i] = oversampling_strategies(X_train,
-                                                                                             y_train_set_med[i],
-                                                                                             strategy="adasyn")
-        logger.info('Performing oversampling for {} of {} medical tests.'.format(i, number_of_tests))
-
+    logger.info('Beginning sampling strategy for medical tests')
+    X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(logger,
+                                                                                      X_train,
+                                                                                      y_train_set_med)
     logger.info('Performing oversampling for sepsis.')
     X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(X_train, y_train_sepsis,
-                                                                                 strategy="adasyn")
+                                                                                 strategy=FlAGS.sampling_strategy)
 
     logger.info('Beginning modelling process.')
 
     # Hyperparameter specification
 
-    kernels_backup_tmp = ["linear", "poly", "rbf", "sigmoid"]
     degrees = range(1,4) # for poly
-    gamma_rbf = np.linspace(0.1, 10, num=5) # for poly or rbf kernel
+    gamma_rbf =
     param_grid = {
-        "C": np.linspace(0.1, 10, num=3),,
-        "kernels": ["linear", "poly", "rbf", "sigmoid"],
-        "penalty": ["l1", "l2"]
+        "C": np.linspace(0.1, 10, num=3),
+        "kernel": ["linear", "poly", "rbf", "sigmoid"],
+        "penalty": ["l1", "l2"],
+        "degrees": range(1,4),
+        "gamma": np.linspace(0.1, 10, num=5) # for poly or rbf kernel
     }
 
     # Naïve SVR for all medical tests
@@ -445,8 +431,16 @@ if __name__ == "__main__":
         "-nb_pat",
         type=int,
         required=True,
-        help="path to the CSV file containing the training \
-                                    labels",
+        help="Number of patients to consider in run",
+    )
+
+    parser.add_argument(
+        "--sampling_strategy",
+        "-samp",
+        type=str,
+        required=True,
+        help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
+             "any of adasyn, smote, clustercentroids or random,
     )
 
     FLAGS = parser.parse_args()

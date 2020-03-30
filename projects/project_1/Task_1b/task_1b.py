@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
+
+
 """
 This script is for project1, task b, which endeavours to perform ridge
 regression using feature transformation
