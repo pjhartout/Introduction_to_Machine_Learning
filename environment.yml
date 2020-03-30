@@ -10,6 +10,4 @@ dependencies:
   - missingno
   - scikit-learn
   - seaborn
-  - pip:
-    - thundersvm
 
