@@ -35,6 +35,13 @@ from sklearn.model_selection import GridSearchCV
 from random import sample
 
 
+def load_data():
+    rows_to_load = (FLAGS.nb_of_patients * 12) + 1
+    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
+    df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
+    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
+    return df_train, df_train_label, df_test
+
 # slower version - supports patient specific mean
 def fill_na_with_average_patient_column(df_train, logger):
     columns = list(df_train.columns)
@@ -45,7 +52,7 @@ def fill_na_with_average_patient_column(df_train, logger):
     for i,column in enumerate(columns):
         logger.info("{} column of {} columns processed".format(i+1,len(columns)))
         # Fill na with patient average 
-        df_train_preprocessed[[column]] = df_train_preprocessed.groupby(['pid'])[column]        .transform(lambda x: x.fillna(x.mean()))
+        df_train_preprocessed[[column]] = df_train_preprocessed.groupby(['pid'])[column].transform(lambda x: x.fillna(x.mean()))
         
     # Fill na with overall column average for lack of a better option for now
     df.fillna(df.mean())
@@ -54,7 +61,51 @@ def fill_na_with_average_patient_column(df_train, logger):
 
 # quick version - does not support patient average
 def fill_na_with_average_column(df):
-    return df.fillna(df.mean())
+    # Insert dict with typical values because running the script on parts of the data
+    # leads to errors associated with NaNs because there is not a single sample.
+    typical_values = {'pid': 15788.831218741774,
+     'Time': 7.014398525927875,
+     'Age': 62.07380889707818,
+     'EtCO2': 32.88311356434632,
+     'PTT': 40.09130983590656,
+     'BUN': 23.192663516538175,
+     'Lactate': 2.8597155076236422,
+     'Temp': 36.852135856500034,
+     'Hgb': 10.628207669881103,
+     'HCO3': 23.488100167210746,
+     'BaseExcess': -1.2392844571830848,
+     'RRate': 18.154043187688046,
+     'Fibrinogen': 262.496911351785,
+     'Phosphate': 3.612519413287318,
+     'WBC': 11.738648535345682,
+     'Creatinine': 1.4957773156474896,
+     'PaCO2': 41.11569643111729,
+     'AST': 193.4448880402708,
+     'FiO2': 0.7016656642357807,
+     'Platelets': 204.66642639312448,
+     'SaO2': 93.010527124635,
+     'Glucose': 142.169406624713,
+     'ABPm': 82.11727559995713,
+     'Magnesium': 2.004148832962384,
+     'Potassium': 4.152729193815373,
+     'ABPd': 64.01471072970384,
+     'Calcium': 7.161149186763874,
+     'Alkalinephos': 97.79616327960757,
+     'SpO2': 97.6634493216935,
+     'Bilirubin_direct': 1.390723226703758,
+     'Chloride': 106.26018538478121,
+     'Hct': 31.28308971681893,
+     'Heartrate': 84.52237068276303,
+     'Bilirubin_total': 1.6409406684190786,
+     'TroponinI': 7.269239936440605,
+     'ABPs': 122.3698773806418,
+     'pH': 7.367231494050988}
+    df = df.fillna(df.mean(numeric_only=True))
+    if df.isnull().values.any():
+        columns_with_na = df.columns[df.isna().any()].tolist()
+        for column in columns_with_na:
+            df[column] = typical_values[column]
+    return df
 
 
 def oversampling_strategies(X_train, y_train, strategy="adasyn"):
@@ -239,9 +290,8 @@ def main(logger):
     Returns:
         None
     """
-    df_train = pd.read_csv("projects/project_2/data/train_features.csv", nrows=409)
-    df_train_label = pd.read_csv("projects/project_2/data/train_labels.csv", nrows=409)
-    df_test = pd.read_csv("projects/project_2/data/test_features.csv", nrows=409)
+
+    df_train, df_train_label, df_test = load_data()
 
     logger.info('Finished Loading data')
 
@@ -257,7 +307,7 @@ def main(logger):
 
     # preprocess testing data
     df_train_preprocessed = fill_na_with_average_column(df_train)
-    df_test_preprocessed = fill_na_with_average_column(df_train)
+    df_test_preprocessed = fill_na_with_average_column(df_test)
     # df_test_preprocessed = fill_na_with_average_column(df_test)
 
     # transform training labels for these tasks
@@ -348,30 +398,49 @@ def main(logger):
     # df.to_csv('prediction.zip', index=False, float_format='%.3f', compression='zip')
 
 if __name__ == "__main__":
-    #
-    # parser = argparse.ArgumentParser(
-    #     description="CLI args for folder and file \
-    # directories"
-    # )
-    #
-    # parser.add_argument(
-    #     "--train",
-    #     "-tr",
-    #     type=str,
-    #     required=True,
-    #     help="path to the CSV file containing the training \
-    #                     data",
-    # )
-    # parser.add_argument(
-    #     "--weights",
-    #     "-w",
-    #     type=str,
-    #     required=True,
-    #     help="path where the CSV file where weights should be \
-    #                     written",
-    # )
-    #
-    # FLAGS = parser.parse_args()
+
+    parser = argparse.ArgumentParser(
+        description="CLI args for folder and file \
+    directories"
+    )
+
+    parser.add_argument(
+        "--train_features",
+        "-train_f",
+        type=str,
+        required=True,
+        help="path to the CSV file containing the training \
+                        features",
+    )
+
+    parser.add_argument(
+        "--test_features",
+        "-test",
+        type=str,
+        required=True,
+        help="path to the CSV file containing the testing \
+                            features",
+    )
+
+    parser.add_argument(
+        "--train_labels",
+        "-train_l",
+        type=str,
+        required=True,
+        help="path to the CSV file containing the training \
+                                labels",
+    )
+
+    parser.add_argument(
+        "--nb_of_patients",
+        "-nb_pat",
+        type=int,
+        required=True,
+        help="path to the CSV file containing the training \
+                                    labels",
+    )
+
+    FLAGS = parser.parse_args()
 
     # clear logger.
     logging.basicConfig(
@@ -379,7 +448,7 @@ if __name__ == "__main__":
         filename='script_status.log'
     )
 
-    logger = logging.getLogger('Subtask 1 and 2')
+    logger = logging.getLogger('IML-P2-T1T2')
 
     # Create a second stream handler for logging to `stderr`, but set
     # its log level to be a little bit smaller such that we only have
