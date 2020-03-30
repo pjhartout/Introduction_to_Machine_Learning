@@ -10,7 +10,9 @@ example usage from CLI:
 For help, run:
  $ subtask1and2.py -h
 
- TODO: Try using regular SVR to be able to use kernels
+TODO:
+    * Try using regular SVR to be able to use kernels
+    * Clean up code to train one model per task ideally.
 
 Following Google style guide: http://google.github.io/styleguide/pyguide.html
 
@@ -122,8 +124,6 @@ def oversampling_strategies(X_train, y_train, strategy="adasyn"):
         sampling_method = RandomUnderSampler(random_state=0, replacement=True)
         
     X_train_resampled, y_train_resampled = sampling_method.fit_sample(X_train, y_train)
-    
-    print(sorted(Counter(y_train_resampled).items()))
     
     return X_train_resampled, y_train_resampled
 
@@ -291,96 +291,105 @@ def main(logger):
         None
     """
 
+    logger.info('Loading data')
     df_train, df_train_label, df_test = load_data()
-
     logger.info('Finished Loading data')
 
 
-    # list of medical tests that we will have to predict, as well as vital signs (to delete for this task)
-    medical_tests = ["LABEL_BaseExcess", "LABEL_Fibrinogen", "LABEL_AST", "LABEL_Alkalinephos", "LABEL_Bilirubin_total", "LABEL_Lactate", "LABEL_TroponinI", "LABEL_SaO2", "LABEL_Bilirubin_direct", "LABEL_EtCO2"]
-    vital_signs = ["LABEL_RRate","LABEL_ABPm","LABEL_SpO2","LABEL_Heartrate"]
+    # List of medical tests that we will have to predict, as well as vital signs (to delete for this task)
+    medical_tests = ["LABEL_BaseExcess", "LABEL_Fibrinogen", "LABEL_AST", "LABEL_Alkalinephos", "LABEL_Bilirubin_total",
+                     "LABEL_Lactate", "LABEL_TroponinI", "LABEL_SaO2", "LABEL_Bilirubin_direct", "LABEL_EtCO2"]
+    vital_signs = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
     sepsis = ["LABEL_Sepsis"]
 
     logger.info('Beginning to deal with missing data')
     # Would be useful to distribute/multithread this part
-    # df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
+    df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
+    df_test_preprocessed = fill_na_with_average_patient_column(df_train, logger)
 
-    # preprocess testing data
-    df_train_preprocessed = fill_na_with_average_column(df_train)
-    df_test_preprocessed = fill_na_with_average_column(df_test)
+    # Preprocess testing data
+    # df_train_preprocessed = fill_na_with_average_column(df_train)
     # df_test_preprocessed = fill_na_with_average_column(df_test)
 
-    # transform training labels for these tasks
+    # Cast training labels for these tasks
     df_train_label[medical_tests+vital_signs+sepsis] = df_train_label[medical_tests+vital_signs+sepsis].astype(int)
-    # df_train_label_med = df_train_label.drop(columns=vital_signs+sepsis)
-    # df_train_label_sepsis = df_train_label.drop(columns=vital_signs+medical_tests)
-    logger.info('Merge labels and features')
+
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(df_train_preprocessed, df_train_label,  how='left', left_on='pid', right_on ='pid')
 
-    # Transform to arrays
+    # Cast to arrays
     X_train = df_train_preprocessed_merged.drop(columns=medical_tests+sepsis+vital_signs).values
 
     # Create list with different label for each medical test
+    logger.info('Creating a list of labels for each medical test')
     y_train_set_med = []
     for test in medical_tests:
         y_train_set_med.append(df_train_preprocessed_merged[test].values)
     y_train_sepsis = df_train_preprocessed_merged['LABEL_Sepsis'].values
 
-    # very long to compute
     # compute resampled data for all medical tests
-    X_train_resampled_set_med,y_train_resampled_set_med = [0]*len(y_train_set_med),[0]*len(y_train_set_med)
+    X_train_resampled_set_med, y_train_resampled_set_med = [0]*len(y_train_set_med),[0]*len(y_train_set_med)
 
+    logger.info('Beginning sampling Strategy')
     number_of_tests = len(y_train_set_med)
     for i in range(number_of_tests):
-
         X_train_resampled_set_med[i], y_train_resampled_set_med[i] = oversampling_strategies(X_train,
                                                                                              y_train_set_med[i],
                                                                                              strategy="adasyn")
-        logger.info('Performing oversampling for {} of {} tests.'.format(i, number_of_tests))
+        logger.info('Performing oversampling for {} of {} medical tests.'.format(i, number_of_tests))
 
+    logger.info('Performing oversampling for sepsis.')
     X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(X_train, y_train_sepsis,
                                                                                  strategy="adasyn")
 
-    # Modelling
+    logger.info('Beginning modelling process.')
 
-    # For now, use of Linear SVM, scales better to large datasets
+    # Hyperparameter specification
 
-    # Linear
-    # regularization parameter
-    alphas = np.linspace(0.1,10, num=3)
-    # to perform either l1 or l2 regularization
-    penalty = ["l1", "l2"]
-
-    # for non linear
-    # kernel type
-    kernels = ["rbf"]
     kernels_backup_tmp = ["linear", "poly", "rbf", "sigmoid"]
-    # degree for poly kernel
-    degrees = range(1,4)
-    # gamma parameter for poly or rbf kernel
-    gamma_rbf = np.linspace(0.1,10,num=5)
+    degrees = range(1,4) # for poly
+    gamma_rbf = np.linspace(0.1, 10, num=5) # for poly or rbf kernel
+    param_grid = {
+        "C": np.linspace(0.1, 10, num=3),,
+        "kernels": ["linear", "poly", "rbf", "sigmoid"],
+        "penalty": ["l1", "l2"]
+    }
 
     # Naïve SVR for all medical tests
     logger.info('Training naive_svm_models.')
-    naive_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests, alpha=10, typ="naive", reduced=True, size=100, )
+    naive_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests,
+                                                alpha=10, typ="naive", reduced=True, size=100, )
     # CV GridSearch with different regularization parameters
     logger.info('Training gridsearch_svm_models.')
-    gridsearch_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests, param_grid = {"C": alphas, "penalty": penalty}, typ="gridsearch", reduced=False, size=100)
+    gridsearch_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
+                                                     medical_tests, param_grid = {"C": alphas, "penalty": penalty},
+                                                     typ="gridsearch", reduced=False, size=100)
     logger.info('Training naive_non_lin_svm_models.')
-    naive_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests, alpha=10, typ="naive_non_lin", reduced=False, size=100)
+    naive_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
+                                                        medical_tests, alpha=10, typ="naive_non_lin", reduced=False,
+                                                        size=100)
     # heavy computation, was too long to run on my machine
     logger.info('Training gridsearch_non_lin_svm_models.')
-    gridsearch_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests, param_grid = {"C": alphas, "kernel": kernels, "degree": degrees}, typ="gridsearch_non_lin", reduced=False, size=20)
+    gridsearch_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
+                                                             medical_tests, param_grid = {"C": alphas,
+                                                                                          "kernel": kernels,
+                                                                                          "degree": degrees},
+                                                             typ="gridsearch_non_lin", reduced=False, size=20)
     logger.info('Training naive_sepsis_model.')
-    naive_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5,typ="naive", reduced=False, size=100)
+    naive_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5,typ="naive",
+                                          reduced=False, size=100)
     logger.info('Training gridsearch_sepsis_model.')
-    gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, param_grid = {"C": alphas, "penalty": penalty}, typ="gridsearch", reduced=False, size=100)
+    gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis,
+                                               param_grid = {"C": alphas, "penalty": penalty}, typ="gridsearch",
+                                               reduced=False, size=100)
     logger.info('Training non_lin_sepsis_models.')
-    non_lin_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5, typ="naive_non_lin", reduced=False, size=100)
+    non_lin_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5,
+                                            typ="naive_non_lin", reduced=False, size=100)
     # heavy computation
     logger.info('Training non_lin_gridsearch_sepsis_model.')
-    non_lin_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis,y_train_resampled_sepsis, param_grid = {"C": alphas, "kernel": kernels, "degree": degrees}, typ="gridsearch_non_lin", reduced=False, size=20)
+    non_lin_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis,y_train_resampled_sepsis,
+                                                       param_grid = {"C": alphas, "kernel": kernels, "degree": degrees},
+                                                       typ="gridsearch_non_lin", reduced=False, size=20)
     X_test = df_test_preprocessed.values
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
