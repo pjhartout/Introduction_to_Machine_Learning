@@ -723,9 +723,7 @@ if __name__ == "__main__":
 
     # clear logger.
     logging.basicConfig(level=logging.DEBUG,
-                        filename="script_status.log",
-                        format='%(asctime)s %(levelname)-8s %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+                        filename="script_status.log")
 
     logger = logging.getLogger("IML-P2-T1T2")
 
@@ -737,7 +735,8 @@ if __name__ == "__main__":
 
     # Use the default format; since we do not adjust the logger before,
     # this is all right.
-    stream_handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+    stream_handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] "
+                                                  "%(message)s"))
     logger.addHandler(stream_handler)
 
     main(logger)
