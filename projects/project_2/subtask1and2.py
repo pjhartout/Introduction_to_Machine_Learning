@@ -5,7 +5,14 @@ This script is for project2, subtasks 1 and 2, which aims to perform the followi
  * 
 
 example usage from CLI:
- $ python3 subtask1and2.py --args
+ $ python3 subtask1and2.py --train_features /path/to/train_features.csv
+                --train_labels /path/to/train_labels.csv
+                --test_features /path/to/test_features.csv
+                --predictions /path/to/predictions.zip
+                --sampling_strategy smote
+                --k_fold 5
+                --nb_of_patients 60
+                --scaler minmax
 
 For help, run:
  $ subtask1and2.py -h
@@ -35,8 +42,8 @@ from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 from sklearn.svm import LinearSVC, SVC
 from sklearn.model_selection import GridSearchCV
 from random import sample
-from sklearn.preprocessing import StandardScaler
-
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from joblib import parallel_backend
 
 TYPICAL_VALUES = {'pid': 15788.831218741774,
                   'Time': 7.014398525927875,
@@ -78,7 +85,10 @@ TYPICAL_VALUES = {'pid': 15788.831218741774,
 
 
 def load_data():
-    rows_to_load = (FLAGS.nb_of_patients * 12) + 1
+    if FLAGS.nb_of_patients is not None:
+        rows_to_load = (FLAGS.nb_of_patients * 12) + 1
+    else:
+        rows_to_load = None
     df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
     df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
     df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
@@ -90,7 +100,7 @@ def fill_na_with_average_patient_column(df, logger):
     columns = list(df.columns)
     for i, column in enumerate(columns):
         logger.info("{} column of {} columns processed".format(i + 1, len(columns)))
-        # Fill na with patient average 
+        # Fill na with patient average
         df[[column]] = df.groupby(['pid'])[column].transform(lambda x: x.fillna(x.mean()))
 
     # Fill na with overall column average for lack of a better option for now
@@ -152,6 +162,7 @@ def get_models_medical_tests(X_train_resampled_set, y_train_resampled_set, logge
     assert typ in ["gridsearch_linear",
                    "gridsearch_non_linear"], "typ must be in ['gridsearch_linear','gridsearch_non_linear']"
     svm_models = []
+    scores = []
     for i, test in enumerate(medical_tests):
         logger.info(f"Starting iteration for test {test}")
         if typ == "gridsearch_linear":
@@ -159,40 +170,59 @@ def get_models_medical_tests(X_train_resampled_set, y_train_resampled_set, logge
             gs_svm = GridSearchCV(estimator=LinearSVC(dual=False), param_grid=param_grid, n_jobs=cores,
                                   scoring="roc_auc", cv=FLAGS.k_fold, verbose=0)
             gs_svm.fit(X_train_resampled_set[i], y_train_resampled_set[i])
-            logger.info(f"The estimated auc roc score for this estimator is {gs_svm.best_score_}, with parameters = "
-                        f"{gs_svm.best_params_}")
+
             svm_models.append(gs_svm.best_estimator_)
+            scores.append(gs_svm.best_score_)
         else:
             cores = multiprocessing.cpu_count() - 2
             gs_svm = GridSearchCV(estimator=SVC(), param_grid=param_grid, n_jobs=cores, scoring="roc_auc",
                                   cv=FLAGS.k_fold, verbose=0)
             gs_svm.fit(X_train_resampled_set[i], y_train_resampled_set[i])
-            logger.info(f"The estimated auc roc score for this estimator is {gs_svm.best_score_}, with parameters = "
-                        f"{gs_svm.best_params_}")
             svm_models.append(gs_svm.best_estimator_)
-    return svm_models
+            scores.append(gs_svm.best_score_)
+    return svm_models, scores
 
 
 def get_model_sepsis(X_train_resampled, y_train_resampled, logger, param_grid, typ):
     assert typ in ["gridsearch_linear", "gridsearch_non_linear"], \
         "typ must be in ['gridsearch_linear','gridsearch_non_linear']"
+    scores = []
     if typ == "gridsearch_linear":
         threads = multiprocessing.cpu_count() - 2
         gs_svm = GridSearchCV(estimator=LinearSVC(), param_grid=param_grid, n_jobs=threads, scoring="roc_auc",
                               cv=FLAGS.k_fold, verbose=0)
         gs_svm.fit(X_train_resampled, y_train_resampled)
-        print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,
-                                                                                             gs_svm.best_params_))
         svm = gs_svm.best_estimator_
+        scores.append(gs_svm.best_score_)
     else:
         threads = multiprocessing.cpu_count() - 2
         gs_svm = GridSearchCV(estimator=SVC(), param_grid=param_grid, n_jobs=threads, scoring="roc_auc",
                               cv=FLAGS.k_fold, verbose=0)
         gs_svm.fit(X_train_resampled, y_train_resampled)
-        print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,
-                                                                                             gs_svm.best_params_))
         svm = gs_svm.best_estimator_
-    return svm
+        scores.append(gs_svm.best_score_)
+    return svm, scores
+
+
+def determine_best_model_sepsis(scores, models, logger):
+    return models[np.argmax(scores)]
+
+
+def determine_best_model_medical_test(linear_models, nonlinear_models, scores_linear_models, scores_non_linear_models,
+                                      medical_tests, logger):
+    best_models_for_medical_tests = []
+    for i, (scores_linear_model, scores_non_linear_model) in enumerate(zip(scores_linear_models, scores_non_linear_models)):
+        if scores_linear_model > scores_non_linear_model:
+            best_models_for_medical_tests.append(linear_models[i])
+            logger.info(f"The performance for the model for the test {medical_tests[i]} is "
+                        f"{best_models_for_medical_tests} achieved by the linear model")
+        else:
+            best_models_for_medical_tests.append(nonlinear_models[i])
+            logger.info(f"The performance for the model for the test {medical_tests[i]} is "
+                        f"{best_models_for_medical_tests} achieved by the nonlinear model")
+
+    return best_models_for_medical_tests
+
 
 def sigmoid_f(x):
     """To get predictions as confidence level, the model predicts for all 12 sets of measures for each patient a
@@ -255,7 +285,8 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, medical_tests, 
     for i in range(number_of_tests):
         X_train_resampled_set_med[i], y_train_resampled_set_med[i] = \
             oversampling_strategies(X_train, y_train_set_med[i], sampling_strategy)
-        logger.info('Performing oversampling for {} of {} medical tests ({}).'.format(i, number_of_tests, medical_tests[i]))
+        logger.info(
+            'Performing oversampling for {} of {} medical tests ({}).'.format(i, number_of_tests, medical_tests[i]))
     return X_train_resampled_set_med, y_train_resampled_set_med
 
 
@@ -299,8 +330,13 @@ def main(logger):
     y_train_sepsis = df_train_preprocessed_merged['LABEL_Sepsis'].values
 
     # Scale data to avoid convergence warning
-    logger.info('Scaling data.')
-    scaler = StandardScaler(with_mean=True, with_std=True)
+    logger.info(f'Scaling data using {FLAGS.scaler}.')
+
+    if FLAGS.scaler == "standard":
+        scaler = StandardScaler(with_mean=True, with_std=True)
+    else:
+        scaler = MinMaxScaler()
+
     X_train = scaler.fit_transform(X_train)
 
     # Compute resampled data for all medical tests
@@ -353,33 +389,47 @@ def main(logger):
 
     # CV GridSearch with different regularization parameters
     logger.info('Perform gridsearch for linear SVM on medical tests.')
-    gridsearch_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, logger,
-                                                     medical_tests, param_grid_linear,
-                                                     "gridsearch_linear")
+    gridsearch_l_svm_medical_tests_models, scores_l_svm_medical_tests_models = get_models_medical_tests(X_train_resampled_set_med,
+                                                                     y_train_resampled_set_med, logger,
+                                                                     medical_tests, param_grid_linear,
+                                                                     "gridsearch_linear")
 
     logger.info('Perform gridsearch for non-linear SVM on medical tests.')
-    gridsearch_non_linear_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
-                                                                logger, medical_tests, param_grid_non_linear,
-                                                                "gridsearch_non_linear")
+    gridsearch_nl_svm_medical_tests_models, scores_nl_svm_medical_tests_models = get_models_medical_tests(X_train_resampled_set_med,
+                                                                      y_train_resampled_set_med,
+                                                                      logger, medical_tests, param_grid_non_linear,
+                                                                      "gridsearch_non_linear")
+
+    best_model_medical_tests = determine_best_model_medical_test(gridsearch_l_svm_medical_tests_models,
+                                                                 gridsearch_nl_svm_medical_tests_models,
+                                                                 scores_l_svm_medical_tests_models,
+                                                                 scores_nl_svm_medical_tests_models, medical_tests,
+                                                                 logger)
+
     logger.info('Perform gridsearch for linear SVM on sepsis.')
-    gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, logger,
-                                               param_grid_linear, "gridsearch_linear")
+    gridsearch_l_sepsis_model, scores_l_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, logger,
+                                                 param_grid_linear, "gridsearch_linear")
 
     logger.info('Perform gridsearch for non-linear SVM on sepsis.')
-    non_linear_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, logger,
-                                                          param_grid_non_linear, "gridsearch_non_linear")
+    gridsearch_nl_svm_sepsis_models, scores_nl_svm_sepsis_models = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, logger,
+                                                       param_grid_non_linear, "gridsearch_non_linear")
+
+    best_model_sepsis = determine_best_model_sepsis([scores_l_sepsis_model, scores_nl_svm_sepsis_models],
+                                                    [gridsearch_l_sepsis_model, gridsearch_nl_svm_sepsis_models],
+                                                    logger)
 
     X_test = df_test_preprocessed.drop(columns=identifiers).values
+
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
     logger.info('Fetch predictions.')
-    gridsearch_predictions = get_medical_test_predictions(X_test, test_pids, gridsearch_svm_models, medical_tests)
-    gridsearch_sepsis_predictions = get_sepsis_predictions(X_test, test_pids, gridsearch_sepsis_model, sepsis)
-    gridsearch_predictions.index.names = ['pid']
-    gridsearch_sepsis_predictions.index.names = ['pid']
-    predictions = pd.merge(gridsearch_predictions, gridsearch_sepsis_predictions, how='left', left_on='pid',
-                                            right_on='pid')
-
+    medical_test_predictions = get_medical_test_predictions(X_test, test_pids, best_model_medical_tests, medical_tests)
+    sepsis_predictions = get_sepsis_predictions(X_test, test_pids, best_model_sepsis, sepsis)
+    medical_test_predictions.index.names = ['pid']
+    sepsis_predictions.index.names = ['pid']
+    predictions = pd.merge(medical_test_predictions, sepsis_predictions, how='left', left_on='pid', right_on='pid')
+    
+    logger.info("Export predictions DataFrame to a zip file")
     # Export pandas dataframe to zip archive.
     predictions.to_csv(FLAGS.predictions, index=False, float_format='%.3f', compression='zip')
 
@@ -430,8 +480,8 @@ if __name__ == "__main__":
         "--nb_of_patients",
         "-nb_pat",
         type=int,
-        required=True,
-        help="Number of patients to consider in run",
+        required=False,
+        help="Number of patients to consider in run. If not specified, then consider all patients",
     )
 
     parser.add_argument(
@@ -441,6 +491,14 @@ if __name__ == "__main__":
         required=True,
         help="Sampling strategy to adopt to overcome the imbalanced dataset problem" \
              "any of adasyn, smote, clustercentroids or random."
+    )
+
+    parser.add_argument(
+        "--scaler",
+        "-scale",
+        type=str,
+        required=True,
+        help="Scaler to be used to transform the data."
     )
 
     parser.add_argument(
