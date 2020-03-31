@@ -146,7 +146,6 @@ def fill_na_with_average_column(df):
         df (pandas.core.frame.DataFrame): dataframe containing the transformed data
     """
 
-
     df = df.fillna(df.mean(numeric_only=True))
     if df.isnull().values.any():
         columns_with_na = df.columns[df.isna().any()].tolist()
