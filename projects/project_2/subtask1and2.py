@@ -202,7 +202,7 @@ def sigmoid_f(x):
     return 1 / (1 + np.exp(-x))
 
 
-def get_predictions(X_test, test_pids, svm_models, medical_tests):
+def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
     """Function to obtain predictions for every model, as a confidence level : the closer to 1 (resp 0), the more confidently)
             the sample belongs to class 1 (resp 0).
         Parameters: X_test = np.array, set of preprocessed test values
@@ -255,7 +255,7 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, medical_tests, 
     for i in range(number_of_tests):
         X_train_resampled_set_med[i], y_train_resampled_set_med[i] = \
             oversampling_strategies(X_train, y_train_set_med[i], sampling_strategy)
-        logger.info('Performing oversampling for {} of {} medical tests ({}}.'.format(i, number_of_tests, medical_tests[i]))
+        logger.info('Performing oversampling for {} of {} medical tests ({}).'.format(i, number_of_tests, medical_tests[i]))
     return X_train_resampled_set_med, y_train_resampled_set_med
 
 
@@ -368,10 +368,12 @@ def main(logger):
     logger.info('Perform gridsearch for non-linear SVM on sepsis.')
     non_linear_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, logger,
                                                           param_grid_non_linear, "gridsearch_non_linear")
-    X_test = df_test_preprocessed.values
+
+    X_test = df_test_preprocessed.drop(columns=identifiers).values
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
-    gridsearch_predictions = get_predictions(X_test, test_pids, gridsearch_svm_models, medical_tests)
+    logger.info('Fetch predictions.')
+    gridsearch_predictions = get_medical_test_predictions(X_test, test_pids, gridsearch_svm_models, medical_tests)
     gridsearch_sepsis_predictions = get_sepsis_predictions(X_test, test_pids, gridsearch_sepsis_model, sepsis)
     predictions = pd.merge(gridsearch_predictions, gridsearch_sepsis_predictions, how='left', left_on='pid',
                                             right_on='pid')
