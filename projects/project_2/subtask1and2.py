@@ -375,11 +375,12 @@ def main(logger):
     logger.info('Fetch predictions.')
     gridsearch_predictions = get_medical_test_predictions(X_test, test_pids, gridsearch_svm_models, medical_tests)
     gridsearch_sepsis_predictions = get_sepsis_predictions(X_test, test_pids, gridsearch_sepsis_model, sepsis)
+    gridsearch_predictions.index.names = ['pid']
+    gridsearch_sepsis_predictions.index.names = ['pid']
     predictions = pd.merge(gridsearch_predictions, gridsearch_sepsis_predictions, how='left', left_on='pid',
                                             right_on='pid')
-    # gridsearch_predictions.head()
-    # gridsearch_sepsis_predictions.head()
-    # suppose df is a pandas dataframe containing the result
+
+    # Export pandas dataframe to zip archive.
     predictions.to_csv(FLAGS.predictions, index=False, float_format='%.3f', compression='zip')
 
 
