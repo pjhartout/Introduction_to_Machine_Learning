@@ -353,14 +353,13 @@ def main(logger):
         "degree": range(1, 4),  # This really dictates the runtime of the algorithm, to tune carefully.
         "gamma": np.linspace(0.1, 10, num=5),  # for poly or rbf kernel
         "coef0": [0],
-        "coef0": [0],
         "shrinking": [True],
         "probability": [False],
         "tol": [0.001],
         "cache_size": [200],
         "class_weight": [None],
         "verbose": [False],
-        "max_iter": [1000],
+        "max_iter": [10000],
         "decision_function_shape": ["ovo"],  # That's because we train one classifer per test.
         "random_state": [42]
     }
@@ -387,11 +386,12 @@ def main(logger):
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
     gridsearch_predictions = get_predictions(X_test, test_pids, gridsearch_svm_models, medical_tests)
     gridsearch_sepsis_predictions = get_sepsis_predictions(X_test, test_pids, gridsearch_sepsis_model, sepsis)
-    print(gridsearch_predictions)
+    predictions = pd.merge(gridsearch_predictions, gridsearch_sepsis_predictions, how='left', left_on='pid',
+                                            right_on='pid')
     # gridsearch_predictions.head()
     # gridsearch_sepsis_predictions.head()
     # suppose df is a pandas dataframe containing the result
-    # df.to_csv('prediction.zip', index=False, float_format='%.3f', compression='zip')
+    predictions.to_csv(FLAGS.predictions, index=False, float_format='%.3f', compression='zip')
 
 
 if __name__ == "__main__":
@@ -425,6 +425,15 @@ if __name__ == "__main__":
         required=True,
         help="path to the CSV file containing the training \
                                 labels",
+    )
+
+    parser.add_argument(
+        "--predictions",
+        "-pred",
+        type=str,
+        required=True,
+        help="path to the zip file containing the \
+                                predictions",
     )
 
     parser.add_argument(
@@ -473,4 +482,4 @@ if __name__ == "__main__":
     stream_handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
     logger.addHandler(stream_handler)
 
-    main(logger, )
+    main(logger)
