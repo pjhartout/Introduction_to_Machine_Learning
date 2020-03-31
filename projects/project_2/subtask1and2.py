@@ -722,7 +722,10 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG, filename="script_status.log")
+    logging.basicConfig(level=logging.DEBUG,
+                        filename="script_status.log",
+                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
 
     logger = logging.getLogger("IML-P2-T1T2")
 
