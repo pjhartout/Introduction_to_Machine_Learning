@@ -30,43 +30,14 @@ import logging
 
 import pandas as pd
 import numpy as np
-from collections import Counter
 from imblearn.over_sampling import ADASYN, SMOTE
-from imblearn.under_sampling import ClusterCentroids
+from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 from sklearn.svm import LinearSVC,SVC
 from sklearn.model_selection import GridSearchCV
 from random import sample
 
 
-def load_data():
-    rows_to_load = (FLAGS.nb_of_patients * 12) + 1
-    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
-    df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
-    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
-    return df_train, df_train_label, df_test
-
-# slower version - supports patient specific mean
-def fill_na_with_average_patient_column(df_train, logger):
-    columns = list(df_train.columns)
-    del columns[0:2]
-
-    df_train_preprocessed = df_train
-
-    for i,column in enumerate(columns):
-        logger.info("{} column of {} columns processed".format(i+1,len(columns)))
-        # Fill na with patient average 
-        df_train_preprocessed[[column]] = df_train_preprocessed.groupby(['pid'])[column].transform(lambda x: x.fillna(x.mean()))
-        
-    # Fill na with overall column average for lack of a better option for now
-    df.fillna(df.mean())
-    return df_train_preprocessed
-
-
-# quick version - does not support patient average
-def fill_na_with_average_column(df):
-    # Insert dict with typical values because running the script on parts of the data
-    # leads to errors associated with NaNs because there is not a single sample.
-    typical_values = {'pid': 15788.831218741774,
+TYPICAL_VALUES = {'pid': 15788.831218741774,
      'Time': 7.014398525927875,
      'Age': 62.07380889707818,
      'EtCO2': 32.88311356434632,
@@ -103,15 +74,47 @@ def fill_na_with_average_column(df):
      'TroponinI': 7.269239936440605,
      'ABPs': 122.3698773806418,
      'pH': 7.367231494050988}
+
+def load_data():
+    rows_to_load = (FLAGS.nb_of_patients * 12) + 1
+    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
+    df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
+    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
+    return df_train, df_train_label, df_test
+
+# slower version - supports patient specific mean
+def fill_na_with_average_patient_column(df, logger):
+    columns = list(df.columns)
+    for i, column in enumerate(columns):
+        logger.info("{} column of {} columns processed".format(i+1, len(columns)))
+        # Fill na with patient average 
+        df[[column]] = df.groupby(['pid'])[column].transform(lambda x: x.fillna(x.mean()))
+
+    # Fill na with overall column average for lack of a better option for now
+    df.fillna(df.mean())
+    if df.isnull().values.any():
+        columns_with_na = df.columns[df.isna().any()].tolist()
+        for column in columns_with_na:
+            df[column] = TYPICAL_VALUES[column]
+    return df
+
+
+# quick version - does not support patient average
+def fill_na_with_average_column(df):
+    # Insert dict with typical values because running the script on parts of the data
+    # leads to errors associated with NaNs because there is not a single sample.
+
     df = df.fillna(df.mean(numeric_only=True))
     if df.isnull().values.any():
         columns_with_na = df.columns[df.isna().any()].tolist()
         for column in columns_with_na:
-            df[column] = typical_values[column]
+            df[column] = TYPICAL_VALUES[column]
     return df
 
 
-def oversampling_strategies(X_train, y_train, strategy="adasyn"):
+def oversampling_strategies(X_train, y_train, strategy):
+    assert strategy in ["adasyn","smote","clustercentroids","random"], \
+        "strategy must be in ['adasyn','smote','clustercentroids','random']"
     # Oversampling methods
     if strategy=="adasyn":
         sampling_method = ADASYN()
@@ -148,7 +151,7 @@ def get_random_sample(X_train_resampled_set,y_train_resampled_set,size=100):
     return np.array(X_train_rd_set),np.array(y_train_rd_set)
 
 
-def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medical_tests, param_grid):
+def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medical_tests, param_grid, typ):
     """Function to obtain models for every set of medical test, either naïve or using CV Gridsearch
 
         Parameters: X_train_resampled_set = np.array, set of size # of medical tests, with X_train for each
@@ -162,7 +165,7 @@ def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medica
                 svr_models = list of Linear SVR models for each medical test, where svr_models[i] is the fitted
                             model (best estimator in the case of gridsearch) for medical_test[i]
     """
-    assert typ in ["naive","gridsearch","naive_non_lin","gridsearch_non_lin"], "typ must be in ['naive','gridsearch','naive_non_lin','gridsearch_non_lin']"
+    assert typ in ["gridsearch","gridsearch_non_lin"], "typ must be in ['gridsearch','gridsearch_non_lin']"
     svm_models = []
     for i,test in enumerate(medical_tests):
         print("Starting iteration for test {}".format(test))
@@ -181,19 +184,18 @@ def get_models_medical_tests(X_train_resampled_set,y_train_resampled_set, medica
     return svm_models
 
 
-def get_model_sepsis(X_train_resampled,y_train_resampled, param_grid, typ="naïve"):
-    svm = LinearSVC()
-    assert typ in ["naive","gridsearch","naive_non_lin","gridsearch_non_lin"], \
-        "typ must be in ['naive','gridsearch','naive_non_lin','gridsearch_non_lin']"
-    if typ=="gridsearch":
-        cores=multiprocessing.cpu_count()-2
-        gs_svm = GridSearchCV(estimator=LinearSVC(dual=False),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
+def get_model_sepsis(X_train_resampled,y_train_resampled, param_grid, typ):
+    assert typ in ["gridsearch_linear","gridsearch_non_linear"], \
+        "typ must be in ['gridsearch_linear','gridsearch_non_linear']"
+    if typ=="gridsearch_linear":
+        threads=multiprocessing.cpu_count()-2
+        gs_svm = GridSearchCV(estimator=LinearSVC(),param_grid=param_grid,n_jobs=threads,scoring="roc_auc",verbose=0)
         gs_svm.fit(X_train_resampled,y_train_resampled)
         print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,gs_svm.best_params_))
         svm = gs_svm.best_estimator_
     elif typ=="gridsearch_non_lin":
-        cores=multiprocessing.cpu_count()-2
-        gs_svm = GridSearchCV(estimator=SVC(),param_grid=param_grid,n_jobs=cores,scoring="roc_auc",verbose=0)
+        threads=multiprocessing.cpu_count()-2
+        gs_svm = GridSearchCV(estimator=SVC(),param_grid=param_grid,n_jobs=threads,scoring="roc_auc",verbose=0)
         gs_svm.fit(X_train_resampled,y_train_resampled)
         print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,gs_svm.best_params_))
         svm = gs_svm.best_estimator_
@@ -262,12 +264,12 @@ def get_sepsis_predictions(X_test,test_pids,svm,sepsis,reduced=False,nb_patients
     return df
 
 
-def get_sampling_medical_tests(logger, X_train, y_train_set_med):
+def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strategy):
     X_train_resampled_set_med, y_train_resampled_set_med = [0] * len(y_train_set_med), [0] * len(y_train_set_med)
     number_of_tests = len(y_train_set_med)
     for i in range(number_of_tests):
         X_train_resampled_set_med[i], y_train_resampled_set_med[i] = \
-            oversampling_strategies(X_train, y_train_set_med[i], strategy=FlAGS.sampling_strategy)
+            oversampling_strategies(X_train, y_train_set_med[i], sampling_strategy)
         logger.info('Performing oversampling for {} of {} medical tests.'.format(i, number_of_tests))
     return X_train_resampled_set_med, y_train_resampled_set_med
 
@@ -322,18 +324,25 @@ def main(logger):
     logger.info('Beginning sampling strategy for medical tests')
     X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(logger,
                                                                                       X_train,
-                                                                                      y_train_set_med)
+                                                                                      y_train_set_med,
+                                                                                      FLAGS.sampling_strategy)
     logger.info('Performing oversampling for sepsis.')
+    # Can be called directly because there is only one label.
     X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(X_train, y_train_sepsis,
-                                                                                 strategy=FlAGS.sampling_strategy)
+                                                                                 strategy=FLAGS.sampling_strategy)
 
     logger.info('Beginning modelling process.')
 
-    # Hyperparameter specification
+    # Hyperparameter grid specification
+    param_grid_linear = {
+        "C": np.linspace(0.1, 10, num=3),
+        "kernel": ["linear", "poly", "rbf", "sigmoid"],
+        "penalty": ["l1", "l2"],
+        "degrees": range(1, 4),
+        "gamma": np.linspace(0.1, 10, num=5)  # for poly or rbf kernel
+    }
 
-    degrees = range(1,4) # for poly
-    gamma_rbf =
-    param_grid = {
+    param_grid_non_linear = {
         "C": np.linspace(0.1, 10, num=3),
         "kernel": ["linear", "poly", "rbf", "sigmoid"],
         "penalty": ["l1", "l2"],
@@ -344,29 +353,25 @@ def main(logger):
     # CV GridSearch with different regularization parameters
     logger.info('Training gridsearch_svm_models.')
     gridsearch_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
-                                                     medical_tests, param_grid = {"C": alphas, "penalty": penalty},
-                                                     typ="gridsearch", reduced=False, size=100)
+                                                     medical_tests, param_grid,
+                                                     typ="gridsearch_linear")
     # heavy computation, was too long to run on my machine
     logger.info('Training gridsearch_non_lin_svm_models.')
     gridsearch_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
-                                                             medical_tests, param_grid = {"C": alphas,
-                                                                                          "kernel": kernels,
-                                                                                          "degree": degrees},
-                                                             typ="gridsearch_non_lin", reduced=False, size=20)
+                                                             medical_tests, param_grid, typ="gridsearch_non_linear")
     logger.info('Training gridsearch_sepsis_model.')
     gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis,
-                                               param_grid = {"C": alphas, "penalty": penalty}, typ="gridsearch",
-                                               reduced=False, size=100)
+                                               param_grid, typ="gridsearch_linear")
     # heavy computation
     logger.info('Training non_lin_gridsearch_sepsis_model.')
     non_lin_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis,y_train_resampled_sepsis,
-                                                       param_grid = {"C": alphas, "kernel": kernels, "degree": degrees},
-                                                       typ="gridsearch_non_lin", reduced=False, size=20)
+                                                       param_grid, typ="gridsearch_non_linear")
     X_test = df_test_preprocessed.values
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
-    gridsearch_predictions = get_predictions(X_test,test_pids,gridsearch_svm_models,medical_tests,reduced=False,nb_patients=100)
-    gridsearch_sepsis_predictions = get_sepsis_predictions(X_test,test_pids,gridsearch_sepsis_model,sepsis,reduced=False,nb_patients=100)
+    gridsearch_predictions = get_predictions(X_test,test_pids,gridsearch_svm_models,medical_tests)
+    gridsearch_sepsis_predictions = get_sepsis_predictions(X_test,test_pids,gridsearch_sepsis_model,sepsis)
+    print(gridsearch_predictions)
     # gridsearch_predictions.head()
     # gridsearch_sepsis_predictions.head()
     # suppose df is a pandas dataframe containing the result
