@@ -611,7 +611,7 @@ if __name__ == "__main__":
         required=True,
         help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
         "any of adasyn, smote, clustercentroids or random.",
-        choices=['adasyn', 'smote', 'clustercentroids', 'random'],
+        choices=["adasyn", "smote", "clustercentroids", "random"],
     )
 
     parser.add_argument(
@@ -620,7 +620,7 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="Scaler to be used to transform the data.",
-        choices=['minmax', 'standard'],
+        choices=["minmax", "standard"],
     )
 
     parser.add_argument(
