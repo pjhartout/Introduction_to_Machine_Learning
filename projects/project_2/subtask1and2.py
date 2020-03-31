@@ -85,6 +85,13 @@ TYPICAL_VALUES = {
 
 
 def load_data():
+    """Loads data to three different dataframes.
+
+    Returns:
+        df_train, df_train_label, df_test (pandas.core.frame.DataFrame): three dataframes containing the
+        training features, training labels and testing features respectively.
+
+    """
     if FLAGS.nb_of_patients is not None:
         rows_to_load = (FLAGS.nb_of_patients * 12) + 1
     else:
@@ -97,6 +104,16 @@ def load_data():
 
 # slower version - supports patient specific mean
 def fill_na_with_average_patient_column(df, logger):
+    """Fills NaNs with the average value of each column for each patient if available,
+    otherwise column-wide entry
+
+    Args:
+        df (pandas.core.frame.DataFrame): data to be transformed
+        logger (Logger): logger
+
+    Returns:
+        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
+    """
     columns = list(df.columns)
     for i, column in enumerate(columns):
         logger.info("{} column of {} columns processed".format(i + 1, len(columns)))
@@ -114,10 +131,21 @@ def fill_na_with_average_patient_column(df, logger):
     return df
 
 
-# quick version - does not support patient average
 def fill_na_with_average_column(df):
-    # Insert dict with typical values because running the script on parts of the data
-    # leads to errors associated with NaNs because there is not a single sample.
+    """Quick version of fill_na_with_average_patient_column - does not support patient average
+    and results in loss of information.
+
+    Note:
+        Inserted dict with typical values as global var because running the script on parts of the data
+    leads to errors associated with NaNs because there is not a single sample.
+
+    Args:
+        df (pandas.core.DataFrame): data to be transformed
+
+    Returns:
+        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
+    """
+
 
     df = df.fillna(df.mean(numeric_only=True))
     if df.isnull().values.any():
@@ -128,12 +156,18 @@ def fill_na_with_average_column(df):
 
 
 def oversampling_strategies(X_train, y_train, strategy):
-    assert strategy in [
-        "adasyn",
-        "smote",
-        "clustercentroids",
-        "random",
-    ], "strategy must be in ['adasyn','smote','clustercentroids','random']"
+    """Function that uses a strategy to balance the dataset.
+
+    Args:
+        X_train (numpy.ndarray): array containing the features that need to be balanced
+        y_train (numpy.ndarray): array containing the data labels
+        strategy (int): sampling strategy to be adopted
+
+    Returns:
+        X_train_resampled, y_train_resampled (numpy.ndarray): resampled features and labels according
+        to the chosen strategy
+    """
+
     # Oversampling methods
     if strategy == "adasyn":
         sampling_method = ADASYN()
@@ -154,23 +188,20 @@ def oversampling_strategies(X_train, y_train, strategy):
 def get_models_medical_tests(
     X_train_resampled_set, y_train_resampled_set, logger, medical_tests, param_grid, typ
 ):
-    """Function to obtain models for every set of medical test, either naïve or using CV Gridsearch
-
-        Parameters: X_train_resampled_set = np.array, set of size # of medical tests, with X_train for each
-                    y_train_resampled_set = np.array, set of size # of medical tests, with y_train for each
-                    alpha = float (for naïve) regularization parameter, ignored if typ is not naive
-                    param_grid = dict (for gridsearch), dictionary of parameters to search over, ignored if typ is not gridsearch
-                    typ = str in ["naïve","gridsearch","naive_non_lin","gridsearch_non_lin"], default "naïve", how the task is performed
-                    reduced = boolean, default True, if random sampling of dataset to test of smaller dataset
-                    size = int, size of selected sample, ignored if reduced == False
-        Returns:
-                svr_models = list of Linear SVR models for each medical test, where svr_models[i] is the fitted
-                            model (best estimator in the case of gridsearch) for medical_test[i]
     """
-    assert typ in [
-        "gridsearch_linear",
-        "gridsearch_non_linear",
-    ], "typ must be in ['gridsearch_linear','gridsearch_non_linear']"
+
+    Args:
+        X_train_resampled_set (list): list containing the arrays containing the training data for each test.
+        y_train_resampled_set (list): list containing the arrays containing the training labels for each test.
+        logger (Logger): logger
+        medical_tests (list): list of medical tests that need to be modelled
+        param_grid (list): parameter grid to be used for the gridsearch
+        typ (str): whether or not to fit a linear or non-linear svm
+
+    Returns:
+        svm_models (list): list of fitted models (best gridsearch result for each medical test).
+        scores (list): corresponding list of cross-validation scores as given by the gridsearch.
+    """
     svm_models = []
     scores = []
     for i, test in enumerate(medical_tests):
@@ -206,10 +237,19 @@ def get_models_medical_tests(
 
 
 def get_model_sepsis(X_train_resampled, y_train_resampled, logger, param_grid, typ):
-    assert typ in [
-        "gridsearch_linear",
-        "gridsearch_non_linear",
-    ], "typ must be in ['gridsearch_linear','gridsearch_non_linear']"
+    """
+
+    Args:
+        X_train_resampled (np.ndarray): array containing the training data.
+        y_train_resampled (np.ndarray): array containing the training labels.
+        logger (Logger): logger.
+        param_grid (list): parameter grid to be used for the gridsearch.
+        typ (str): whether or not to fit a linear or non-linear svm.
+
+    Returns:
+        svm (object): trained svm generated from the gridsearch.
+        score (list): score of the trained model.
+    """
     scores = []
     if typ == "gridsearch_linear":
         threads = multiprocessing.cpu_count() - 2
@@ -241,6 +281,16 @@ def get_model_sepsis(X_train_resampled, y_train_resampled, logger, param_grid, t
 
 
 def determine_best_model_sepsis(scores, models, logger):
+    """
+
+    Args:
+        scores (list): list of scores to be compared
+        models (list): list of trained models to be compared
+        logger (Logger): logger
+
+    Returns:
+        object: model having the best score
+    """
     if np.argmax(scores) == 0:
         logger.info("The best model for sepsis is the linear svm")
     else:
@@ -256,6 +306,19 @@ def determine_best_model_medical_test(
     medical_tests,
     logger,
 ):
+    """
+
+    Args:
+        linear_models (list): list of trained linear models.
+        nonlinear_models (list): list of trained nonlinear models.
+        scores_linear_models (list): list of scores of trained linear models.
+        scores_non_linear_models (list): list of scores of trained nonlinear models.
+        medical_tests (list): list of medical tests that need to be modelled.
+        logger (Logger): logger.
+
+    Returns:
+        best_models_for_medical_tests (list): lists of the best model selected for each medical test.
+    """
     best_models_for_medical_tests = []
     for i, (scores_linear_model, scores_non_linear_model) in enumerate(
         zip(scores_linear_models, scores_non_linear_models)
@@ -280,6 +343,13 @@ def sigmoid_f(x):
     """To get predictions as confidence level, the model predicts for all 12 sets of measures for each patient a
     distance to the hyperplane ; it is then transformed into a confidence level using the sigmoid function ; the
     confidence level reported is the mean of all confidence levels for a single patient
+
+    Args:
+        x (float): input of the sigmoid function
+
+    Returns:
+       float: result of the sigmoid computation.
+
     """
     return 1 / (1 + np.exp(-x))
 
@@ -287,13 +357,16 @@ def sigmoid_f(x):
 def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
     """Function to obtain predictions for every model, as a confidence level : the closer to 1 (resp 0), the more confidently)
             the sample belongs to class 1 (resp 0).
-        Parameters: X_test = np.array, set of preprocessed test values
-                    test_pids = np.array, unique set of patient ids in test set
-                    svm_models = list, fitted svm models to training set 
-                    reduced = boolean, default True, if random sampling of dataset to test of smaller dataset
-                    nb_patients = int, size of number of patients selected, ignored if reduced == False
-        Returns:
-                df_pred = pd.DataFrame, dataframe containing for each patient id the predicted label as a confidence level
+
+    Args:
+        X_test (np.ndarray): array of preprocessed test values
+        test_pids (np.ndarray): array of patient ids in test set
+        svm_models (list): list of models for each of the medical tests
+        medical_tests (list): list of medical tests that need to be modelled.
+
+    Returns:
+        df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for their respective tests,
+        containing for each patient id the predicted label as a confidence level.
     """
     df_pred = pd.DataFrame()
 
@@ -310,15 +383,18 @@ def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
 
 
 def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
-    """Function to obtain predictions for every model, as a confidence level : the closer to 1 (resp 0), the more confidently)
+    """Function to obtain predictions for the selected svm model, as a confidence level : the closer to 1 (resp 0), the more confidently)
             the sample belongs to class 1 (resp 0).
-        Parameters: X_test = np.array, set of preprocessed test values
-                    test_pids = np.array, unique set of patient ids in test set
-                    svm_models = list, fitted svm models to training set 
-                    reduced = boolean, default True, if random sampling of dataset to test of smaller dataset
-                    nb_patients = int, size of number of patients selected, ignored if reduced == False
-        Returns:
-                df_pred = pd.DataFrame, dataframe containing for each patient id the predicted label as a confidence level
+
+    Args:
+        X_test (np.ndarray): array of preprocessed test values
+        test_pids (np.ndarray): array of patient ids in test set
+        svm_models (list): list of models for each of the medical tests
+        medical_tests (list): list of medical tests that need to be modelled.
+
+    Returns:
+        df_pred (pandas.core.DataFrame): contains the predictions made for the sepsis,
+        containing for each patient id the predicted label as a confidence level.
     """
     # decision_function returns the distance to the hyperplane
     y_conf = svm.decision_function(X_test)
@@ -333,6 +409,19 @@ def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
 def get_sampling_medical_tests(
     logger, X_train, y_train_set_med, medical_tests, sampling_strategy
 ):
+    """Resamples the data required for each medical tests.
+
+    Args:
+        logger (Logger): logger
+        X_train (np.ndarray): array that contains the features that need to be resampled
+        y_train_set_med (np.ndarray): array that contains the labels that need to be balanced.
+        medical_tests (list): list of medical tests that need to be modelled.
+        sampling_strategy (str): Sampling strategy to be adopted
+
+    Returns:
+        X_train_resampled_set_med (list): list of np.ndarray containing the resampled dataset for each of the test
+        y_train_resampled_set_med (list): list of np.ndarray containing the resampled labels for each of the test
+    """
     X_train_resampled_set_med, y_train_resampled_set_med = (
         [0] * len(y_train_set_med),
         [0] * len(y_train_set_med),
@@ -354,7 +443,7 @@ def main(logger):
     """Primary function reading, preprocessing and modelling the data
 
     Args:
-        None
+        logger (Logger): logger to get information about the status of the script when running
 
     Returns:
         None
