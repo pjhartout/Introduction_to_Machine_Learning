@@ -35,6 +35,8 @@ from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 from sklearn.svm import LinearSVC, SVC
 from sklearn.model_selection import GridSearchCV
 from random import sample
+from sklearn.preprocessing import StandardScaler
+
 
 TYPICAL_VALUES = {'pid': 15788.831218741774,
                   'Time': 7.014398525927875,
@@ -92,7 +94,7 @@ def fill_na_with_average_patient_column(df, logger):
         df[[column]] = df.groupby(['pid'])[column].transform(lambda x: x.fillna(x.mean()))
 
     # Fill na with overall column average for lack of a better option for now
-    df.fillna(df.mean())
+    df = df.fillna(df.mean())
     if df.isnull().values.any():
         columns_with_na = df.columns[df.isna().any()].tolist()
         for column in columns_with_na:
@@ -133,25 +135,6 @@ def oversampling_strategies(X_train, y_train, strategy):
     return X_train_resampled, y_train_resampled
 
 
-def get_random_sample(X_train_resampled_set, y_train_resampled_set, size=100):
-    """Sample at random datapoints from the resampled datasets for each medical test
-    
-    Parameters: 
-        X_train_resampled_set = np.array, set of size # of medical tests, with X_train for each
-        y_train_resampled_set = np.array, set of size # of medical tests, with y_train for each
-                                size = int, size of selected sample
-    Returns:
-        X_train_rd_set,y_train_rd_set : np.array, reduced sample sets where xxx_train_rd_set[i] is the reduced
-                                            set for medical test i
-    """
-    X_train_rd_set, y_train_rd_set = [], []
-    for i, test in enumerate(medical_tests):
-        ind = sample(range(len(X_train_resampled_set[i])), size)
-        X_train_rd_set.append(X_train_resampled_set[i][ind])
-        y_train_rd_set.append(y_train_resampled_set[i][ind])
-    return np.array(X_train_rd_set), np.array(y_train_rd_set)
-
-
 def get_models_medical_tests(X_train_resampled_set, y_train_resampled_set, logger, medical_tests, param_grid, typ):
     """Function to obtain models for every set of medical test, either naïve or using CV Gridsearch
 
@@ -178,15 +161,14 @@ def get_models_medical_tests(X_train_resampled_set, y_train_resampled_set, logge
             gs_svm.fit(X_train_resampled_set[i], y_train_resampled_set[i])
             logger.info(f"The estimated auc roc score for this estimator is {gs_svm.best_score_}, with parameters = "
                         f"{gs_svm.best_params_}")
-            print()
             svm_models.append(gs_svm.best_estimator_)
         else:
             cores = multiprocessing.cpu_count() - 2
             gs_svm = GridSearchCV(estimator=SVC(), param_grid=param_grid, n_jobs=cores, scoring="roc_auc",
                                   cv=FLAGS.k_fold, verbose=0)
             gs_svm.fit(X_train_resampled_set[i], y_train_resampled_set[i])
-            print("The estimated auc roc score for this estimator is {}, with alpha = {}".format(gs_svm.best_score_,
-                                                                                                 gs_svm.best_params_))
+            logger.info(f"The estimated auc roc score for this estimator is {gs_svm.best_score_}, with parameters = "
+                        f"{gs_svm.best_params_}")
             svm_models.append(gs_svm.best_estimator_)
     return svm_models
 
@@ -267,13 +249,13 @@ def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
     return df
 
 
-def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strategy):
+def get_sampling_medical_tests(logger, X_train, y_train_set_med, medical_tests, sampling_strategy):
     X_train_resampled_set_med, y_train_resampled_set_med = [0] * len(y_train_set_med), [0] * len(y_train_set_med)
     number_of_tests = len(y_train_set_med)
     for i in range(number_of_tests):
         X_train_resampled_set_med[i], y_train_resampled_set_med[i] = \
             oversampling_strategies(X_train, y_train_set_med[i], sampling_strategy)
-        logger.info('Performing oversampling for {} of {} medical tests.'.format(i, number_of_tests))
+        logger.info('Performing oversampling for {} of {} medical tests ({}}.'.format(i, number_of_tests, medical_tests[i]))
     return X_train_resampled_set_med, y_train_resampled_set_med
 
 
@@ -291,7 +273,7 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info('Finished Loading data')
 
-    # List of medical tests that we will have to predict, as well as vital signs (to delete for this task)
+    identifiers = ["pid", "Time"]
     medical_tests = ["LABEL_BaseExcess", "LABEL_Fibrinogen", "LABEL_AST", "LABEL_Alkalinephos", "LABEL_Bilirubin_total",
                      "LABEL_Lactate", "LABEL_TroponinI", "LABEL_SaO2", "LABEL_Bilirubin_direct", "LABEL_EtCO2"]
     vital_signs = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
@@ -302,13 +284,13 @@ def main(logger):
     df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
     df_test_preprocessed = fill_na_with_average_patient_column(df_train, logger)
     # Cast training labels for these tasks
-    df_train_label[medical_tests + vital_signs + sepsis] = df_train_label[medical_tests + vital_signs + sepsis].astype(
-        int)
+    df_train_label[medical_tests + vital_signs + sepsis] = df_train_label[medical_tests + vital_signs +
+                                                                          sepsis].astype(int)
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(df_train_preprocessed, df_train_label, how='left', left_on='pid',
                                             right_on='pid')
     # Cast to arrays
-    X_train = df_train_preprocessed_merged.drop(columns=medical_tests + sepsis + vital_signs).values
+    X_train = df_train_preprocessed_merged.drop(columns=identifiers + medical_tests + sepsis + vital_signs).values
     # Create list with different label for each medical test
     logger.info('Creating a list of labels for each medical test')
     y_train_set_med = []
@@ -316,11 +298,16 @@ def main(logger):
         y_train_set_med.append(df_train_preprocessed_merged[test].values)
     y_train_sepsis = df_train_preprocessed_merged['LABEL_Sepsis'].values
 
+    # Scale data to avoid convergence warning
+    logger.info('Scaling data.')
+    scaler = StandardScaler(with_mean=True, with_std=True)
+    X_train = scaler.fit_transform(X_train)
+
     # Compute resampled data for all medical tests
     logger.info('Beginning sampling strategy for medical tests')
     X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(logger,
                                                                                       X_train,
-                                                                                      y_train_set_med,
+                                                                                      y_train_set_med, medical_tests,
                                                                                       FLAGS.sampling_strategy)
     logger.info('Performing oversampling for sepsis.')
     # Can be called directly because there is only one label.
