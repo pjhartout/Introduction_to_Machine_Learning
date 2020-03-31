@@ -341,19 +341,11 @@ def main(logger):
         "gamma": np.linspace(0.1, 10, num=5) # for poly or rbf kernel
     }
 
-    # Naïve SVR for all medical tests
-    logger.info('Training naive_svm_models.')
-    naive_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med, medical_tests,
-                                                alpha=10, typ="naive", reduced=True, size=100, )
     # CV GridSearch with different regularization parameters
     logger.info('Training gridsearch_svm_models.')
     gridsearch_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
                                                      medical_tests, param_grid = {"C": alphas, "penalty": penalty},
                                                      typ="gridsearch", reduced=False, size=100)
-    logger.info('Training naive_non_lin_svm_models.')
-    naive_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
-                                                        medical_tests, alpha=10, typ="naive_non_lin", reduced=False,
-                                                        size=100)
     # heavy computation, was too long to run on my machine
     logger.info('Training gridsearch_non_lin_svm_models.')
     gridsearch_non_lin_svm_models = get_models_medical_tests(X_train_resampled_set_med, y_train_resampled_set_med,
@@ -361,16 +353,10 @@ def main(logger):
                                                                                           "kernel": kernels,
                                                                                           "degree": degrees},
                                                              typ="gridsearch_non_lin", reduced=False, size=20)
-    logger.info('Training naive_sepsis_model.')
-    naive_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5,typ="naive",
-                                          reduced=False, size=100)
     logger.info('Training gridsearch_sepsis_model.')
     gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis,
                                                param_grid = {"C": alphas, "penalty": penalty}, typ="gridsearch",
                                                reduced=False, size=100)
-    logger.info('Training non_lin_sepsis_models.')
-    non_lin_sepsis_model = get_model_sepsis(X_train_resampled_sepsis, y_train_resampled_sepsis, alpha=5,
-                                            typ="naive_non_lin", reduced=False, size=100)
     # heavy computation
     logger.info('Training non_lin_gridsearch_sepsis_model.')
     non_lin_gridsearch_sepsis_model = get_model_sepsis(X_train_resampled_sepsis,y_train_resampled_sepsis,
@@ -379,15 +365,9 @@ def main(logger):
     X_test = df_test_preprocessed.values
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
-    naive_predictions = get_predictions(X_test,test_pids,naive_svm_models,medical_tests,reduced=False,nb_patients=100)
     gridsearch_predictions = get_predictions(X_test,test_pids,gridsearch_svm_models,medical_tests,reduced=False,nb_patients=100)
-    naive_non_lin_predictions = get_predictions(X_test,test_pids,naive_non_lin_svm_models,medical_tests,reduced=False,nb_patients=100)
-    naive_sepsis_predictions = get_sepsis_predictions(X_test,test_pids,naive_sepsis_model,sepsis,reduced=False,nb_patients=100)
     gridsearch_sepsis_predictions = get_sepsis_predictions(X_test,test_pids,gridsearch_sepsis_model,sepsis,reduced=False,nb_patients=100)
-    # naive_predictions.head()
     # gridsearch_predictions.head()
-    # naive_non_lin_predictions.head()
-    # naive_sepsis_predictions.head()
     # gridsearch_sepsis_predictions.head()
     # suppose df is a pandas dataframe containing the result
     # df.to_csv('prediction.zip', index=False, float_format='%.3f', compression='zip')
@@ -439,8 +419,8 @@ if __name__ == "__main__":
         "-samp",
         type=str,
         required=True,
-        help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
-             "any of adasyn, smote, clustercentroids or random,
+        help="Sampling strategy to adopt to overcome the imbalanced dataset problem"\
+             "any of adasyn, smote, clustercentroids or random."
     )
 
     FLAGS = parser.parse_args()
