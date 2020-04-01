@@ -493,7 +493,7 @@ def main(logger):
     y_train_spesis = df_train_preprocessed_merged["LABEL_Sepsis"].values
 
     logger.info("Preprocess test set")
-    df_test_preprocessed = fill_na_with_average_patient_column(df_train, logger)
+    df_test_preprocessed = fill_na_with_average_patient_column(df_test, logger)
 
     # Scale data to avoid convergence warning
     logger.info(f"Scaling data using {FLAGS.scaler}.")
