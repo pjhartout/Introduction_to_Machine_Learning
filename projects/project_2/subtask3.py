@@ -78,6 +78,22 @@ TYPICAL_VALUES = {
     "pH": 7.367231494050988,
 }
 
+INDENTIFIERS = ["pid", "Time"]
+MEDICAL_TESTS = [
+        "LABEL_BaseExcess",
+        "LABEL_Fibrinogen",
+        "LABEL_AST",
+        "LABEL_Alkalinephos",
+        "LABEL_Bilirubin_total",
+        "LABEL_Lactate",
+        "LABEL_TroponinI",
+        "LABEL_SaO2",
+        "LABEL_Bilirubin_direct",
+        "LABEL_EtCO2",
+    ]
+vital_signs = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
+sepsis = ["LABEL_Sepsis"]
+
 
 def load_data():
     """Loads data to three different dataframes.
@@ -97,7 +113,6 @@ def load_data():
     return df_train, df_train_label, df_test
 
 
-# slower version - supports patient specific mean
 def fill_na_with_average_patient_column(df, logger):
     """Fills NaNs with the average value of each column for each patient if available,
     otherwise column-wide entry
@@ -179,58 +194,28 @@ def oversampling_strategies(X_train, y_train, strategy):
     return X_train_resampled, y_train_resampled
 
 
-def main(logger):
-    """Primary function reading, preprocessing and modelling the data
-
-    Args:
-        logger (Logger): logger to get information about the status of the script when running
-
-    Returns:
-        None
-    """
-
-    logger.info("Loading data")
-    df_train, df_train_label, df_test = load_data()
-    logger.info("Finished Loading data")
-
-    identifiers = ["pid", "Time"]
-    medical_tests = [
-        "LABEL_BaseExcess",
-        "LABEL_Fibrinogen",
-        "LABEL_AST",
-        "LABEL_Alkalinephos",
-        "LABEL_Bilirubin_total",
-        "LABEL_Lactate",
-        "LABEL_TroponinI",
-        "LABEL_SaO2",
-        "LABEL_Bilirubin_direct",
-        "LABEL_EtCO2",
-    ]
-    vital_signs = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
-    sepsis = ["LABEL_Sepsis"]
+def data_preprocessing(df_train, df_train_label, df_test, logger):
 
     logger.info("Preprocess training set")
     # Would be useful to distribute/multithread this part
     df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
 
-    # Cast training labels for these tasks
-    df_train_label[medical_tests + vital_signs + sepsis] = df_train_label[
-        medical_tests + vital_signs + sepsis
-    ].astype(int)
+    logger.info("Perform projection to select only vital signs labels")
+    df_train_label = df_train_label[vital_signs]
+
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(
         df_train_preprocessed, df_train_label, how="left", left_on="pid", right_on="pid"
     )
     # Cast to arrays
     X_train = df_train_preprocessed_merged.drop(
-        columns=identifiers + medical_tests + sepsis + vital_signs
+        columns=INDENTIFIERS  + vital_signs
     ).values
     # Create list with different label for each medical test
     logger.info("Creating a list of labels for each medical test")
-    y_train_set_med = []
-    for test in medical_tests:
-        y_train_set_med.append(df_train_preprocessed_merged[test].values)
-    y_train_sepsis = df_train_preprocessed_merged["LABEL_Sepsis"].values
+    y_train_vital_signs = []
+    for test in vital_signs:
+        y_train_vital_signs.append(df_train_preprocessed_merged[test].values)
 
     logger.info("Preprocess test set")
     df_test_preprocessed = fill_na_with_average_patient_column(df_train, logger)
@@ -246,122 +231,45 @@ def main(logger):
     X_train = scaler.fit_transform(X_train)
 
     # Compute resampled data for all medical tests
-    logger.info("Beginning sampling strategy for medical tests")
+    logger.info("Beginning sampling strategy for vital signs")
     X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(
-        logger, X_train, y_train_set_med, medical_tests, FLAGS.sampling_strategy
+        logger, X_train, y_train_set_med, vital_signs, FLAGS.sampling_strategy
     )
     logger.info("Performing oversampling for sepsis.")
     # Can be called directly because there is only one label.
     X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(
         X_train, y_train_sepsis, FLAGS.sampling_strategy
     )
+    return X_train
+
+
+def main(logger):
+    """Primary function reading, preprocessing and modelling the data
+
+    Args:
+        logger (Logger): logger to get information about the status of the script when running
+
+    Returns:
+        None
+    """
+
+    logger.info("Loading data")
+    df_train, df_train_label, df_test = load_data()
+    logger.info("Finished Loading data")
+
+    data_preprocessing(df_train, df_train_label, df_test, logger)
 
     logger.info("Beginning modelling process.")
 
-    # Hyperparameter grid specification
-    param_grid_linear = {
-        "penalty": ["l1", "l2"],
-        "loss": ["squared_hinge"],
-        "dual": [False],
-        "tol": [0.0001],
-        "C": np.linspace(0.1, 10, num=3),
-        "multi_class": ["ovr"],
-        "fit_intercept": [False],
-        "intercept_scaling": [
-            1
-        ],  # From docs: To lessen the effect of regularization on synthetic feature weight
-        # (and therefore on the intercept) intercept_scaling has to be increased.
-        "class_weight": [
-            None
-        ],  # Sampling strategy already takes care of this, otherwise add option "balanced"
-        # to see the effect
-        "verbose": [0],  # Doesn't work well given the gridsearch as per docs
-        "random_state": [42],  # Because we <3 Douglas Adams.
-        "max_iter": [-1],  # Stopping criterion is given by the tol hyperparameter.
-    }
+    # train model here
 
-    param_grid_non_linear = {
-        "C": np.linspace(0.1, 10, num=3),
-        "kernel": ["rbf", "sigmoid"],
-        "degree": range(
-            1, 4
-        ),  # This really dictates the runtime of the algorithm, to tune carefully.
-        "gamma": np.linspace(0.1, 10, num=3),  # for poly or rbf kernel
-        "coef0": [0],
-        "shrinking": [True],
-        "probability": [False],
-        "tol": [0.001],
-        "cache_size": [200],
-        "class_weight": [None],
-        "verbose": [False],
-        "max_iter": [1000],
-        "decision_function_shape": [
-            "ovo"
-        ],  # That's because we train one classifer per test.
-        "random_state": [42],
-    }
-
-    # CV GridSearch with different regularization parameters
-    logger.info("Perform gridsearch for linear SVM on medical tests.")
-    gridsearch_l_svm_medical_tests_models, scores_l_svm_medical_tests_models = get_models_medical_tests(
-        X_train_resampled_set_med,
-        y_train_resampled_set_med,
-        logger,
-        medical_tests,
-        param_grid_linear,
-        "gridsearch_linear",
-    )
-
-    logger.info("Perform gridsearch for non-linear SVM on medical tests.")
-    gridsearch_nl_svm_medical_tests_models, scores_nl_svm_medical_tests_models = get_models_medical_tests(
-        X_train_resampled_set_med,
-        y_train_resampled_set_med,
-        logger,
-        medical_tests,
-        param_grid_non_linear,
-        "gridsearch_non_linear",
-    )
-
-    best_model_medical_tests = determine_best_model_medical_test(
-        gridsearch_l_svm_medical_tests_models,
-        gridsearch_nl_svm_medical_tests_models,
-        scores_l_svm_medical_tests_models,
-        scores_nl_svm_medical_tests_models,
-        medical_tests,
-        logger,
-    )
-
-    logger.info("Perform gridsearch for linear SVM on sepsis.")
-    gridsearch_l_sepsis_model, scores_l_sepsis_model = get_model_sepsis(
-        X_train_resampled_sepsis,
-        y_train_resampled_sepsis,
-        logger,
-        param_grid_linear,
-        "gridsearch_linear",
-    )
-
-    logger.info("Perform gridsearch for non-linear SVM on sepsis.")
-    gridsearch_nl_svm_sepsis_models, scores_nl_svm_sepsis_models = get_model_sepsis(
-        X_train_resampled_sepsis,
-        y_train_resampled_sepsis,
-        logger,
-        param_grid_non_linear,
-        "gridsearch_non_linear",
-    )
-
-    best_model_sepsis = determine_best_model_sepsis(
-        [scores_l_sepsis_model, scores_nl_svm_sepsis_models],
-        [gridsearch_l_sepsis_model, gridsearch_nl_svm_sepsis_models],
-        logger,
-    )
-
-    X_test = df_test_preprocessed.drop(columns=identifiers).values
+    X_test = df_test_preprocessed.drop(columns=INDENTIFIERS).values
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
     logger.info("Fetch predictions.")
     medical_test_predictions = get_medical_test_predictions(
-        X_test, test_pids, best_model_medical_tests, medical_tests
+        X_test, test_pids, best_model_ MEDICAL_TESTS, MEDICAL_TESTS
     )
     sepsis_predictions = get_sepsis_predictions(
         X_test, test_pids, best_model_sepsis, sepsis
@@ -463,8 +371,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG,
-                        filename="script_status.log")
+    logging.basicConfig(level=logging.DEBUG, filename="script_status.log")
 
     logger = logging.getLogger("IML-P2-T1T2")
 
@@ -476,8 +383,11 @@ if __name__ == "__main__":
 
     # Use the default format; since we do not adjust the logger before,
     # this is all right.
-    stream_handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] "
-                                                  "%(message)s"))
+    stream_handler.setFormatter(
+        logging.Formatter(
+            "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
+        )
+    )
     logger.addHandler(stream_handler)
 
     main(logger)

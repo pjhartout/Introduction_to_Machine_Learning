@@ -85,6 +85,22 @@ TYPICAL_VALUES = {
     "pH": 7.367231494050988,
 }
 
+IDENTIFIERS = ["pid", "Time"]
+MEDICAL_TESTS = [
+        "LABEL_BaseExcess",
+        "LABEL_Fibrinogen",
+        "LABEL_AST",
+        "LABEL_Alkalinephos",
+        "LABEL_Bilirubin_total",
+        "LABEL_Lactate",
+        "LABEL_TroponinI",
+        "LABEL_SaO2",
+        "LABEL_Bilirubin_direct",
+        "LABEL_EtCO2",
+    ]
+VITAL_SIGNS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
+SEPSIS = ["LABEL_Sepsis"]
+
 
 def load_data():
     """Loads data to three different dataframes.
@@ -185,7 +201,7 @@ def oversampling_strategies(X_train, y_train, strategy):
 
 
 def get_models_medical_tests(
-    X_train_resampled_set, y_train_resampled_set, logger, medical_tests, param_grid, typ
+    X_train_resampled_set, y_train_resampled_set, logger, MEDICAL_TESTS, param_grid, typ
 ):
     """
 
@@ -195,7 +211,6 @@ def get_models_medical_tests(
         y_train_resampled_set (list): list containing the arrays containing the training labels for
         each test.
         logger (Logger): logger
-        medical_tests (list): list of medical tests that need to be modelled
         param_grid (list): parameter grid to be used for the gridsearch
         typ (str): whether or not to fit a linear or non-linear svm
 
@@ -205,7 +220,7 @@ def get_models_medical_tests(
     """
     svm_models = []
     scores = []
-    for i, test in enumerate(medical_tests):
+    for i, test in enumerate(MEDICAL_TESTS):
         logger.info(f"Starting iteration for test {test}")
         if typ == "gridsearch_linear":
             cores = multiprocessing.cpu_count() - 2
@@ -237,7 +252,7 @@ def get_models_medical_tests(
     return svm_models, scores
 
 
-def get_model_sepsis(X_train_resampled, y_train_resampled, logger, param_grid, typ):
+def get_model_spesis(X_train_resampled, y_train_resampled, logger, param_grid, typ):
     """
 
     Args:
@@ -281,7 +296,7 @@ def get_model_sepsis(X_train_resampled, y_train_resampled, logger, param_grid, t
     return svm, scores
 
 
-def determine_best_model_sepsis(scores, models, logger):
+def determine_best_model_spesis(scores, models, logger):
     """
 
     Args:
@@ -293,9 +308,9 @@ def determine_best_model_sepsis(scores, models, logger):
         object: model having the best score
     """
     if np.argmax(scores) == 0:
-        logger.info("The best model for sepsis is the linear svm")
+        logger.info("The best model for SEPSIS is the linear svm")
     else:
-        logger.info("The best model for sepsis is the non-linear svm")
+        logger.info("The best model for SEPSIS is the non-linear svm")
     return models[np.argmax(scores)]
 
 
@@ -304,7 +319,6 @@ def determine_best_model_medical_test(
     nonlinear_models,
     scores_linear_models,
     scores_non_linear_models,
-    medical_tests,
     logger,
 ):
     """
@@ -314,7 +328,6 @@ def determine_best_model_medical_test(
         nonlinear_models (list): list of trained nonlinear models.
         scores_linear_models (list): list of scores of trained linear models.
         scores_non_linear_models (list): list of scores of trained nonlinear models.
-        medical_tests (list): list of medical tests that need to be modelled.
         logger (Logger): logger.
 
     Returns:
@@ -328,13 +341,13 @@ def determine_best_model_medical_test(
         if scores_linear_model > scores_non_linear_model:
             best_models_for_medical_tests.append(linear_models[i])
             logger.info(
-                f"The performance for the model for the test {medical_tests[i]} is "
+                f"The performance for the model for the test {MEDICAL_TESTS[i]} is "
                 f"{best_models_for_medical_tests} achieved by the linear model"
             )
         else:
             best_models_for_medical_tests.append(nonlinear_models[i])
             logger.info(
-                f"The performance for the model for the test {medical_tests[i]} is "
+                f"The performance for the model for the test {MEDICAL_TESTS[i]} is "
                 f"{best_models_for_medical_tests} achieved by the nonlinear model"
             )
 
@@ -357,7 +370,7 @@ def sigmoid_f(x):
     return 1 / (1 + np.exp(-x))
 
 
-def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
+def get_medical_test_predictions(X_test, test_pids, svm_models):
     """Function to obtain predictions for every model, as a confidence level : the closer to 1
     (resp 0), the more confidently) the sample belongs to class 1 (resp 0).
 
@@ -365,7 +378,6 @@ def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
         X_test (np.ndarray): array of preprocessed test values
         test_pids (np.ndarray): array of patient ids in test set
         svm_models (list): list of models for each of the medical tests
-        medical_tests (list): list of medical tests that need to be modelled.
 
     Returns:
         df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for
@@ -374,7 +386,7 @@ def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
     """
     df_pred = pd.DataFrame()
 
-    for i, test in enumerate(medical_tests):
+    for i, test in enumerate(MEDICAL_TESTS):
         # decision_function returns the distance to the hyperplane
         y_conf = svm_models[i].decision_function(X_test)
         # compute the predictions as confidence levels, ie using sigmoid function instead of sign
@@ -387,7 +399,7 @@ def get_medical_test_predictions(X_test, test_pids, svm_models, medical_tests):
     return df_pred
 
 
-def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
+def get_spesis_predictions(X_test, test_pids, svm, SEPSIS):
     """Function to obtain predictions for the selected svm model, as a confidence level : the closer
     to 1 (resp 0), the more confidently) the sample belongs to class 1 (resp 0).
 
@@ -395,10 +407,9 @@ def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
         X_test (np.ndarray): array of preprocessed test values
         test_pids (np.ndarray): array of patient ids in test set
         svm_models (list): list of models for each of the medical tests
-        medical_tests (list): list of medical tests that need to be modelled.
 
     Returns:
-        df_pred (pandas.core.DataFrame): contains the predictions made for the sepsis,
+        df_pred (pandas.core.DataFrame): contains the predictions made for the SEPSIS,
         containing for each patient id the predicted label as a confidence level.
     """
     # decision_function returns the distance to the hyperplane
@@ -408,18 +419,17 @@ def get_sepsis_predictions(X_test, test_pids, svm, sepsis):
     y_pred = [sigmoid_f(y_conf[i]) for i in range(len(y_conf))]
     # use the mean of the computation for each patient as overall confidence level
     y_mean = [np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))]
-    df = pd.DataFrame({sepsis[0]: y_mean}, index=test_pids)
+    df = pd.DataFrame({SEPSIS[0]: y_mean}, index=test_pids)
     return df
 
 
-def get_sampling_medical_tests(logger, X_train, y_train_set_med, medical_tests, sampling_strategy):
+def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strategy):
     """Resamples the data required for each medical tests.
 
     Args:
         logger (Logger): logger
         X_train (np.ndarray): array that contains the features that need to be resampled
         y_train_set_med (np.ndarray): array that contains the labels that need to be balanced.
-        medical_tests (list): list of medical tests that need to be modelled.
         sampling_strategy (str): Sampling strategy to be adopted
 
     Returns:
@@ -439,7 +449,7 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, medical_tests, 
         )
         logger.info(
             "Performing oversampling for {} of {} medical tests ({}).".format(
-                i, number_of_tests, medical_tests[i]
+                i, number_of_tests, MEDICAL_TESTS[i]
             )
         )
     return X_train_resampled_set_med, y_train_resampled_set_med
@@ -459,29 +469,13 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    identifiers = ["pid", "Time"]
-    medical_tests = [
-        "LABEL_BaseExcess",
-        "LABEL_Fibrinogen",
-        "LABEL_AST",
-        "LABEL_Alkalinephos",
-        "LABEL_Bilirubin_total",
-        "LABEL_Lactate",
-        "LABEL_TroponinI",
-        "LABEL_SaO2",
-        "LABEL_Bilirubin_direct",
-        "LABEL_EtCO2",
-    ]
-    vital_signs = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
-    sepsis = ["LABEL_Sepsis"]
-
     logger.info("Preprocess training set")
     # Would be useful to distribute/multithread this part
     df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
 
     # Cast training labels for these tasks
-    df_train_label[medical_tests + vital_signs + sepsis] = df_train_label[
-        medical_tests + vital_signs + sepsis
+    df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
+        MEDICAL_TESTS + VITAL_SIGNS + SEPSIS
     ].astype(int)
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(
@@ -489,14 +483,14 @@ def main(logger):
     )
     # Cast to arrays
     X_train = df_train_preprocessed_merged.drop(
-        columns=identifiers + medical_tests + sepsis + vital_signs
+        columns=IDENTIFIERS + MEDICAL_TESTS + SEPSIS + VITAL_SIGNS
     ).values
     # Create list with different label for each medical test
     logger.info("Creating a list of labels for each medical test")
     y_train_set_med = []
-    for test in medical_tests:
+    for test in MEDICAL_TESTS:
         y_train_set_med.append(df_train_preprocessed_merged[test].values)
-    y_train_sepsis = df_train_preprocessed_merged["LABEL_Sepsis"].values
+    y_train_spesis = df_train_preprocessed_merged["LABEL_Sepsis"].values
 
     logger.info("Preprocess test set")
     df_test_preprocessed = fill_na_with_average_patient_column(df_train, logger)
@@ -514,12 +508,12 @@ def main(logger):
     # Compute resampled data for all medical tests
     logger.info("Beginning sampling strategy for medical tests")
     X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(
-        logger, X_train, y_train_set_med, medical_tests, FLAGS.sampling_strategy
+        logger, X_train, y_train_set_med, FLAGS.sampling_strategy
     )
-    logger.info("Performing oversampling for sepsis.")
+    logger.info("Performing oversampling for SEPSIS.")
     # Can be called directly because there is only one label.
-    X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(
-        X_train, y_train_sepsis, FLAGS.sampling_strategy
+    X_train_resampled_spesis, y_train_resampled_spesis = oversampling_strategies(
+        X_train, y_train_spesis, FLAGS.sampling_strategy
     )
 
     logger.info("Beginning modelling process.")
@@ -550,18 +544,18 @@ def main(logger):
         "C": np.linspace(0.1, 10, num=3),
         "kernel": ["rbf", "sigmoid"],
         "degree": range(
-            1, 4
+            1, 2
         ),  # This really dictates the runtime of the algorithm, to tune carefully.
         "gamma": np.linspace(0.1, 10, num=3),  # for poly or rbf kernel
         "coef0": [0],
         "shrinking": [True],
         "probability": [False],
         "tol": [0.001],
-        "cache_size": [200],
+        "cache_size": [1000],
         "class_weight": [None],
         "verbose": [False],
         "max_iter": [1000],
-        "decision_function_shape": ["ovo"],  # That's because we train one classifer per test.
+        "decision_function_shape": ["ovo"],  # only binary variables are set
         "random_state": [42],
     }
 
@@ -571,7 +565,7 @@ def main(logger):
         X_train_resampled_set_med,
         y_train_resampled_set_med,
         logger,
-        medical_tests,
+        MEDICAL_TESTS,
         param_grid_linear,
         "gridsearch_linear",
     )
@@ -581,7 +575,7 @@ def main(logger):
         X_train_resampled_set_med,
         y_train_resampled_set_med,
         logger,
-        medical_tests,
+        MEDICAL_TESTS,
         param_grid_non_linear,
         "gridsearch_non_linear",
     )
@@ -591,47 +585,46 @@ def main(logger):
         gridsearch_nl_svm_medical_tests_models,
         scores_l_svm_medical_tests_models,
         scores_nl_svm_medical_tests_models,
-        medical_tests,
         logger,
     )
 
-    logger.info("Perform gridsearch for linear SVM on sepsis.")
-    gridsearch_l_sepsis_model, scores_l_sepsis_model = get_model_sepsis(
-        X_train_resampled_sepsis,
-        y_train_resampled_sepsis,
+    logger.info("Perform gridsearch for linear SVM on SEPSIS.")
+    gridsearch_l_spesis_model, scores_l_spesis_model = get_model_spesis(
+        X_train_resampled_spesis,
+        y_train_resampled_spesis,
         logger,
         param_grid_linear,
         "gridsearch_linear",
     )
 
-    logger.info("Perform gridsearch for non-linear SVM on sepsis.")
-    gridsearch_nl_svm_sepsis_models, scores_nl_svm_sepsis_models = get_model_sepsis(
-        X_train_resampled_sepsis,
-        y_train_resampled_sepsis,
+    logger.info("Perform gridsearch for non-linear SVM on SEPSIS.")
+    gridsearch_nl_svm_spesis_models, scores_nl_svm_spesis_models = get_model_spesis(
+        X_train_resampled_spesis,
+        y_train_resampled_spesis,
         logger,
         param_grid_non_linear,
         "gridsearch_non_linear",
     )
 
-    best_model_sepsis = determine_best_model_sepsis(
-        [scores_l_sepsis_model, scores_nl_svm_sepsis_models],
-        [gridsearch_l_sepsis_model, gridsearch_nl_svm_sepsis_models],
+    best_model_spesis = determine_best_model_spesis(
+        [scores_l_spesis_model, scores_nl_svm_spesis_models],
+        [gridsearch_l_spesis_model, gridsearch_nl_svm_spesis_models],
         logger,
     )
 
-    X_test = df_test_preprocessed.drop(columns=identifiers).values
+    X_test = df_test_preprocessed.drop(columns=IDENTIFIERS).values
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[["pid"]].values)
     logger.info("Fetch predictions.")
     medical_test_predictions = get_medical_test_predictions(
-        X_test, test_pids, best_model_medical_tests, medical_tests
+        X_test, test_pids, best_model_medical_tests
     )
-    sepsis_predictions = get_sepsis_predictions(X_test, test_pids, best_model_sepsis, sepsis)
+    SEPSIS_predictions = get_spesis_predictions(X_test, test_pids, best_model_spesis, SEPSIS)
     medical_test_predictions.index.names = ["pid"]
-    sepsis_predictions.index.names = ["pid"]
+    SEPSIS_predictions.index.names = ["pid"]
     predictions = pd.merge(
-        medical_test_predictions, sepsis_predictions, how="left", left_on="pid", right_on="pid"
+        medical_test_predictions, SEPSIS_predictions, how="left", left_on="pid", right_on="pid"
     )
 
     logger.info("Export predictions DataFrame to a zip file")
