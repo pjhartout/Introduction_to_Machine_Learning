@@ -229,18 +229,8 @@ def data_preprocessing(df_train, df_train_label, df_test, logger):
         scaler = MinMaxScaler()
 
     X_train = scaler.fit_transform(X_train)
-
-    # Compute resampled data for all medical tests
-    logger.info("Beginning sampling strategy for vital signs")
-    X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(
-        logger, X_train, y_train_set_med, vital_signs, FLAGS.sampling_strategy
-    )
-    logger.info("Performing oversampling for sepsis.")
-    # Can be called directly because there is only one label.
-    X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(
-        X_train, y_train_sepsis, FLAGS.sampling_strategy
-    )
-    return X_train
+    
+    return X_train_resampled_sepsis, y_train_resampled_sepsis
 
 
 def main(logger):
