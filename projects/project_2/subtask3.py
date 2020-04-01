@@ -127,7 +127,9 @@ def fill_na_with_average_patient_column(df, logger):
     """
     columns = list(df.columns)
     for i, column in enumerate(columns):
-        logger.info("{} column of {} columns processed".format(i + 1, len(columns)))
+        logger.info(
+            "{} column of {} columns processed".format(i + 1, len(columns))
+        )
         # Fill na with patient average
         df[[column]] = df.groupby(["pid"])[column].transform(
             lambda x: x.fillna(x.mean())
@@ -145,14 +147,20 @@ def fill_na_with_average_patient_column(df, logger):
 def data_preprocessing(df_train, df_train_label, df_test, logger):
     logger.info("Preprocess training set")
     # Would be useful to distribute/multithread this part
-    df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
+    df_train_preprocessed = fill_na_with_average_patient_column(
+        df_train, logger
+    )
 
     logger.info("Perform projection to select only vital signs labels")
     df_train_label = df_train_label[["pid"] + VITAL_SIGNS]
 
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(
-        df_train_preprocessed, df_train_label, how="left", left_on="pid", right_on="pid"
+        df_train_preprocessed,
+        df_train_label,
+        how="left",
+        left_on="pid",
+        right_on="pid",
     )
     # Cast to arrays
     X_train = df_train_preprocessed_merged.drop(
@@ -219,9 +227,9 @@ def get_vital_signs_predictions(X_test, test_pids, models):
 
     for i, test in enumerate(VITAL_SIGNS):
         # Compute prediction
-        y_pred = models[i-1].predict(X_test)
+        y_pred = models[i - 1].predict(X_test)
 
-        y_mean = [np.mean(y_pred[i: i + 12]) for i in range(len(test_pids))]
+        y_mean = [np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))]
         df = pd.DataFrame({test: y_mean}, index=test_pids)
         df_pred = pd.concat([df_pred, df], axis=1)
     return df_pred
@@ -241,15 +249,15 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    X_train, y_train_vital_signs, df_test_preprocessed = data_preprocessing(df_train,
-                                                                            df_train_label,
-                                                                            df_test, logger)
+    X_train, y_train_vital_signs, df_test_preprocessed = data_preprocessing(
+        df_train, df_train_label, df_test, logger
+    )
 
     logger.info("Beginning modelling process.")
 
     # train model here
     param_grid = {
-        "kernel": ['linear', 'poly', 'rbf', 'sigmoid'],
+        "kernel": ["linear", "poly", "rbf", "sigmoid"],
         "degree": np.arange(1, 4, 1),
         "gamma": np.linspace(0.1, 10, num=3),
         "coef0": [0],
@@ -259,15 +267,19 @@ def main(logger):
         "shrinking": [True],
         "cache_size": [1000],
         "verbose": [False],
-        "max_iter": [1000]
+        "max_iter": [1000],
     }
-    vital_signs_models, vital_signs_models_scores = get_vital_signs_models(X_train, y_train_vital_signs, param_grid)
+    vital_signs_models, vital_signs_models_scores = get_vital_signs_models(
+        X_train, y_train_vital_signs, param_grid
+    )
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test_preprocessed[IDENTIFIERS].values)
     logger.info("Fetch predictions.")
     X_test = df_test_preprocessed.drop(columns=IDENTIFIERS).values
-    vital_signs_predictions = get_vital_signs_predictions(X_test, test_pids, vital_signs_models)
+    vital_signs_predictions = get_vital_signs_predictions(
+        X_test, test_pids, vital_signs_models
+    )
 
     logger.info("Export predictions DataFrame to a zip file")
     # Export pandas dataframe to zip archive.
@@ -346,7 +358,9 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG, filename="script_status_subtask3.log")
+    logging.basicConfig(
+        level=logging.DEBUG, filename="script_status_subtask3.log"
+    )
 
     logger = logging.getLogger("IML-P2-T1T2")
 
