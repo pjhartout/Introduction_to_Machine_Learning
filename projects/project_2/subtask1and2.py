@@ -201,7 +201,7 @@ def oversampling_strategies(X_train, y_train, strategy):
 
 
 def get_models_medical_tests(
-    X_train_resampled_set, y_train_resampled_set, logger, MEDICAL_TESTS, param_grid, typ
+    X_train_resampled_set, y_train_resampled_set, logger, param_grid, typ
 ):
     """
 
@@ -399,7 +399,7 @@ def get_medical_test_predictions(X_test, test_pids, svm_models):
     return df_pred
 
 
-def get_spesis_predictions(X_test, test_pids, svm, SEPSIS):
+def get_sepsis_predictions(X_test, test_pids, svm):
     """Function to obtain predictions for the selected svm model, as a confidence level : the closer
     to 1 (resp 0), the more confidently) the sample belongs to class 1 (resp 0).
 
@@ -565,7 +565,6 @@ def main(logger):
         X_train_resampled_set_med,
         y_train_resampled_set_med,
         logger,
-        MEDICAL_TESTS,
         param_grid_linear,
         "gridsearch_linear",
     )
@@ -575,7 +574,6 @@ def main(logger):
         X_train_resampled_set_med,
         y_train_resampled_set_med,
         logger,
-        MEDICAL_TESTS,
         param_grid_non_linear,
         "gridsearch_non_linear",
     )
@@ -620,11 +618,11 @@ def main(logger):
     medical_test_predictions = get_medical_test_predictions(
         X_test, test_pids, best_model_medical_tests
     )
-    SEPSIS_predictions = get_spesis_predictions(X_test, test_pids, best_model_spesis, SEPSIS)
+    sepsis_predictions = get_sepsis_predictions(X_test, test_pids, best_model_spesis)
     medical_test_predictions.index.names = ["pid"]
-    SEPSIS_predictions.index.names = ["pid"]
+    sepsis_predictions.index.names = ["pid"]
     predictions = pd.merge(
-        medical_test_predictions, SEPSIS_predictions, how="left", left_on="pid", right_on="pid"
+        medical_test_predictions, sepsis_predictions, how="left", left_on="pid", right_on="pid"
     )
 
     logger.info("Export predictions DataFrame to a zip file")
@@ -708,7 +706,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG, filename="script_status.log")
+    logging.basicConfig(level=logging.DEBUG, filename="script_status_subtask1and2.log")
 
     logger = logging.getLogger("IML-P2-T1T2")
 
