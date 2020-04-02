@@ -10,4 +10,8 @@ dependencies:
   - missingno
   - scikit-learn
   - seaborn
+  - pytorch
+  - torchvision
+  - cudatoolkit=10.1
+  - tensorboard
 
