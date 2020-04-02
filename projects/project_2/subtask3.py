@@ -9,15 +9,21 @@ This script is for project2, subtasks 1 and 2, which aims to perform the followi
  * exports the results in a zip file
 
 example usage from CLI:
- $ python3 subtask1and2.py --args
+ $ python3 subtask1and2.py --train_features /path/to/train_features.csv
+     --train_labels /path/to/train_labels.csv
+     --test_features /path/to/test_features.csv
+     --predictions /path/to/predictions_subtask3.zip
+     --k_fold 5
+     --scaler minmax
+     --model ANN
+     --epochs 100
 
 For help, run:
  $ subtask1and2.py -h
 
 TODO:
-    * Try using regular SVR to be able to use kernels
-    * Clean up code to train one model per task ideally.
-    * Write docstrings
+    * Discuss next steps to improve model performance
+    * Do we scale the labels?
 
 Following Google style guide: http://google.github.io/styleguide/pyguide.html
 
@@ -34,8 +40,6 @@ import torch
 
 import pandas as pd
 import numpy as np
-from imblearn.over_sampling import ADASYN, SMOTE
-from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -150,6 +154,20 @@ def fill_na_with_average_patient_column(df, logger):
 
 
 def data_preprocessing(df_train, df_train_label, df_test, logger):
+    """Function takes data in for preprocessing (formatting & scaling)
+
+    Args:
+        df_train (pandas.core.DataFrame): training features
+        df_train_label (pandas.core.DataFrame): training labels
+        df_test (pandas.core.DataFrame): training features
+        logger (Logger): logger
+
+    Returns:
+        X_train (np.ndarray): (n_samples, n_features) array containing features
+        y_train_vital_signs (np.ndarray): (n_samples, n_features) array labels
+        df_test_preprocessed (pandas.core.DataFrame): preprocessed testing DataFrame
+        transform outputs later on when scaling back predictions for interpretability
+    """
     logger.info("Preprocess training set")
     # Would be useful to distribute/multithread this part
     df_train_preprocessed = fill_na_with_average_patient_column(
@@ -190,17 +208,31 @@ def data_preprocessing(df_train, df_train_label, df_test, logger):
     X_train = scaler.fit_transform(X_train)
 
     # Also transform the outputs as it may be better for the network
+    # See TO DO: to we scale labels?
     vital_signs_scales = []
     # if FLAGS.model == "ANN":
-    #
     #     for i, sign in enumerate(VITAL_SIGNS):
-    #         y_train_vital_signs[i] = scaler.fit_transform(y_train_vital_signs[i].reshape(-1, 1))
-    #         vital_signs_scales.append(scaler.scale_)
+    #         label_scaler = MinMaxScaler()
+    #         y_train_vital_signs[i] = label_scaler.fit_transform(y_train_vital_signs[i].reshape(-1, 1))
+    #         vital_signs_scales.append(label_scaler.scale_)
     #         y_train_vital_signs[i] = y_train_vital_signs[i].reshape(-1)
-    return X_train, y_train_vital_signs, df_test_preprocessed, vital_signs_scales
+
+    return X_train, y_train_vital_signs, df_test_preprocessed
 
 
 def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
+    """Fit SVR on given data, using gridsearch to optimize hyperparaneters
+
+    Args:
+        X_train (np.ndarray): (n_samples, n_features) array containing features
+        y_train_vital_signs (list): list of np.ndarray (n_samples,) array containing labels for each
+            vital sign
+        param_grid (dict): dictionary containing the entries for the hyperparameter tuning.
+
+    Returns:
+        svr_models, scores (list): list of fitted models and scores for each vital sign.
+    """
+
     svr_models = []
     scores = []
     for i, test in enumerate(VITAL_SIGNS):
@@ -222,7 +254,7 @@ def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
     return svr_models, scores
 
 
-def get_vital_signs_predictions(X_test, test_pids, models, vital_signs_scales, device):
+def get_vital_signs_predictions(X_test, test_pids, models, device):
     """Function to obtain predictions for every model, as a confidence level : the closer to 1
     (resp 0), the more confidently) the sample belongs to class 1 (resp 0).
 
@@ -233,8 +265,8 @@ def get_vital_signs_predictions(X_test, test_pids, models, vital_signs_scales, d
 
     Returns:
         df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for
-        their respective tests, containing for each patient id the predicted label as a confidence
-        level.
+            their respective tests, containing for each patient id the predicted label as a confidence
+            level.
     """
     df_pred = pd.DataFrame()
 
@@ -255,11 +287,26 @@ def get_vital_signs_predictions(X_test, test_pids, models, vital_signs_scales, d
     return df_pred
 
 def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
+    """Converts a number of np.ndarrays to tensors placed on the device specified.
+
+    Args:
+        X_train (np.ndarray): (n_samples, n_features) array containing training features
+        X_test (np.ndarray): (n_samples, n_features) array containing testing features
+        y_train (np.ndarray): (n_samples,) array containing training labels
+        y_test (np.ndarray): (n_samples,) array containing testing labels
+        device (torch.device): device on which the tensors should be placed (CPU/CUDA GPU)
+
+    Returns:
+
+    """
     return torch.from_numpy(X_train).to(device).float(), torch.from_numpy(X_test).to(device).float(), torch.from_numpy(y_train).to(device).float(), \
            torch.from_numpy(y_test).to(device).float()
 
 ### Define network
 class Feedforward(torch.nn.Module):
+    """ Definition of the feedfoward neural network. It currently has three layers which can be
+    modified in the function where the network is trained.
+    """
     def __init__(self, input_size, hidden_size):
         super(Feedforward, self).__init__()
         self.input_size = input_size
@@ -272,6 +319,17 @@ class Feedforward(torch.nn.Module):
         self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, x):
+        """Function where the forward pass is defined. The backward pass is deternmined by the
+            autograd function built into PyTorch.
+
+        Args:
+            x (torch.Tensor): Tensor (n_samples,n_features) tensor containing training input
+                features
+
+        Returns:
+            output (torch.Tensor): (n_samples,n_features) tensor containing
+                the predicted output for each sample.
+        """
         hidden = self.fc1(x)
         relu = self.relu(hidden)
         hidden_2 = self.fc2(relu)
@@ -282,7 +340,10 @@ class Feedforward(torch.nn.Module):
 
 
 class Data(Dataset):
-    def __init__(self,x ,y):
+    """ Class used to load the data in minibatches to control the neural network stability during
+        training.
+    """
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.len = self.x.shape[0]
@@ -295,6 +356,18 @@ class Data(Dataset):
 
 
 def get_vital_signs_ann_models(x_input, y_input, logger, device):
+    """Main function to train the neural networks for the data.
+
+    Args:
+        x_input (np.ndarray): (n_samples,n_features) array containing the training features
+        y_input (np.ndarray): (n_samples,) array containing the training labels
+        logger (Logger): logger
+        device (torch.device): device on which the tensors should be placed (CPU/CUDA GPU)
+
+    Returns:
+        ann_models (list): list of trained feedforward neural networks
+        scores (list): list of the testing scores of the trained feedforward neural networks
+    """
     logger.info(f"Using {device} to train the neural network.")
     ann_models = []
     scores = []
@@ -336,7 +409,8 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         logger.info(f"Finished test for vital sign {sign}")
         ann_models.append(model)
         scores.append(test_error)
-    return ann_models
+    return ann_models, scores
+
 
 
 def main(logger):
@@ -353,7 +427,7 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    X_train, y_train_vital_signs, df_test_preprocessed, vital_signs_scales = data_preprocessing(
+    X_train, y_train_vital_signs, df_test_preprocessed = data_preprocessing(
         df_train, df_train_label, df_test, logger
     )
 
@@ -379,7 +453,7 @@ def main(logger):
         )
     else:
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        vital_signs_models = get_vital_signs_ann_models(
+        vital_signs_models, scores = get_vital_signs_ann_models(
             X_train, y_train_vital_signs, logger, device
         )
 
@@ -388,7 +462,7 @@ def main(logger):
     logger.info("Fetch predictions.")
     X_test = df_test_preprocessed.drop(columns=IDENTIFIERS).values
     vital_signs_predictions = get_vital_signs_predictions(
-        X_test, test_pids, vital_signs_models, vital_signs_scales, device
+        X_test, test_pids, vital_signs_models, device
     )
 
     logger.info("Export predictions DataFrame to a zip file")
@@ -401,7 +475,7 @@ def main(logger):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="CLI args for folder and file \
-    directories"
+    directories as well as model options"
     )
 
     parser.add_argument(
