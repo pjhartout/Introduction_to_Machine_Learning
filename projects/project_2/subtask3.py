@@ -270,21 +270,30 @@ def get_vital_signs_predictions(X_test, test_pids, models, device):
     """
     df_pred = pd.DataFrame()
 
-
     for i, test in enumerate(VITAL_SIGNS):
         if FLAGS.model == "SVR":
             # Compute prediction
             y_pred = models[i].predict(X_test)
-            y_mean = [np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))]
+            y_mean = [
+                np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
+            ]
             df = pd.DataFrame({test: y_mean}, index=test_pids)
             df_pred = pd.concat([df_pred, df], axis=1)
         else:
             # Switch network to eval mode to make sure all dropout layers are there, etc..
-            y_pred = models[i](torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy()
-            y_mean = [np.mean(y_pred[i: i + 12]) for i in range(len(test_pids))]
+            y_pred = (
+                models[i](torch.from_numpy(X_test).to(device).float())
+                .cpu()
+                .detach()
+                .numpy()
+            )
+            y_mean = [
+                np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
+            ]
             df = pd.DataFrame({test: y_mean}, index=test_pids)
             df_pred = pd.concat([df_pred, df], axis=1)
     return df_pred
+
 
 def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     """Converts a number of np.ndarrays to tensors placed on the device specified.
@@ -299,14 +308,20 @@ def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     Returns:
 
     """
-    return torch.from_numpy(X_train).to(device).float(), torch.from_numpy(X_test).to(device).float(), torch.from_numpy(y_train).to(device).float(), \
-           torch.from_numpy(y_test).to(device).float()
+    return (
+        torch.from_numpy(X_train).to(device).float(),
+        torch.from_numpy(X_test).to(device).float(),
+        torch.from_numpy(y_train).to(device).float(),
+        torch.from_numpy(y_test).to(device).float(),
+    )
+
 
 ### Define network
 class Feedforward(torch.nn.Module):
     """ Definition of the feedfoward neural network. It currently has three layers which can be
     modified in the function where the network is trained.
     """
+
     def __init__(self, input_size, hidden_size):
         super(Feedforward, self).__init__()
         self.input_size = input_size
@@ -343,6 +358,7 @@ class Data(Dataset):
     """ Class used to load the data in minibatches to control the neural network stability during
         training.
     """
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -373,11 +389,13 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
     scores = []
     for i, sign in enumerate(VITAL_SIGNS):
         logger.info(f"Starting neural network training for vital sign {sign}")
-        X_train, X_test, y_train, y_test = train_test_split(x_input, y_input[i], test_size=0.10,
-                                                            random_state=42,
-                                                            shuffle=True)
+        X_train, X_test, y_train, y_test = train_test_split(
+            x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
+        )
         logger.info("Converting arrays to tensors")
-        X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device)
+        X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
+            X_train, X_test, y_train, y_test, device
+        )
         model = Feedforward(35, 80)
         criterion = torch.nn.MSELoss()
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
@@ -400,8 +418,8 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
                 LOSS.append(loss)
                 y_pred = model(X_test_tensor).cpu().detach().numpy()
                 test_loss = mean_squared_error(y_test, y_pred)
-                writer.add_scalar('Loss/train', loss, epoch)
-                writer.add_scalar('Loss/test', test_loss, epoch)
+                writer.add_scalar("Loss/train", loss, epoch)
+                writer.add_scalar("Loss/test", test_loss, epoch)
 
         writer.close()
         test_error = mean_squared_error(y_test, y_pred)
@@ -410,7 +428,6 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         ann_models.append(model)
         scores.append(test_error)
     return ann_models, scores
-
 
 
 def main(logger):
@@ -452,7 +469,7 @@ def main(logger):
             X_train, y_train_vital_signs, param_grid
         )
     else:
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         vital_signs_models, scores = get_vital_signs_ann_models(
             X_train, y_train_vital_signs, logger, device
         )
@@ -549,12 +566,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--epochs",
-        "-ep",
-        type=int,
-        required=False,
-        help="",
-        default=100
+        "--epochs", "-ep", type=int, required=False, help="", default=100
     )
 
     FLAGS = parser.parse_args()

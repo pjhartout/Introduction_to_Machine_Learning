@@ -87,17 +87,17 @@ TYPICAL_VALUES = {
 
 IDENTIFIERS = ["pid", "Time"]
 MEDICAL_TESTS = [
-        "LABEL_BaseExcess",
-        "LABEL_Fibrinogen",
-        "LABEL_AST",
-        "LABEL_Alkalinephos",
-        "LABEL_Bilirubin_total",
-        "LABEL_Lactate",
-        "LABEL_TroponinI",
-        "LABEL_SaO2",
-        "LABEL_Bilirubin_direct",
-        "LABEL_EtCO2",
-    ]
+    "LABEL_BaseExcess",
+    "LABEL_Fibrinogen",
+    "LABEL_AST",
+    "LABEL_Alkalinephos",
+    "LABEL_Bilirubin_total",
+    "LABEL_Lactate",
+    "LABEL_TroponinI",
+    "LABEL_SaO2",
+    "LABEL_Bilirubin_direct",
+    "LABEL_EtCO2",
+]
 VITAL_SIGNS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 SEPSIS = ["LABEL_Sepsis"]
 
@@ -134,9 +134,13 @@ def fill_na_with_average_patient_column(df, logger):
     """
     columns = list(df.columns)
     for i, column in enumerate(columns):
-        logger.info("{} column of {} columns processed".format(i + 1, len(columns)))
+        logger.info(
+            "{} column of {} columns processed".format(i + 1, len(columns))
+        )
         # Fill na with patient average
-        df[[column]] = df.groupby(["pid"])[column].transform(lambda x: x.fillna(x.mean()))
+        df[[column]] = df.groupby(["pid"])[column].transform(
+            lambda x: x.fillna(x.mean())
+        )
 
     # Fill na with overall column average for lack of a better option for now
     df = df.fillna(df.mean())
@@ -195,7 +199,9 @@ def oversampling_strategies(X_train, y_train, strategy):
     if strategy == "random":
         sampling_method = RandomUnderSampler(random_state=0, replacement=True)
 
-    X_train_resampled, y_train_resampled = sampling_method.fit_sample(X_train, y_train)
+    X_train_resampled, y_train_resampled = sampling_method.fit_sample(
+        X_train, y_train
+    )
 
     return X_train_resampled, y_train_resampled
 
@@ -252,7 +258,9 @@ def get_models_medical_tests(
     return svm_models, scores
 
 
-def get_model_spesis(X_train_resampled, y_train_resampled, logger, param_grid, typ):
+def get_model_spesis(
+    X_train_resampled, y_train_resampled, logger, param_grid, typ
+):
     """
 
     Args:
@@ -423,7 +431,9 @@ def get_sepsis_predictions(X_test, test_pids, svm):
     return df
 
 
-def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strategy):
+def get_sampling_medical_tests(
+    logger, X_train, y_train_set_med, sampling_strategy
+):
     """Resamples the data required for each medical tests.
 
     Args:
@@ -444,7 +454,9 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strate
     )
     number_of_tests = len(y_train_set_med)
     for i in range(number_of_tests):
-        X_train_resampled_set_med[i], y_train_resampled_set_med[i] = oversampling_strategies(
+        X_train_resampled_set_med[i], y_train_resampled_set_med[
+            i
+        ] = oversampling_strategies(
             X_train, y_train_set_med[i], sampling_strategy
         )
         logger.info(
@@ -471,7 +483,9 @@ def main(logger):
 
     logger.info("Preprocess training set")
     # Would be useful to distribute/multithread this part
-    df_train_preprocessed = fill_na_with_average_patient_column(df_train, logger)
+    df_train_preprocessed = fill_na_with_average_patient_column(
+        df_train, logger
+    )
 
     # Cast training labels for these tasks
     df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
@@ -479,7 +493,11 @@ def main(logger):
     ].astype(int)
     # Merging pids to make sure they map correctly.
     df_train_preprocessed_merged = pd.merge(
-        df_train_preprocessed, df_train_label, how="left", left_on="pid", right_on="pid"
+        df_train_preprocessed,
+        df_train_label,
+        how="left",
+        left_on="pid",
+        right_on="pid",
     )
     # Cast to arrays
     X_train = df_train_preprocessed_merged.drop(
@@ -537,7 +555,9 @@ def main(logger):
         # to see the effect
         "verbose": [0],  # Doesn't work well given the gridsearch as per docs
         "random_state": [42],  # Because we <3 Douglas Adams.
-        "max_iter": [-1],  # Stopping criterion is given by the tol hyperparameter.
+        "max_iter": [
+            -1
+        ],  # Stopping criterion is given by the tol hyperparameter.
     }
 
     param_grid_non_linear = {
@@ -618,16 +638,24 @@ def main(logger):
     medical_test_predictions = get_medical_test_predictions(
         X_test, test_pids, best_model_medical_tests
     )
-    sepsis_predictions = get_sepsis_predictions(X_test, test_pids, best_model_spesis)
+    sepsis_predictions = get_sepsis_predictions(
+        X_test, test_pids, best_model_spesis
+    )
     medical_test_predictions.index.names = ["pid"]
     sepsis_predictions.index.names = ["pid"]
     predictions = pd.merge(
-        medical_test_predictions, sepsis_predictions, how="left", left_on="pid", right_on="pid"
+        medical_test_predictions,
+        sepsis_predictions,
+        how="left",
+        left_on="pid",
+        right_on="pid",
     )
 
     logger.info("Export predictions DataFrame to a zip file")
     # Export pandas dataframe to zip archive.
-    predictions.to_csv(FLAGS.predictions, index=False, float_format="%.3f", compression="zip")
+    predictions.to_csv(
+        FLAGS.predictions, index=False, float_format="%.3f", compression="zip"
+    )
 
 
 if __name__ == "__main__":
@@ -700,13 +728,19 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--k_fold", "-k", type=int, required=True, help="k to perform k-fold cv in the gridsearch"
+        "--k_fold",
+        "-k",
+        type=int,
+        required=True,
+        help="k to perform k-fold cv in the gridsearch",
     )
 
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG, filename="script_status_subtask1and2.log")
+    logging.basicConfig(
+        level=logging.DEBUG, filename="script_status_subtask1and2.log"
+    )
 
     logger = logging.getLogger("IML-P2-T1T2")
 
@@ -720,7 +754,8 @@ if __name__ == "__main__":
     # this is all right.
     stream_handler.setFormatter(
         logging.Formatter(
-            "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] " "%(message)s"
+            "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] "
+            "%(message)s"
         )
     )
     logger.addHandler(stream_handler)
