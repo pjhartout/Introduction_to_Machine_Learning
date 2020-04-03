@@ -245,7 +245,7 @@ def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
             n_jobs=cores,
             scoring="r2",
             cv=FLAGS.k_fold,
-            verbose=0,
+            verbose=[0],
         )
         tuned_svr.fit(X_train, y_train_vital_signs[i])
         svr_models.append(tuned_svr.best_estimator_)
