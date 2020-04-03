@@ -300,17 +300,17 @@ def determine_best_model_medical_test(
     for i, (scores_linear_model, scores_non_linear_model) in enumerate(
         zip(scores_linear_models, scores_non_linear_models)
     ):
-        if scores_linear_model > scores_non_linear_model:
+        if scores_linear_model[i] > scores_non_linear_model[i]:
             best_models_for_medical_tests.append(linear_models[i])
             logger.info(
                 f"The performance for the model for the test {MEDICAL_TESTS[i]} is "
-                f"{best_models_for_medical_tests} achieved by the linear model"
+                f"{scores_linear_model[i]} achieved by the linear model"
             )
         else:
             best_models_for_medical_tests.append(nonlinear_models[i])
             logger.info(
                 f"The performance for the model for the test {MEDICAL_TESTS[i]} is "
-                f"{best_models_for_medical_tests} achieved by the nonlinear model"
+                f"{scores_non_linear_model} achieved by the nonlinear model"
             )
 
     return best_models_for_medical_tests
@@ -458,10 +458,6 @@ def main(logger):
         "penalty": ["l1", "l2"],
         "loss": ["squared_hinge"],
         "dual": [False],
-<<<<<<< HEAD
-=======
-        "tol": [0.001],
->>>>>>> eca7d74695db5731eb28e4e9f99403546826246c
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
@@ -555,7 +551,6 @@ def main(logger):
     # get the unique test ids of patients
     test_pids = np.unique(df_test[["pid"]].values)
     logger.info("Fetch predictions.")
-    print("X train ",X_train_resampled_set_med)
     medical_test_predictions = get_medical_test_predictions(
         X_test, test_pids, best_model_medical_tests
     )
