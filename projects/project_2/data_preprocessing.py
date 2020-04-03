@@ -166,15 +166,16 @@ def main(logger):
         right_on="pid",
     )
 
+    df_train_label_preprocessed = df_train_preprocessed_merged[IDENTIFIERS + MEDICAL_TESTS + VITAL_SIGNS+ SEPSIS ]
     logger.info("Preprocess test set")
     df_test_preprocessed = fill_na_with_average_patient_column(df_test, logger)
 
     logger.info("Export preprocessed train and test set")
     # Export pandas dataframe to csv.
-    df_train_label.to_csv(
+    df_train_label_preprocessed.to_csv(
         FLAGS.preprocess_label, index=False, float_format="%.3f"
     )
-    df_train_preprocessed_merged.to_csv(
+    df_train_preprocessed.to_csv(
         FLAGS.preprocess_train, index=False, float_format="%.3f"
     )
     df_test_preprocessed.to_csv(

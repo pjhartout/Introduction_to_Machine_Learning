@@ -45,46 +45,6 @@ from sklearn.svm import LinearSVC, SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-TYPICAL_VALUES = {
-    "pid": 15788.831218741774,
-    "Time": 7.014398525927875,
-    "Age": 62.07380889707818,
-    "EtCO2": 32.88311356434632,
-    "PTT": 40.09130983590656,
-    "BUN": 23.192663516538175,
-    "Lactate": 2.8597155076236422,
-    "Temp": 36.852135856500034,
-    "Hgb": 10.628207669881103,
-    "HCO3": 23.488100167210746,
-    "BaseExcess": -1.2392844571830848,
-    "RRate": 18.154043187688046,
-    "Fibrinogen": 262.496911351785,
-    "Phosphate": 3.612519413287318,
-    "WBC": 11.738648535345682,
-    "Creatinine": 1.4957773156474896,
-    "PaCO2": 41.11569643111729,
-    "AST": 193.4448880402708,
-    "FiO2": 0.7016656642357807,
-    "Platelets": 204.66642639312448,
-    "SaO2": 93.010527124635,
-    "Glucose": 142.169406624713,
-    "ABPm": 82.11727559995713,
-    "Magnesium": 2.004148832962384,
-    "Potassium": 4.152729193815373,
-    "ABPd": 64.01471072970384,
-    "Calcium": 7.161149186763874,
-    "Alkalinephos": 97.79616327960757,
-    "SpO2": 97.6634493216935,
-    "Bilirubin_direct": 1.390723226703758,
-    "Chloride": 106.26018538478121,
-    "Hct": 31.28308971681893,
-    "Heartrate": 84.52237068276303,
-    "Bilirubin_total": 1.6409406684190786,
-    "TroponinI": 7.269239936440605,
-    "ABPs": 122.3698773806418,
-    "pH": 7.367231494050988,
-}
-
 IDENTIFIERS = ["pid", "Time"]
 MEDICAL_TESTS = [
     "LABEL_BaseExcess",
@@ -120,58 +80,52 @@ def load_data():
     return df_train, df_train_label, df_test
 
 
-# slower version - supports patient specific mean
-def fill_na_with_average_patient_column(df, logger):
-    """Fills NaNs with the average value of each column for each patient if available,
-    otherwise column-wide entry
+def data_formatting(df_train, df_train_label, logger):
+    """Function takes data in for formatting
 
     Args:
-        df (pandas.core.frame.DataFrame): data to be transformed
+        df_train (pandas.core.DataFrame): preprocessed training features
+        df_train_label (pandas.core.DataFrame): preprocessed training labels
         logger (Logger): logger
 
     Returns:
-        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
-    """
-    columns = list(df.columns)
-    for i, column in enumerate(columns):
-        logger.info(
-            "{} column of {} columns processed".format(i + 1, len(columns))
-        )
-        # Fill na with patient average
-        df[[column]] = df.groupby(["pid"])[column].transform(
-            lambda x: x.fillna(x.mean())
-        )
+        X_train (np.ndarray): (n_samples, n_features) array containing features
+        y_train_vital_signs (np.ndarray): (n_samples, n_features) array labels
 
-    # Fill na with overall column average for lack of a better option for now
-    df = df.fillna(df.mean())
-    if df.isnull().values.any():
-        columns_with_na = df.columns[df.isna().any()].tolist()
-        for column in columns_with_na:
-            df[column] = TYPICAL_VALUES[column]
-    return df
-
-
-def fill_na_with_average_column(df):
-    """Quick version of fill_na_with_average_patient_column - does not support patient average
-    and results in loss of information.
-
-    Note:
-        Inserted dict with typical values as global var because running the script on parts of the
-        data leads to errors associated with NaNs because there is not a single sample.
-
-    Args:
-        df (pandas.core.DataFrame): data to be transformed
-
-    Returns:
-        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
+        transform outputs later on when scaling back predictions for interpretability
     """
 
-    df = df.fillna(df.mean(numeric_only=True))
-    if df.isnull().values.any():
-        columns_with_na = df.columns[df.isna().any()].tolist()
-        for column in columns_with_na:
-            df[column] = TYPICAL_VALUES[column]
-    return df
+    # Cast to arrays
+    X_train = df_train.drop(
+        columns=IDENTIFIERS
+    ).values
+    # Create list with different label for each vital sign
+    logger.info("Creating a list of labels for each vital sign")
+    y_train_medical_test = []
+    for test in MEDICAL_TESTS:
+        y_train_medical_test.append(df_train_label[test].astype(int).values)
+    y_train_sepsis = df_train_label[SEPSIS[0]].astype(int).values
+    # Scale data to avoid convergence warning
+    logger.info(f"Scaling data using {FLAGS.scaler}.")
+
+    if FLAGS.scaler == "standard":
+        scaler = StandardScaler(with_mean=True, with_std=True)
+    else:
+        scaler = MinMaxScaler()
+
+    X_train = scaler.fit_transform(X_train)
+
+    # Also transform the outputs as it may be better for the network
+    # See TO DO: to we scale labels?
+    medical_test_scales = []
+    # if FLAGS.model == "ANN":
+    #     for i, sign in enumerate(VITAL_SIGNS):
+    #         label_scaler = MinMaxScaler()
+    #         y_train_vital_signs[i] = label_scaler.fit_transform(y_train_vital_signs[i].reshape(-1, 1))
+    #         vital_signs_scales.append(label_scaler.scale_)
+    #         y_train_vital_signs[i] = y_train_vital_signs[i].reshape(-1)
+
+    return X_train, y_train_medical_test, y_train_sepsis
 
 
 def oversampling_strategies(X_train, y_train, strategy):
@@ -481,47 +435,10 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    logger.info("Preprocess training set")
-    # Would be useful to distribute/multithread this part
-    df_train_preprocessed = fill_na_with_average_patient_column(
-        df_train, logger
+    
+    X_train, y_train_set_med, y_train_sepsis = data_formatting(
+        df_train, df_train_label, logger
     )
-
-    # Cast training labels for these tasks
-    df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
-        MEDICAL_TESTS + VITAL_SIGNS + SEPSIS
-    ].astype(int)
-    # Merging pids to make sure they map correctly.
-    df_train_preprocessed_merged = pd.merge(
-        df_train_preprocessed,
-        df_train_label,
-        how="left",
-        left_on="pid",
-        right_on="pid",
-    )
-    # Cast to arrays
-    X_train = df_train_preprocessed_merged.drop(
-        columns=IDENTIFIERS + MEDICAL_TESTS + SEPSIS + VITAL_SIGNS
-    ).values
-    # Create list with different label for each medical test
-    logger.info("Creating a list of labels for each medical test")
-    y_train_set_med = []
-    for test in MEDICAL_TESTS:
-        y_train_set_med.append(df_train_preprocessed_merged[test].values)
-    y_train_spesis = df_train_preprocessed_merged["LABEL_Sepsis"].values
-
-    logger.info("Preprocess test set")
-    df_test_preprocessed = fill_na_with_average_patient_column(df_test, logger)
-
-    # Scale data to avoid convergence warning
-    logger.info(f"Scaling data using {FLAGS.scaler}.")
-
-    if FLAGS.scaler == "standard":
-        scaler = StandardScaler(with_mean=True, with_std=True)
-    else:
-        scaler = MinMaxScaler()
-
-    X_train = scaler.fit_transform(X_train)
 
     # Compute resampled data for all medical tests
     logger.info("Beginning sampling strategy for medical tests")
@@ -530,8 +447,8 @@ def main(logger):
     )
     logger.info("Performing oversampling for SEPSIS.")
     # Can be called directly because there is only one label.
-    X_train_resampled_spesis, y_train_resampled_spesis = oversampling_strategies(
-        X_train, y_train_spesis, FLAGS.sampling_strategy
+    X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(
+        X_train, y_train_sepsis, FLAGS.sampling_strategy
     )
 
     logger.info("Beginning modelling process.")
@@ -541,8 +458,6 @@ def main(logger):
         "penalty": ["l1", "l2"],
         "loss": ["squared_hinge"],
         "dual": [False],
-        "tol": [0.001],
-        "cache_size": [1000],
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
@@ -557,7 +472,7 @@ def main(logger):
         "verbose": [0],  # Doesn't work well given the gridsearch as per docs
         "random_state": [42],  # Because we <3 Douglas Adams.
         "max_iter": [
-            1000
+            2000
         ],  # Stopping criterion is given by the tol hyperparameter.
     }
 
@@ -571,13 +486,13 @@ def main(logger):
         "coef0": [0],
         "shrinking": [True],
         "probability": [False],
-        "tol": [0.001],
         "cache_size": [1000],
         "class_weight": [None],
         "verbose": [False],
         "max_iter": [1000],
         "decision_function_shape": ["ovo"],  # only binary variables are set
         "random_state": [42],
+        "max_iter": [2000]
     }
 
     # CV GridSearch with different regularization parameters
@@ -609,8 +524,8 @@ def main(logger):
 
     logger.info("Perform gridsearch for linear SVM on SEPSIS.")
     gridsearch_l_spesis_model, scores_l_spesis_model = get_model_spesis(
-        X_train_resampled_spesis,
-        y_train_resampled_spesis,
+        X_train_resampled_sepsis,
+        y_train_resampled_sepsis,
         logger,
         param_grid_linear,
         "gridsearch_linear",
@@ -618,8 +533,8 @@ def main(logger):
 
     logger.info("Perform gridsearch for non-linear SVM on SEPSIS.")
     gridsearch_nl_svm_spesis_models, scores_nl_svm_spesis_models = get_model_spesis(
-        X_train_resampled_spesis,
-        y_train_resampled_spesis,
+        X_train_resampled_sepsis,
+        y_train_resampled_sepsis,
         logger,
         param_grid_non_linear,
         "gridsearch_non_linear",
@@ -631,11 +546,12 @@ def main(logger):
         logger,
     )
 
-    X_test = df_test_preprocessed.drop(columns=IDENTIFIERS).values
+    X_test = df_test.drop(columns=IDENTIFIERS).values
 
     # get the unique test ids of patients
-    test_pids = np.unique(df_test_preprocessed[["pid"]].values)
+    test_pids = np.unique(df_test[["pid"]].values)
     logger.info("Fetch predictions.")
+    print("X train ",X_train_resampled_set_med)
     medical_test_predictions = get_medical_test_predictions(
         X_test, test_pids, best_model_medical_tests
     )

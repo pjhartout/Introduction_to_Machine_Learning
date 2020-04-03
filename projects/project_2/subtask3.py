@@ -47,46 +47,6 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
-TYPICAL_VALUES = {
-    "pid": 15788.831218741774,
-    "Time": 7.014398525927875,
-    "Age": 62.07380889707818,
-    "EtCO2": 32.88311356434632,
-    "PTT": 40.09130983590656,
-    "BUN": 23.192663516538175,
-    "Lactate": 2.8597155076236422,
-    "Temp": 36.852135856500034,
-    "Hgb": 10.628207669881103,
-    "HCO3": 23.488100167210746,
-    "BaseExcess": -1.2392844571830848,
-    "RRate": 18.154043187688046,
-    "Fibrinogen": 262.496911351785,
-    "Phosphate": 3.612519413287318,
-    "WBC": 11.738648535345682,
-    "Creatinine": 1.4957773156474896,
-    "PaCO2": 41.11569643111729,
-    "AST": 193.4448880402708,
-    "FiO2": 0.7016656642357807,
-    "Platelets": 204.66642639312448,
-    "SaO2": 93.010527124635,
-    "Glucose": 142.169406624713,
-    "ABPm": 82.11727559995713,
-    "Magnesium": 2.004148832962384,
-    "Potassium": 4.152729193815373,
-    "ABPd": 64.01471072970384,
-    "Calcium": 7.161149186763874,
-    "Alkalinephos": 97.79616327960757,
-    "SpO2": 97.6634493216935,
-    "Bilirubin_direct": 1.390723226703758,
-    "Chloride": 106.26018538478121,
-    "Hct": 31.28308971681893,
-    "Heartrate": 84.52237068276303,
-    "Bilirubin_total": 1.6409406684190786,
-    "TroponinI": 7.269239936440605,
-    "ABPs": 122.3698773806418,
-    "pH": 7.367231494050988,
-}
-
 IDENTIFIERS = ["pid", "Time"]
 MEDICAL_TESTS = [
     "LABEL_BaseExcess",
@@ -105,12 +65,12 @@ SEPSIS = ["LABEL_Sepsis"]
 
 
 def load_data():
-    """Loads data to three different dataframes.
+    """Loads the preprocessed data to three different dataframes.
 
     Returns:
         df_train, df_train_label, df_test (pandas.core.frame.DataFrame): three dataframes
         containing the
-        training features, training labels and testing features respectively.
+        preprocessed training features, training labels and testing features respectively.
 
     """
     if FLAGS.nb_of_patients is not None:
@@ -123,80 +83,31 @@ def load_data():
     return df_train, df_train_label, df_test
 
 
-def fill_na_with_average_patient_column(df, logger):
-    """Fills NaNs with the average value of each column for each patient if available,
-    otherwise column-wide entry
+def data_formatting(df_train, df_train_label, logger):
+    """Function takes data in for formatting
 
     Args:
-        df (pandas.core.frame.DataFrame): data to be transformed
-        logger (Logger): logger
-
-    Returns:
-        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
-    """
-    columns = list(df.columns)
-    for i, column in enumerate(columns):
-        logger.info(
-            "{} column of {} columns processed".format(i + 1, len(columns))
-        )
-        # Fill na with patient average
-        df[[column]] = df.groupby(["pid"])[column].transform(
-            lambda x: x.fillna(x.mean())
-        )
-
-    # Fill na with overall column average for lack of a better option for now
-    df = df.fillna(df.mean())
-    if df.isnull().values.any():
-        columns_with_na = df.columns[df.isna().any()].tolist()
-        for column in columns_with_na:
-            df[column] = TYPICAL_VALUES[column]
-    return df
-
-
-def data_preprocessing(df_train, df_train_label, df_test, logger):
-    """Function takes data in for preprocessing (formatting & scaling)
-
-    Args:
-        df_train (pandas.core.DataFrame): training features
-        df_train_label (pandas.core.DataFrame): training labels
-        df_test (pandas.core.DataFrame): training features
+        df_train (pandas.core.DataFrame): preprocessed training features
+        df_train_label (pandas.core.DataFrame): preprocessed training labels
         logger (Logger): logger
 
     Returns:
         X_train (np.ndarray): (n_samples, n_features) array containing features
         y_train_vital_signs (np.ndarray): (n_samples, n_features) array labels
-        df_test_preprocessed (pandas.core.DataFrame): preprocessed testing DataFrame
+
         transform outputs later on when scaling back predictions for interpretability
     """
-    logger.info("Preprocess training set")
-    # Would be useful to distribute/multithread this part
-    df_train_preprocessed = fill_na_with_average_patient_column(
-        df_train, logger
-    )
 
-    logger.info("Perform projection to select only vital signs labels")
-    df_train_label = df_train_label[["pid"] + VITAL_SIGNS]
-
-    # Merging pids to make sure they map correctly.
-    df_train_preprocessed_merged = pd.merge(
-        df_train_preprocessed,
-        df_train_label,
-        how="left",
-        left_on="pid",
-        right_on="pid",
-    )
     # Cast to arrays
-    X_train = df_train_preprocessed_merged.drop(
-        columns=IDENTIFIERS + VITAL_SIGNS
+    X_train = df_train.drop(
+        columns=IDENTIFIERS
     ).values
-    # Create list with different label for each medical test
-    logger.info("Creating a list of labels for each medical test")
+    # Create list with different label for each vital sign
+    logger.info("Creating a list of labels for each vital sign")
     y_train_vital_signs = []
     for sign in VITAL_SIGNS:
-        y_train_vital_signs.append(df_train_preprocessed_merged[sign].values)
+        y_train_vital_signs.append(df_train_label[sign].astype(int).values)
 
-    logger.info("Preprocess test set")
-    df_test_preprocessed = fill_na_with_average_patient_column(df_test, logger)
     # Scale data to avoid convergence warning
     logger.info(f"Scaling data using {FLAGS.scaler}.")
 
@@ -217,7 +128,7 @@ def data_preprocessing(df_train, df_train_label, df_test, logger):
     #         vital_signs_scales.append(label_scaler.scale_)
     #         y_train_vital_signs[i] = y_train_vital_signs[i].reshape(-1)
 
-    return X_train, y_train_vital_signs, df_test_preprocessed
+    return X_train, y_train_vital_signs
 
 
 def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
@@ -245,7 +156,7 @@ def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
             n_jobs=cores,
             scoring="r2",
             cv=FLAGS.k_fold,
-            verbose=[0],
+            verbose=0,
         )
         tuned_svr.fit(X_train, y_train_vital_signs[i])
         svr_models.append(tuned_svr.best_estimator_)
@@ -444,13 +355,14 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    X_train, y_train_vital_signs, df_test_preprocessed = data_preprocessing(
-        df_train, df_train_label, df_test, logger
+    X_train, y_train_vital_signs = data_formatting(
+        df_train, df_train_label, logger
     )
 
     logger.info("Beginning modelling process.")
 
     if FLAGS.model == "SVR":
+        device=None
         # train model here
         param_grid = {
             "kernel": ["linear", "poly", "rbf", "sigmoid"],
@@ -475,9 +387,9 @@ def main(logger):
         )
 
     # get the unique test ids of patients
-    test_pids = np.unique(df_test_preprocessed[IDENTIFIERS].values)
+    test_pids = np.unique(df_test[IDENTIFIERS].values)
     logger.info("Fetch predictions.")
-    X_test = df_test_preprocessed.drop(columns=IDENTIFIERS).values
+    X_test = df_test.drop(columns=IDENTIFIERS).values
     vital_signs_predictions = get_vital_signs_predictions(
         X_test, test_pids, vital_signs_models, device
     )
@@ -500,7 +412,7 @@ if __name__ == "__main__":
         "-train_f",
         type=str,
         required=True,
-        help="path to the CSV file containing the training \
+        help="path to the CSV file containing the preprocessed training \
       features",
     )
 
@@ -509,7 +421,7 @@ if __name__ == "__main__":
         "-test",
         type=str,
         required=True,
-        help="path to the CSV file containing the testing \
+        help="path to the CSV file containing the preprocessed testing \
  features",
     )
 
@@ -518,7 +430,7 @@ if __name__ == "__main__":
         "-train_l",
         type=str,
         required=True,
-        help="path to the CSV file containing the training \
+        help="path to the CSV file containing the preprocessed training \
      labels",
     )
 
