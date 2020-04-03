@@ -458,6 +458,10 @@ def main(logger):
         "penalty": ["l1", "l2"],
         "loss": ["squared_hinge"],
         "dual": [False],
+<<<<<<< HEAD
+=======
+        "tol": [0.001],
+>>>>>>> eca7d74695db5731eb28e4e9f99403546826246c
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
