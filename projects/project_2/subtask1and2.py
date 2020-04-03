@@ -542,7 +542,6 @@ def main(logger):
         "loss": ["squared_hinge"],
         "dual": [False],
         "tol": [0.001],
-        "cache_size": [1000],
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
