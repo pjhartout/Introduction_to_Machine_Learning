@@ -398,7 +398,7 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         )
         model = Feedforward(35, 80)
         criterion = torch.nn.MSELoss()
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
         batch_size = 64  # Ideally we want any multiple of 12 here
         trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
@@ -575,6 +575,7 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG, filename="script_status_subtask3.log"
     )
+
 
     logger = logging.getLogger("IML-P2-T3")
 

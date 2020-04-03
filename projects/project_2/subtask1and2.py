@@ -542,6 +542,7 @@ def main(logger):
         "loss": ["squared_hinge"],
         "dual": [False],
         "tol": [0.001],
+        "cache_size": [1000],
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
@@ -556,7 +557,7 @@ def main(logger):
         "verbose": [0],  # Doesn't work well given the gridsearch as per docs
         "random_state": [42],  # Because we <3 Douglas Adams.
         "max_iter": [
-            -1
+            1000
         ],  # Stopping criterion is given by the tol hyperparameter.
     }
 
