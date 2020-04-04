@@ -330,7 +330,7 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
                 loss.backward()
                 optimizer.step()
                 LOSS.append(loss)
-                writer.add_scalar("Training loss", loss, epoch)
+                writer.add_scalar("Training_loss", loss, epoch)
             toc = time.perf_counter()
             logger.info(f"Finished epoch {epoch} in {toc - tic:0.4f} seconds")
         writer.close()
@@ -378,7 +378,7 @@ def main(logger):
             "epsilon": [0.1],
             "shrinking": [True],
             "cache_size": [1000],
-            "verbose": [False],
+            "verbose": [2],
             "max_iter": [1000],
         }
         vital_signs_models, vital_signs_models_scores = get_vital_signs_svr_models(
@@ -491,7 +491,6 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG, filename="script_status_subtask3.log"
     )
-
 
     logger = logging.getLogger("IML-P2-T3")
 

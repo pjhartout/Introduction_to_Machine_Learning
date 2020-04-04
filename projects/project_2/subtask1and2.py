@@ -488,7 +488,7 @@ def main(logger):
         "probability": [False],
         "cache_size": [1000],
         "class_weight": [None],
-        "verbose": [False],
+        "verbose": [2],
         "decision_function_shape": ["ovo"],  # only binary variables are set
         "random_state": [42],
         "max_iter": [2000]
