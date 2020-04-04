@@ -1,2 +1,0 @@
-
-python subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/train_features.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/train_labels.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/test_features.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler standard --model ANN --epochs 200

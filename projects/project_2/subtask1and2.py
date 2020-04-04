@@ -300,11 +300,11 @@ def determine_best_model_medical_test(
     for i, (scores_linear_model, scores_non_linear_model) in enumerate(
         zip(scores_linear_models, scores_non_linear_models)
     ):
-        if scores_linear_model[i] > scores_non_linear_model[i]:
+        if scores_linear_model > scores_non_linear_model:
             best_models_for_medical_tests.append(linear_models[i])
             logger.info(
                 f"The performance for the model for the test {MEDICAL_TESTS[i]} is "
-                f"{scores_linear_model[i]} achieved by the linear model"
+                f"{scores_linear_model} achieved by the linear model"
             )
         else:
             best_models_for_medical_tests.append(nonlinear_models[i])
@@ -489,7 +489,6 @@ def main(logger):
         "cache_size": [1000],
         "class_weight": [None],
         "verbose": [False],
-        "max_iter": [1000],
         "decision_function_shape": ["ovo"],  # only binary variables are set
         "random_state": [42],
         "max_iter": [2000]
@@ -513,7 +512,8 @@ def main(logger):
         param_grid_non_linear,
         "gridsearch_non_linear",
     )
-
+    logger.info(f"Linear SVM results {scores_l_svm_medical_tests_models}")
+    logger.info(f"Nonlinear SVM results {scores_nl_svm_medical_tests_models}")
     best_model_medical_tests = determine_best_model_medical_test(
         gridsearch_l_svm_medical_tests_models,
         gridsearch_nl_svm_medical_tests_models,

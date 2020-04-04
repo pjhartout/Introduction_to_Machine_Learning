@@ -1,8 +1,28 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Script to preprocess the dataset and export it for other modelling scripts
+
+example usage from CLI:
+ $ python3 data_preprocessing.py --train_features path/to/data/train_features.csv
+                    --train_labels path/to/data/train_labels.csv
+                    --test_features path/to/data/test_features.csv
+                    --preprocess_train path/to/data/preprocessed_train.csv
+                    --preprocess_test path/to/data/preprocessed_test.csv
+                    --preprocess_label path/to/data/preprocessed_labels.csv
+For help, run:
+ $ python data_preprocessing.py -h
+
+
+Following Google style guide: http://google.github.io/styleguide/pyguide.html
+
+"""
+
+
 import argparse
 import logging
 
 import pandas as pd
-import numpy as np
 
 TYPICAL_VALUES = {
     "pid": 15788.831218741774,
@@ -110,31 +130,8 @@ def fill_na_with_average_patient_column(df, logger):
     return df
 
 
-def fill_na_with_average_column(df):
-    """Quick version of fill_na_with_average_patient_column - does not support patient average
-    and results in loss of information.
-
-    Note:
-        Inserted dict with typical values as global var because running the script on parts of the
-        data leads to errors associated with NaNs because there is not a single sample.
-
-    Args:
-        df (pandas.core.DataFrame): data to be transformed
-
-    Returns:
-        df (pandas.core.frame.DataFrame): dataframe containing the transformed data
-    """
-
-    df = df.fillna(df.mean(numeric_only=True))
-    if df.isnull().values.any():
-        columns_with_na = df.columns[df.isna().any()].tolist()
-        for column in columns_with_na:
-            df[column] = TYPICAL_VALUES[column]
-    return df
-
-
 def main(logger):
-    """Primary function reading, preprocessing and modelling the data
+    """Primary function reading and preprocessing the data
 
     Args:
         logger (Logger): logger to get information about the status of the script when running
@@ -166,7 +163,7 @@ def main(logger):
         right_on="pid",
     )
 
-    df_train_label_preprocessed = df_train_preprocessed_merged[IDENTIFIERS + MEDICAL_TESTS + VITAL_SIGNS+ SEPSIS ]
+    df_train_label_preprocessed = df_train_preprocessed_merged[IDENTIFIERS + MEDICAL_TESTS + VITAL_SIGNS+ SEPSIS]
     logger.info("Preprocess test set")
     df_test_preprocessed = fill_na_with_average_patient_column(df_test, logger)
 
@@ -235,14 +232,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--nb_of_patients",
-        "-nb_pat",
-        type=int,
-        required=False,
-        help="Number of patients to consider in run. If not specified, then consider all patients",
-    )
-
-    parser.add_argument(
         "--preprocess_label",
         "-pre_label",
         type=str,
@@ -251,9 +240,6 @@ if __name__ == "__main__":
                                 label data",
     )
 
-
-
-   
     FLAGS = parser.parse_args()
 
     # clear logger.
@@ -261,7 +247,7 @@ if __name__ == "__main__":
         level=logging.DEBUG, filename="script_status_subtask1and2.log"
     )
 
-    logger = logging.getLogger("IML-P2-T1T2")
+    logger = logging.getLogger("Data preprocessing")
 
     # Create a second stream handler for logging to `stderr`, but set
     # its log level to be a little bit smaller such that we only have

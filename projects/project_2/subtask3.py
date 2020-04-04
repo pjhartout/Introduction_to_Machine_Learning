@@ -36,6 +36,8 @@ import multiprocessing
 import argparse
 import logging
 import sys
+import time
+
 import torch
 
 import pandas as pd
@@ -227,7 +229,6 @@ def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     )
 
 
-### Define network
 class Feedforward(torch.nn.Module):
     """ Definition of the feedfoward neural network. It currently has three layers which can be
     modified in the function where the network is trained.
@@ -311,15 +312,17 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         criterion = torch.nn.MSELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
-        batch_size = 64  # Ideally we want any multiple of 12 here
+        batch_size = 2048  # Ideally we want any multiple of 12 here
         trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
         LOSS = []
         if torch.cuda.is_available():
             model.cuda()
         model.float()
         writer = SummaryWriter()
-        X_test_tensor = X_test_tensor.to(device)
+        logger.info("Commencing neural network training")
+
         for epoch in range(FLAGS.epochs):
+            tic = time.perf_counter()
             for x, y in trainloader:
                 yhat = model(x)
                 loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
@@ -327,12 +330,13 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
                 loss.backward()
                 optimizer.step()
                 LOSS.append(loss)
-                y_pred = model(X_test_tensor).cpu().detach().numpy()
-                test_loss = mean_squared_error(y_test, y_pred)
-                writer.add_scalar("Loss/train", loss, epoch)
-                writer.add_scalar("Loss/test", test_loss, epoch)
-
+                writer.add_scalar("Training loss", loss, epoch)
+            toc = time.perf_counter()
+            logger.info(f"Finished epoch {epoch} in {toc - tic:0.4f} seconds")
         writer.close()
+
+        X_test_tensor = X_test_tensor.to(device)
+        y_pred = model(X_test_tensor).cpu().detach().numpy()
         test_error = mean_squared_error(y_test, y_pred)
         logger.info(f"MSE for test set is {test_error}")
         logger.info(f"Finished test for vital sign {sign}")
