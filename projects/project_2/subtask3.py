@@ -234,14 +234,15 @@ class Feedforward(torch.nn.Module):
     modified in the function where the network is trained.
     """
 
-    def __init__(self, input_size, hidden_size):
+    def __init__(self, input_size, hidden_size, p=0.2):
         super(Feedforward, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
+        self.dropout = torch.nn.Dropout(p=p)
         self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
+        self.bn = torch.nn.BatchNorm1d(hidden_size)
         self.relu = torch.nn.ReLU()
         self.fc2 = torch.nn.Linear(self.hidden_size, hidden_size)
-        self.relu = torch.nn.ReLU()
         self.fc3 = torch.nn.Linear(self.hidden_size, 1)
         self.sigmoid = torch.nn.Sigmoid()
 
@@ -258,11 +259,13 @@ class Feedforward(torch.nn.Module):
                 the predicted output for each sample.
         """
         hidden = self.fc1(x)
-        relu = self.relu(hidden)
-        hidden_2 = self.fc2(relu)
-        relu_2 = self.relu(hidden_2)
-        output = self.fc3(relu_2)
-        output = self.sigmoid(output)
+        hidden_bn = self.bn(hidden)
+        relu = self.relu(hidden_bn)
+        hidden_2 = self.dropout(self.fc2(relu))
+        hidden_2_bn = self.bn(hidden_2)
+        relu_2 = self.relu(hidden_2_bn)
+        output = self.dropout(self.fc3(relu_2))
+        output = self.relu(output)
         return output
 
 
@@ -308,9 +311,9 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-        model = Feedforward(35, 80)
+        model = Feedforward(35, 150, 0.0)
         criterion = torch.nn.MSELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         dataset = Data(X_train_tensor, y_train_tensor)
         batch_size = 2048  # Ideally we want any multiple of 12 here
         trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
@@ -332,11 +335,13 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
                 LOSS.append(loss)
                 writer.add_scalar("Training_loss", loss, epoch)
             toc = time.perf_counter()
-            logger.info(f"Finished epoch {epoch} in {toc - tic:0.4f} seconds")
+            print(f"Finished epoch {epoch} in {toc - tic:0.4f} seconds", end="\r")
         writer.close()
 
         X_test_tensor = X_test_tensor.to(device)
         y_pred = model(X_test_tensor).cpu().detach().numpy()
+        logger.info(f"Value of the test sample if {y_test} and value for the predicted "
+                    f"sample is {y_pred}")
         test_error = mean_squared_error(y_test, y_pred)
         logger.info(f"MSE for test set is {test_error}")
         logger.info(f"Finished test for vital sign {sign}")

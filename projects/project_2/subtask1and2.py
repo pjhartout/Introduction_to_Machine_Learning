@@ -457,7 +457,7 @@ def main(logger):
     param_grid_linear = {
         "penalty": ["l1", "l2"],
         "loss": ["squared_hinge"],
-        "dual": [False],
+        "dual": [True],
         "C": np.linspace(0.1, 10, num=3),
         "multi_class": ["ovr"],
         "fit_intercept": [False],
