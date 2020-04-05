@@ -42383,3 +42383,5069 @@ INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
 INFO:IML-P2-T3:Converting arrays to tensors
 INFO:IML-P2-T3:Removing data from previous run
 INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Usage:
+subtask3.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_subtask3_bis -scale standard -m ANN --nb_of_patients 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:k_fold: None
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_subtask3_bis
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cpu to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[13.600196 ]
+ [12.621894 ]
+ [21.097647 ]
+ [17.957788 ]
+ [14.042421 ]
+ [17.284946 ]
+ [15.774947 ]
+ [19.678417 ]
+ [12.189812 ]
+ [13.698954 ]
+ [21.080675 ]
+ [18.062885 ]
+ [20.876867 ]
+ [17.772936 ]
+ [17.474005 ]
+ [14.9859495]
+ [17.285936 ]
+ [18.839436 ]
+ [13.961236 ]
+ [20.020443 ]
+ [15.742943 ]
+ [16.752295 ]
+ [13.239011 ]
+ [15.656968 ]
+ [17.300562 ]]
+INFO:IML-P2-T3:MSE for test set is 0.8625322366006367
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[ 92.91912 ]
+ [ 86.67095 ]
+ [ 51.012764]
+ [107.742775]
+ [ 79.14669 ]
+ [ 93.50769 ]
+ [ 84.47819 ]
+ [ 62.795868]
+ [ 85.37617 ]
+ [ 86.97315 ]
+ [ 82.009445]
+ [109.728874]
+ [ 64.054596]
+ [107.61729 ]
+ [ 87.21032 ]
+ [106.33417 ]
+ [ 86.20226 ]
+ [108.04374 ]
+ [ 71.54682 ]
+ [ 67.5797  ]
+ [ 86.13825 ]
+ [ 94.98937 ]
+ [ 83.70604 ]
+ [ 90.93551 ]
+ [ 81.76324 ]]
+INFO:IML-P2-T3:MSE for test set is 19.954335918794385
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[ 88.296776]
+ [ 95.26475 ]
+ [ 91.50379 ]
+ [ 95.20832 ]
+ [ 90.38923 ]
+ [ 90.064674]
+ [ 97.99522 ]
+ [ 95.94923 ]
+ [ 96.70322 ]
+ [ 98.95171 ]
+ [109.74282 ]
+ [ 94.657845]
+ [ 90.307274]
+ [ 95.65382 ]
+ [ 92.33662 ]
+ [ 99.198616]
+ [102.1843  ]
+ [ 92.005394]
+ [107.19111 ]
+ [ 99.80509 ]
+ [ 86.03503 ]
+ [ 99.994774]
+ [ 94.64268 ]
+ [ 87.82447 ]
+ [ 99.93327 ]]
+INFO:IML-P2-T3:MSE for test set is 27.367722526274157
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[102.92169 ]
+ [ 61.815983]
+ [ 74.80361 ]
+ [ 88.32194 ]
+ [ 75.087425]
+ [ 82.22038 ]
+ [ 43.90852 ]
+ [ 74.77691 ]
+ [ 61.624325]
+ [120.549286]
+ [ 92.60981 ]
+ [ 89.05374 ]
+ [ 79.998856]
+ [ 88.23312 ]
+ [ 79.30649 ]
+ [ 82.14018 ]
+ [ 61.902103]
+ [ 79.93338 ]
+ [ 65.394135]
+ [ 75.84211 ]
+ [103.144966]
+ [ 70.95457 ]
+ [126.52261 ]
+ [104.18045 ]
+ [ 65.365   ]]
+INFO:IML-P2-T3:MSE for test set is 94.53925932690501
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtask3.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_subtask3_bis.zip -scale standard -m ANN --nb_of_patients 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:k_fold: None
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_subtask3_bis.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cpu to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[13.869936]
+ [11.461695]
+ [21.769129]
+ [19.089685]
+ [13.519665]
+ [17.599833]
+ [15.278624]
+ [20.157873]
+ [11.115961]
+ [13.679762]
+ [21.252058]
+ [19.004671]
+ [20.966015]
+ [18.98471 ]
+ [17.18944 ]
+ [15.750522]
+ [16.715517]
+ [17.367811]
+ [14.37835 ]
+ [21.049854]
+ [15.913913]
+ [16.731535]
+ [13.134807]
+ [15.605268]
+ [16.910976]]
+INFO:IML-P2-T3:MSE for test set is 0.6245590981177884
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[ 78.12344 ]
+ [ 69.70406 ]
+ [ 39.265934]
+ [105.398964]
+ [ 62.828213]
+ [ 79.99961 ]
+ [ 70.06875 ]
+ [ 42.87172 ]
+ [ 72.27701 ]
+ [ 89.57783 ]
+ [ 96.57638 ]
+ [105.68342 ]
+ [ 48.696663]
+ [105.96664 ]
+ [ 69.14134 ]
+ [ 87.05067 ]
+ [ 63.242676]
+ [112.66599 ]
+ [ 85.28879 ]
+ [ 94.44445 ]
+ [ 71.60189 ]
+ [109.65939 ]
+ [ 85.02397 ]
+ [ 74.30477 ]
+ [ 63.00906 ]]
+INFO:IML-P2-T3:MSE for test set is 198.01535588084428
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[ 85.78998 ]
+ [103.58014 ]
+ [ 89.43083 ]
+ [ 98.060555]
+ [102.60753 ]
+ [ 87.93101 ]
+ [102.321625]
+ [ 90.73419 ]
+ [101.44444 ]
+ [ 93.07733 ]
+ [117.70085 ]
+ [ 94.97612 ]
+ [ 89.97891 ]
+ [ 97.72479 ]
+ [ 94.00107 ]
+ [108.54232 ]
+ [106.984634]
+ [100.01514 ]
+ [109.890854]
+ [ 98.32832 ]
+ [ 95.75792 ]
+ [ 89.14734 ]
+ [ 94.77629 ]
+ [ 92.8367  ]
+ [103.39027 ]]
+INFO:IML-P2-T3:MSE for test set is 52.29952272119932
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[ 96.22658 ]
+ [ 53.67363 ]
+ [ 80.19234 ]
+ [ 71.22168 ]
+ [ 71.844826]
+ [ 85.974976]
+ [ 65.69472 ]
+ [ 86.79757 ]
+ [ 52.948364]
+ [115.62419 ]
+ [ 89.0397  ]
+ [ 70.80528 ]
+ [ 84.29111 ]
+ [ 70.0076  ]
+ [ 85.60266 ]
+ [ 71.64578 ]
+ [ 72.26093 ]
+ [ 85.15704 ]
+ [ 63.0299  ]
+ [102.34562 ]
+ [103.382965]
+ [ 80.424835]
+ [118.99794 ]
+ [104.22522 ]
+ [ 73.850105]]
+INFO:IML-P2-T3:MSE for test set is 47.46906102413777
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[9.7085494e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1207457e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.7662153e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.1154012e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9609643e-01]
+ [6.6001213e-09]
+ [6.3623584e-06]
+ [2.2082076e-11]
+ [5.0000000e-01]
+ [1.5725143e-04]
+ [9.9765331e-01]
+ [5.0000000e-01]
+ [9.9919432e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.14003483414122084
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[5.00000000e-01]
+ [5.00000000e-01]
+ [7.72375055e-03]
+ [2.44291499e-04]
+ [5.00000000e-01]
+ [1.86006841e-03]
+ [5.83376910e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.56531916e-07]
+ [2.46000302e-04]
+ [3.27433489e-04]
+ [1.14018294e-04]
+ [4.19001357e-04]
+ [4.06766922e-08]
+ [9.97973025e-01]
+ [4.51900531e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [9.99883413e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.12000353664420434
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [2.1677047e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.5517579e-04]
+ [6.2102283e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.1256687e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.6700203e-01]
+ [5.0000000e-01]
+ [9.9911255e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.7783341e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.7577367e-06]
+ [5.0000000e-01]
+ [3.0236575e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.16004428337250018
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.0158557e-06]
+ [2.5664599e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3330582e-04]
+ [4.1563401e-04]
+ [4.6623518e-07]
+ [9.9695909e-01]
+ [5.0000000e-01]
+ [3.2865294e-06]
+ [2.9306169e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9398792e-01]
+ [2.7839071e-05]
+ [4.1233119e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.6347737e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.7576779e-07]
+ [2.5462712e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11006983624190707
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4106681e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.8402059e-01]
+ [2.0720332e-03]
+ [2.4951298e-08]
+ [4.8229049e-06]
+ [5.0000000e-01]
+ [9.9254519e-01]
+ [9.9992394e-01]
+ [1.1033443e-04]
+ [9.9764436e-01]
+ [9.1238855e-04]
+ [4.0376734e-02]
+ [2.1892754e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.3099869e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1200781551853305
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[9.9601632e-01]
+ [9.9990857e-01]
+ [7.7947753e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9760664e-01]
+ [9.9912614e-01]
+ [9.9981076e-01]
+ [4.6410001e-05]
+ [5.0000000e-01]
+ [1.9508836e-05]
+ [8.7145893e-03]
+ [9.9992001e-01]
+ [5.0000000e-01]
+ [9.4575284e-05]
+ [6.0231827e-07]
+ [5.0000000e-01]
+ [9.9700052e-01]
+ [5.0000000e-01]
+ [9.9670357e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11000475354418794
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0] and value for the predicted sample is [[2.5140382e-05]
+ [1.7951768e-05]
+ [2.1243526e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.6728493e-06]
+ [5.0000000e-01]
+ [2.8446284e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.2553732e-04]
+ [3.0115128e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.8765406e-12]
+ [1.8538662e-05]
+ [1.8024284e-03]
+ [1.2381312e-07]
+ [9.9983656e-01]
+ [5.0000000e-01]
+ [2.3600840e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.5758398e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11001887570708307
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[6.5244362e-04]
+ [5.1196575e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.7907908e-02]
+ [6.0544498e-05]
+ [5.0000000e-01]
+ [8.0175205e-06]
+ [5.0000000e-01]
+ [9.9990940e-01]
+ [2.1897254e-03]
+ [5.0000000e-01]
+ [1.1567379e-03]
+ [3.0715025e-03]
+ [9.9253643e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9643017e-04]
+ [5.0000000e-01]
+ [3.5898106e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1300162512978577
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.3443191e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.0974671e-04]
+ [5.0023670e-04]
+ [3.5548926e-04]
+ [5.0000000e-01]
+ [2.6456621e-07]
+ [9.4633997e-06]
+ [5.0000000e-01]
+ [9.9823308e-01]
+ [1.9007898e-03]
+ [5.0000000e-01]
+ [3.1894760e-05]
+ [1.0761488e-06]
+ [1.2845901e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.1659801e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3562132e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.12000042792734184
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.00197706e-03]
+ [2.51110287e-05]
+ [7.70193804e-03]
+ [1.21244957e-05]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.08641875e-03]
+ [9.58171859e-06]
+ [1.65479875e-07]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [3.63437203e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.56114788e-06]
+ [1.39165895e-05]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15000310871171907
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[6.7155102e-05]
+ [3.9629172e-06]
+ [1.7896761e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.1055646e-04]
+ [5.0000000e-01]
+ [3.0160518e-03]
+ [5.0000000e-01]
+ [2.6395608e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.8564875e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1763430e-03]
+ [6.4222596e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.0224900e-09]
+ [5.0000000e-01]
+ [2.9635769e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.1401377868628459
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [22.630238]
+ [ 0.      ]
+ [13.620813]
+ [ 0.      ]
+ [ 0.      ]
+ [20.047411]
+ [11.618105]
+ [ 0.      ]
+ [22.558683]
+ [ 0.      ]
+ [ 0.      ]
+ [19.885147]
+ [ 0.      ]
+ [17.529133]
+ [ 0.      ]
+ [18.600397]
+ [ 0.      ]
+ [22.823137]
+ [ 0.      ]
+ [ 0.      ]
+ [13.385159]
+ [12.798508]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 158.4343164265019
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[ 85.82654 ]
+ [ 73.61162 ]
+ [ 45.86071 ]
+ [107.57338 ]
+ [ 84.24838 ]
+ [  0.      ]
+ [ 71.29927 ]
+ [  0.      ]
+ [ 79.1271  ]
+ [ 72.15994 ]
+ [  0.      ]
+ [ 88.41751 ]
+ [ 61.862907]
+ [107.59372 ]
+ [  0.      ]
+ [  0.      ]
+ [ 80.23978 ]
+ [  0.      ]
+ [ 79.39798 ]
+ [ 82.727104]
+ [ 81.61847 ]
+ [ 98.05423 ]
+ [  0.      ]
+ [ 85.653564]
+ [ 75.130356]]
+INFO:IML-P2-T3:MSE for test set is 2212.6889594729896
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[  0.      ]
+ [ 99.52459 ]
+ [ 97.801994]
+ [ 75.88299 ]
+ [ 88.173416]
+ [ 84.486305]
+ [  0.      ]
+ [  0.      ]
+ [ 93.57456 ]
+ [105.92396 ]
+ [  0.      ]
+ [  0.      ]
+ [ 84.520195]
+ [  0.      ]
+ [ 81.28693 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [120.71068 ]
+ [ 91.76382 ]
+ [ 69.99798 ]
+ [ 97.765205]
+ [  0.      ]
+ [ 93.07212 ]]
+INFO:IML-P2-T3:MSE for test set is 4215.14286838033
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 71.221756]
+ [  0.      ]
+ [  0.      ]
+ [ 40.951855]
+ [ 87.273224]
+ [  0.      ]
+ [127.70724 ]
+ [  0.      ]
+ [ 78.403755]
+ [  0.      ]
+ [ 75.55795 ]
+ [  0.      ]
+ [ 79.76134 ]
+ [ 81.24253 ]
+ [  0.      ]
+ [ 62.288574]
+ [ 73.44328 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 74.71721 ]]
+INFO:IML-P2-T3:MSE for test set is 4604.342033037723
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[5.0000000e-01]
+ [9.8917550e-01]
+ [9.0214206e-05]
+ [1.5077583e-05]
+ [3.7831120e-04]
+ [5.3175387e-05]
+ [2.6260084e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9921978e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2792131e-03]
+ [1.8218865e-06]
+ [5.0000000e-01]
+ [9.9758625e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.0955745e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9985266e-01]
+ [5.0000000e-01]
+ [9.9832934e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.12000513108989525
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.8724122e-05]
+ [2.2685510e-04]
+ [5.0000000e-01]
+ [1.0068495e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.8834094e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.1705408e-04]
+ [2.5402636e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.3716493e-09]
+ [1.2363582e-06]
+ [5.0000000e-01]
+ [1.3162253e-02]
+ [5.0000000e-01]
+ [4.6918100e-05]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15000694035255158
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9977309e-01]
+ [5.0000000e-01]
+ [1.4520505e-02]
+ [1.5622260e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.6633211e-08]
+ [5.0000000e-01]
+ [9.9920613e-01]
+ [5.0000000e-01]
+ [9.9786913e-01]
+ [1.1255477e-04]
+ [5.0000000e-01]
+ [2.6225785e-04]
+ [7.5095087e-02]
+ [2.2587395e-07]
+ [2.6547013e-05]
+ [9.0987008e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4244362e-07]
+ [3.6573841e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11023425101158052
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.6982329e-05]
+ [1.0527807e-04]
+ [9.9991488e-01]
+ [5.0000000e-01]
+ [3.5621677e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1320863e-03]
+ [2.1330691e-09]
+ [2.4791912e-03]
+ [9.9948704e-01]
+ [5.0000000e-01]
+ [9.9881148e-01]
+ [5.0000000e-01]
+ [9.9973756e-01]
+ [2.2848402e-04]
+ [5.0000000e-01]
+ [2.0456559e-09]
+ [6.1055317e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2468951e-07]
+ [5.0000000e-01]
+ [1.6694043e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.10000048628811233
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.5626629e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9868959e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4392897e-06]
+ [5.0000000e-01]
+ [1.3513418e-04]
+ [5.0000000e-01]
+ [5.2884902e-04]
+ [9.9382681e-01]
+ [5.0000000e-01]
+ [9.9870825e-01]
+ [4.9066024e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.6446659e-14]
+ [5.0454255e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.2839386e-05]
+ [5.0000000e-01]
+ [4.3494427e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.1300016719773217
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [2.2505896e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.4602151e-04]
+ [2.5160311e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.0670966e-07]
+ [5.0000000e-01]
+ [9.9994183e-01]
+ [9.9998522e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9952912e-01]
+ [9.9975365e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.17000003374809694
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0] and value for the predicted sample is [[2.2742634e-03]
+ [4.9613288e-04]
+ [1.8435190e-02]
+ [5.0000000e-01]
+ [1.5347332e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.0727480e-02]
+ [5.0000000e-01]
+ [2.4796411e-05]
+ [1.8717309e-11]
+ [5.0000000e-01]
+ [1.5597734e-02]
+ [5.3858598e-06]
+ [4.9018525e-03]
+ [5.0000000e-01]
+ [3.8756276e-04]
+ [5.0000000e-01]
+ [7.6459132e-09]
+ [9.9949837e-01]
+ [5.0000000e-01]
+ [3.2037424e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11006279167783076
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[4.6084584e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.6873932e-03]
+ [2.5008016e-04]
+ [5.0000000e-01]
+ [3.9290244e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.9076375e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9869448e-01]
+ [9.9988413e-01]
+ [8.6953092e-05]
+ [5.0000000e-01]
+ [2.9830630e-08]
+ [2.4497944e-03]
+ [5.0000000e-01]
+ [9.6806714e-09]
+ [6.4052542e-04]
+ [9.9397719e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.12000308060048286
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.6261555e-03]
+ [1.9377561e-07]
+ [1.1571190e-05]
+ [5.0000000e-01]
+ [1.3468522e-04]
+ [6.7763194e-04]
+ [2.6397087e-08]
+ [5.0000000e-01]
+ [3.2626807e-10]
+ [5.0000000e-01]
+ [5.3869729e-04]
+ [9.8830730e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.0164069e-04]
+ [2.0168364e-12]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.0988515e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1375074e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1200067672494773
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.5609459e-05]
+ [5.0000000e-01]
+ [1.5691449e-03]
+ [4.0600453e-06]
+ [1.9443376e-03]
+ [5.0000000e-01]
+ [5.7911500e-04]
+ [3.7103746e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.4293652e-03]
+ [1.0381230e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3897345e-08]
+ [5.0000000e-01]
+ [1.4298924e-04]
+ [9.6427197e-05]
+ [1.7025792e-08]
+ [5.4907755e-08]
+ [5.0000000e-01]
+ [6.1635249e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.11000206347485296
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.4020589e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.8546248e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.6268851e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.3965541e-06]
+ [1.8852754e-02]
+ [5.0000000e-01]
+ [4.2610643e-03]
+ [4.3321561e-04]
+ [1.0055257e-11]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.17001495120529492
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[16.855095]
+ [ 0.      ]
+ [21.055334]
+ [18.656456]
+ [12.08679 ]
+ [ 0.      ]
+ [16.400276]
+ [23.476715]
+ [12.219103]
+ [ 0.      ]
+ [ 0.      ]
+ [18.669296]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [17.520584]
+ [20.238644]
+ [14.769114]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [17.293823]
+ [11.740765]
+ [16.112339]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 131.87148055344122
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[ 89.165764]
+ [  0.      ]
+ [  0.      ]
+ [ 91.10077 ]
+ [  0.      ]
+ [ 91.05702 ]
+ [  0.      ]
+ [ 54.17187 ]
+ [ 82.61688 ]
+ [ 82.32969 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 98.32252 ]
+ [ 76.83602 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [123.81445 ]
+ [ 71.16163 ]
+ [ 80.4923  ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3953.9309184418858
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[  0.     ]
+ [ 96.91575]
+ [ 97.42448]
+ [  0.     ]
+ [  0.     ]
+ [ 90.26242]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [104.70901]
+ [  0.     ]
+ [ 76.99605]
+ [  0.     ]
+ [ 90.90351]
+ [ 88.08437]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [ 97.81231]]
+INFO:IML-P2-T3:MSE for test set is 6391.448857048922
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[ 92.10747 ]
+ [  0.      ]
+ [ 84.189186]
+ [ 70.77507 ]
+ [ 71.11453 ]
+ [ 89.54266 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [101.1649  ]
+ [ 63.227463]
+ [ 60.562607]
+ [ 88.47633 ]
+ [ 65.08753 ]
+ [  0.      ]
+ [ 83.06304 ]
+ [ 87.01518 ]
+ [  0.      ]
+ [ 75.9751  ]
+ [  0.      ]
+ [  0.      ]
+ [ 70.21106 ]
+ [131.4357  ]
+ [  0.      ]
+ [ 77.68727 ]]
+INFO:IML-P2-T3:MSE for test set is 2606.2464469531806
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9904996e-01]
+ [5.0000000e-01]
+ [9.9915552e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.2439787e-07]
+ [5.0000000e-01]
+ [2.5026645e-03]
+ [9.3275657e-06]
+ [9.9863583e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13461613385365234
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[3.6382055e-06]
+ [5.0000000e-01]
+ [4.1755637e-05]
+ [2.4480275e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.5420956e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.0230177e-03]
+ [4.3911589e-04]
+ [2.8080107e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.11538601269026952
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.3416966e-04]
+ [1.8699747e-04]
+ [4.1651914e-05]
+ [1.2329952e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1942089e-01]
+ [5.0000000e-01]
+ [6.9711991e-06]
+ [5.0000000e-01]
+ [2.8566906e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.11908812812814462
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.5137746e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4376768e-02]
+ [1.3318673e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.19232372986470853
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.3095610e-04]
+ [5.0000000e-01]
+ [6.7350584e-06]
+ [7.3681143e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.0727412e-01]
+ [2.6874278e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.3921925e-03]
+ [5.0000000e-01]
+ [3.4258815e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.1437533783016117
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[9.3215030e-01]
+ [9.1413927e-01]
+ [5.0000000e-01]
+ [7.8088551e-06]
+ [5.0000000e-01]
+ [3.4377672e-07]
+ [5.0000000e-01]
+ [9.9298120e-01]
+ [9.6791059e-01]
+ [9.9989796e-01]
+ [5.0000000e-01]
+ [2.8253040e-05]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09715805009935091
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.5334279e-05]
+ [5.0000000e-01]
+ [2.2404864e-05]
+ [7.1349414e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.6500154e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.3590499e-08]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1538500700221737
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.00000000e-01]
+ [9.99105752e-01]
+ [1.13610295e-05]
+ [5.00000000e-01]
+ [2.02072109e-03]
+ [5.00000000e-01]
+ [1.08992937e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [2.40970257e-04]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384662531814242
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [6.5498227e-07]
+ [5.0000000e-01]
+ [1.9652431e-05]
+ [4.0908657e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.0902297e-06]
+ [9.4622019e-11]
+ [5.0000000e-01]
+ [1.0024470e-10]
+ [5.7911620e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11538461580493788
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.6733031e-06]
+ [2.1094651e-05]
+ [1.0544087e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.7504506e-01]
+ [1.3165334e-05]
+ [5.0000000e-01]
+ [6.2410521e-07]
+ [1.5699913e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.11658586171570531
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.97197839e-05]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.06381313e-10]
+ [5.00000000e-01]
+ [1.07818320e-01]
+ [1.00031095e-04]
+ [1.95121538e-04]
+ [8.37388434e-05]
+ [4.80835538e-10]
+ [3.52618867e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.0970490215533147
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[17.620625]
+ [ 0.      ]
+ [14.169613]
+ [11.101656]
+ [16.770267]
+ [18.422983]
+ [ 0.      ]
+ [12.99911 ]
+ [19.802078]
+ [15.369925]
+ [ 0.      ]
+ [11.806793]
+ [11.328809]]
+INFO:IML-P2-T3:MSE for test set is 75.02706988643877
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[  0.      ]
+ [ 80.40567 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 77.836266]
+ [ 69.77609 ]
+ [ 93.95975 ]
+ [124.97829 ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3907.087183793492
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[  0.      ]
+ [ 87.563324]
+ [  0.      ]
+ [ 82.1266  ]
+ [ 92.0369  ]
+ [  0.      ]
+ [ 76.38899 ]
+ [ 89.66903 ]
+ [100.09326 ]
+ [110.04157 ]
+ [110.91142 ]
+ [ 95.54833 ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3125.6580259226835
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 71.52069 ]
+ [  0.      ]
+ [ 61.146584]
+ [  0.      ]
+ [122.74913 ]
+ [ 54.037727]
+ [  0.      ]
+ [ 66.87701 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 61.230644]
+ [ 68.966415]]
+INFO:IML-P2-T3:MSE for test set is 3953.9489401639976
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[4.5255019e-06]
+ [9.1219059e-05]
+ [9.9990249e-01]
+ [3.9525614e-05]
+ [5.0000000e-01]
+ [7.1749615e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.4171508e-04]
+ [3.4101799e-03]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1153855541560369
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[3.3043517e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.9582987e-03]
+ [8.9429348e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.19231393538954317
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.6507362e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.5223653e-05]
+ [7.5783753e-01]
+ [5.1652850e-04]
+ [8.0229423e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.7575029e-08]
+ [2.2014628e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.15956297437209377
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.2699350e-04]
+ [5.0000000e-01]
+ [6.5790192e-04]
+ [2.2665914e-08]
+ [5.0000000e-01]
+ [2.6519591e-04]
+ [5.0000000e-01]
+ [6.8432433e-11]
+ [5.0000000e-01]
+ [3.1255953e-09]
+ [5.2538118e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11538465554241657
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[8.1773754e-07]
+ [5.6740580e-05]
+ [5.0000000e-01]
+ [7.7509343e-05]
+ [2.0085081e-06]
+ [4.9670321e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2004573e-06]
+ [5.0000000e-01]
+ [6.8646791e-06]
+ [3.6486117e-06]
+ [4.6699829e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.07692309460371648
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[9.98549402e-01]
+ [9.54095602e-01]
+ [5.00000000e-01]
+ [9.43443039e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [4.60447045e-03]
+ [9.80075121e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [8.64000594e-06]
+ [1.51842205e-05]
+ [9.96822596e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09634911586390034
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[8.9921478e-08]
+ [1.1696588e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.8284957e-07]
+ [7.3903919e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1730769230770971
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[9.9633801e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4055020e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.0993835e-07]
+ [9.9733740e-01]
+ [5.0000000e-01]
+ [2.1016093e-03]
+ [1.6298254e-04]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1346173048219224
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [2.6502912e-06]
+ [1.7421376e-06]
+ [3.1233883e-06]
+ [2.7900762e-09]
+ [1.1001352e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.6116231e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1346153847265559
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [8.0259478e-01]
+ [1.7329842e-04]
+ [3.4312333e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9385107e-01]
+ [2.6212683e-07]
+ [7.2289152e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13761590597531617
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.4448136e-06]
+ [3.2792738e-07]
+ [5.0000000e-01]
+ [4.8853730e-05]
+ [5.0000000e-01]
+ [7.9887611e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9240319e-05]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384620315093114
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[18.447714]
+ [14.892863]
+ [ 0.      ]
+ [13.11313 ]
+ [20.13481 ]
+ [ 0.      ]
+ [20.555273]
+ [13.800909]
+ [ 0.      ]
+ [14.512227]
+ [ 0.      ]
+ [ 0.      ]
+ [13.55919 ]]
+INFO:IML-P2-T3:MSE for test set is 95.39122987956804
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [102.06897]
+ [  0.     ]
+ [106.61056]
+ [  0.     ]
+ [ 65.58509]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [ 84.69549]]
+INFO:IML-P2-T3:MSE for test set is 4522.351238884654
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 94.988785]
+ [ 92.2737  ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [102.642075]
+ [ 88.34609 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [112.79829 ]
+ [ 86.90541 ]
+ [106.97583 ]]
+INFO:IML-P2-T3:MSE for test set is 4511.955789992057
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [ 81.95873]
+ [118.22845]
+ [  0.     ]
+ [109.43066]
+ [  0.     ]
+ [ 74.99975]
+ [  0.     ]
+ [112.86841]
+ [  0.     ]
+ [  0.     ]]
+INFO:IML-P2-T3:MSE for test set is 3582.9151450347763
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[1.4383187e-04]
+ [8.6428990e-06]
+ [9.9996853e-01]
+ [5.0000000e-01]
+ [9.9997616e-01]
+ [5.3404883e-04]
+ [5.0000000e-01]
+ [9.9856561e-01]
+ [5.0000000e-01]
+ [9.9999630e-01]
+ [3.3878381e-04]
+ [5.0000000e-01]
+ [9.9915743e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.07692332228510293
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[9.5795993e-05]
+ [2.2323005e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.1934337e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9147068e-03]
+ [1.3483262e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.7611929e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.13461847223338308
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.7503816e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.9266683e-05]
+ [5.0000000e-01]
+ [8.0635047e-01]
+ [3.3665840e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4178590e-04]
+ [1.1023773e-05]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.18471804746120035
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.00000000e-01]
+ [1.04895225e-05]
+ [1.52315544e-02]
+ [6.48852764e-03]
+ [7.07829604e-05]
+ [5.00000000e-01]
+ [9.44256425e-01]
+ [2.86309910e-03]
+ [4.81139439e-09]
+ [5.00000000e-01]
+ [1.50580760e-04]
+ [1.47267943e-04]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.14553096492550704
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.0821826e-04]
+ [1.6421020e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.4721502e-01]
+ [9.9869532e-05]
+ [1.2919616e-02]
+ [1.3838725e-06]
+ [5.0000000e-01]
+ [5.8085635e-07]
+ [2.0589292e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.16518333099062404
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[9.9959403e-01]
+ [9.7332734e-01]
+ [5.0000000e-01]
+ [5.3002323e-06]
+ [9.9997389e-01]
+ [5.0000000e-01]
+ [1.5284235e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9989784e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13467030329966923
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.2527955e-03]
+ [6.4341628e-05]
+ [1.4452021e-06]
+ [5.0000000e-01]
+ [4.0651418e-04]
+ [3.9776657e-07]
+ [5.3947568e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1517708e-06]
+ [1.6772677e-04]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09615649046316982
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.8324662e-01]
+ [3.6642508e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.3655545e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.1302478e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4568093e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.1544500740250729
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.1743231e-04]
+ [3.1240645e-06]
+ [2.0702748e-09]
+ [8.8700074e-07]
+ [5.0000000e-01]
+ [1.4275439e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.3580320e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.6340650e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.11538461644658479
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[9.9471480e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.5733814e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9529480e-05]
+ [5.0000000e-01]
+ [3.9642173e-06]
+ [4.3730870e-05]
+ [5.0000000e-01]
+ [5.5548578e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.1346176277496806
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.2437979e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.1467668e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.7791738e-05]
+ [5.0000000e-01]
+ [6.2442449e-04]
+ [2.1066955e-06]
+ [6.3202191e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.1557672739404733
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[15.40013 ]
+ [ 0.      ]
+ [ 0.      ]
+ [13.003699]
+ [15.867293]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [15.783431]
+ [18.97442 ]
+ [28.120274]
+ [11.785726]
+ [12.590851]]
+INFO:IML-P2-T3:MSE for test set is 100.92214319569764
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [69.83548 ]
+ [69.05421 ]
+ [ 0.      ]
+ [71.39602 ]
+ [83.10594 ]
+ [ 0.      ]
+ [ 0.      ]
+ [91.382355]
+ [ 0.      ]
+ [65.6318  ]
+ [79.95338 ]]
+INFO:IML-P2-T3:MSE for test set is 3319.3796380443428
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 80.90655 ]
+ [ 76.95419 ]
+ [101.51481 ]
+ [ 96.661354]
+ [  0.      ]
+ [ 86.199   ]
+ [116.92179 ]
+ [ 96.52279 ]
+ [ 86.807686]
+ [  0.      ]
+ [123.69028 ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3162.892256141134
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 73.93634 ]
+ [ 72.75295 ]
+ [  0.      ]
+ [115.958084]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 66.88015 ]
+ [  0.      ]
+ [107.25514 ]
+ [ 97.0607  ]
+ [  0.      ]
+ [ 73.5969  ]]
+INFO:IML-P2-T3:MSE for test set is 2990.855227520631
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9922228e-01]
+ [1.1239724e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.6889001e-03]
+ [9.9966156e-01]
+ [1.9772178e-04]
+ [9.9995875e-01]
+ [2.6526027e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538780179876232
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [8.3793867e-07]
+ [4.6475429e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.5939778e-04]
+ [5.0000000e-01]
+ [9.3890558e-05]
+ [5.0000000e-01]
+ [1.9601749e-03]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15401260645367756
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.3855190e-01]
+ [3.8495582e-06]
+ [2.2191495e-04]
+ [1.3016892e-06]
+ [5.0000000e-01]
+ [9.2668641e-01]
+ [5.0000000e-01]
+ [6.5046504e-02]
+ [1.5520850e-06]
+ [5.0000000e-01]
+ [7.7737457e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.23029680511369913
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.1616645e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1721082e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.0696334e-04]
+ [8.3642814e-04]
+ [5.0000000e-01]
+ [3.1525051e-05]
+ [2.7544280e-05]
+ [1.2670284e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.11539505831532854
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[4.3464121e-03]
+ [1.9192884e-02]
+ [9.1182446e-05]
+ [1.1476639e-03]
+ [5.8379583e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2369439e-03]
+ [6.5181369e-04]
+ [5.0000000e-01]
+ [2.8526290e-05]
+ [5.0000000e-01]
+ [5.4803345e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.07695311840775106
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [9.9924600e-01]
+ [5.0000000e-01]
+ [3.0218576e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.7122902e-05]
+ [9.8229110e-01]
+ [5.0000000e-01]
+ [9.9994290e-01]
+ [5.0000000e-01]
+ [7.6901115e-04]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13463959835020972
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.6183555e-03]
+ [5.0000000e-01]
+ [4.1867790e-04]
+ [1.6864567e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.5509903e-03]
+ [9.4589241e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.1440130e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13461600339842458
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.9691486e-01]
+ [9.5557532e-04]
+ [5.0000000e-01]
+ [2.8020482e-05]
+ [2.6296370e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.3927096e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.15385169224017314
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.0461530e-05]
+ [5.0000000e-01]
+ [5.3965268e-05]
+ [6.6684399e-05]
+ [2.7967989e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1430263e-04]
+ [7.1617563e-07]
+ [5.0000000e-01]
+ [1.0184668e-09]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538461758522706
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [8.4477127e-01]
+ [5.0000000e-01]
+ [7.0630449e-05]
+ [5.5874261e-07]
+ [5.0000000e-01]
+ [3.5365464e-04]
+ [3.8643038e-06]
+ [9.9759489e-01]
+ [1.3440825e-07]
+ [9.1366239e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09800783649843492
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [2.7015352e-07]
+ [1.6330081e-04]
+ [1.4073376e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.7812853e-05]
+ [5.0000000e-01]
+ [1.0081178e-03]
+ [1.6093175e-06]
+ [7.9901638e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538469587519325
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[ 0.      ]
+ [18.711851]
+ [ 0.      ]
+ [12.807575]
+ [ 0.      ]
+ [14.305061]
+ [ 0.      ]
+ [14.089357]
+ [16.807295]
+ [ 0.      ]
+ [ 0.      ]
+ [15.891598]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 130.19844477865794
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[ 63.536724]
+ [ 72.839516]
+ [ 79.066124]
+ [  0.      ]
+ [104.96851 ]
+ [ 68.85251 ]
+ [106.00143 ]
+ [ 81.54986 ]
+ [ 70.815636]
+ [ 61.970715]
+ [ 95.623   ]
+ [ 68.29942 ]
+ [ 89.54798 ]]
+INFO:IML-P2-T3:MSE for test set is 563.0089821517803
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 85.03    ]
+ [ 83.663666]
+ [102.39611 ]
+ [ 97.00105 ]
+ [101.075096]
+ [ 84.15578 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [115.437416]
+ [ 93.953606]
+ [ 91.79548 ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3059.137617637175
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 77.80035 ]
+ [  0.      ]
+ [  0.      ]
+ [ 89.5472  ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 67.64423 ]
+ [ 70.8733  ]
+ [101.81715 ]
+ [115.69175 ]
+ [ 57.703094]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 2971.2880370626494
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [4.6010959e-07]
+ [9.9976438e-01]
+ [3.3325572e-02]
+ [9.9999988e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9982387e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9676216e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13470162799145616
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.3190292e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4251161e-03]
+ [6.7691391e-05]
+ [5.0000000e-01]
+ [1.2576165e-02]
+ [5.0000000e-01]
+ [5.4553838e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.15389986789942622
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.5812443e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.4499775e-06]
+ [7.8268376e-06]
+ [1.8088022e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.5093647e-03]
+ [8.1648122e-06]
+ [3.6091456e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538530568227733
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2797456e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.7265446e-03]
+ [1.8570784e-03]
+ [1.9364903e-05]
+ [7.3710456e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384699143031028
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.0883280e-03]
+ [1.3598975e-07]
+ [3.1114345e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.8973060e-03]
+ [5.0000000e-01]
+ [8.0032041e-06]
+ [2.3263517e-07]
+ [1.5584218e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.11538606178175097
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[9.9826884e-01]
+ [5.0000000e-01]
+ [9.9982989e-01]
+ [2.8956911e-05]
+ [9.9961531e-01]
+ [1.7807611e-04]
+ [6.6879985e-04]
+ [5.0000000e-01]
+ [9.8912013e-01]
+ [5.0000000e-01]
+ [8.8399276e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09616924381961865
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[8.5515683e-07]
+ [8.1741334e-08]
+ [1.3811323e-04]
+ [1.0533972e-05]
+ [5.0000000e-01]
+ [1.6904181e-09]
+ [4.0966587e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.5299292e-06]
+ [5.0000000e-01]
+ [1.0925267e-08]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09615386054645457
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [3.4038123e-05]
+ [1.7069553e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4062987e-03]
+ [9.9324062e-08]
+ [9.9715328e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.2900305e-07]]
+INFO:IML-P2-T3:MSE for test set is 0.13461616022528225
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.7949527e-04]
+ [3.8741576e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.7069219e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.5710020e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.1730769393429304
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[9.9703825e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.2116586e-06]
+ [2.8539062e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.9932050e-07]
+ [9.9211431e-01]
+ [8.1779837e-04]
+ [1.6023845e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1153901249988565
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.5127253e-08]
+ [8.5489392e-01]
+ [3.4306033e-03]
+ [5.0000000e-01]
+ [4.0035453e-04]
+ [1.3811310e-04]
+ [1.1678972e-11]
+ [6.6183653e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.17160430812891367
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [12.254733]
+ [ 0.      ]
+ [ 0.      ]
+ [15.547853]
+ [26.610596]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [14.617798]
+ [10.641247]]
+INFO:IML-P2-T3:MSE for test set is 169.92709027182138
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[  0.      ]
+ [ 67.52453 ]
+ [ 78.27964 ]
+ [ 77.49941 ]
+ [103.69483 ]
+ [ 63.615993]
+ [ 97.27689 ]
+ [  0.      ]
+ [ 58.64593 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3281.93254035626
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 85.490585]
+ [ 92.10314 ]
+ [  0.      ]
+ [101.21092 ]
+ [102.772644]
+ [ 87.93253 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [110.085464]
+ [  0.      ]
+ [ 96.612144]
+ [ 81.51667 ]]
+INFO:IML-P2-T3:MSE for test set is 3745.58235706783
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 85.642654]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [119.94176 ]
+ [  0.      ]
+ [  0.      ]
+ [133.7986  ]
+ [ 97.085266]
+ [  0.      ]
+ [ 71.980804]]
+INFO:IML-P2-T3:MSE for test set is 3859.084326984773
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[1.9779174e-04]
+ [9.3620467e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9998832e-01]
+ [8.9103101e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9999893e-01]
+ [5.0000000e-01]
+ [3.1250075e-03]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1346161401257859
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[4.4068838e-06]
+ [2.4318658e-06]
+ [5.0000000e-01]
+ [6.9933754e-01]
+ [5.0000000e-01]
+ [1.2782852e-04]
+ [2.3450654e-02]
+ [8.0371537e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9904024e-05]
+ [5.0000000e-01]
+ [5.7013472e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.13381715031977945
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.0909354e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.2766102e-05]
+ [2.5925291e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.5643232e-05]
+ [4.9876139e-09]
+ [3.1518110e-04]
+ [8.4131779e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538471988313469
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [4.4972128e-01]
+ [4.8899159e-07]
+ [5.0000000e-01]
+ [9.0532894e-06]
+ [5.0000000e-01]
+ [2.2075817e-01]
+ [5.0000000e-01]
+ [3.2305708e-03]
+ [4.2878037e-06]
+ [5.0000000e-01]
+ [3.3973880e-05]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1346918333989446
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4892344e-04]
+ [5.5791907e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4027661e-03]
+ [1.2509491e-03]
+ [1.6432135e-09]
+ [6.6872872e-06]
+ [2.3046672e-05]
+ [2.3232105e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.09615413145800103
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9988377e-01]
+ [9.5048230e-03]
+ [9.9830341e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.8083705e-01]
+ [9.9954307e-01]
+ [1.2585880e-06]
+ [5.0000000e-01]
+ [9.9883252e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1154201557020153
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [1.6418146e-05]
+ [2.3730909e-06]
+ [8.8649262e-03]
+ [9.7656994e-05]
+ [4.5911371e-08]
+ [8.2326803e-04]
+ [2.4981808e-05]
+ [2.8060351e-05]
+ [2.6114466e-10]
+ [3.6731199e-05]
+ [1.0023180e-06]
+ [3.2746968e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.01923686748236768
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.9996006e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.6016459e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.4500016e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.1923076942105672
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[4.6549768e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.8858201e-12]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.4040818e-06]
+ [1.7991695e-07]
+ [4.7710077e-05]
+ [3.4848922e-09]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1346153847947005
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[9.60400760e-01]
+ [9.88782585e-01]
+ [1.68729603e-05]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [3.76769116e-10]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.02622664e-07]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15397645619125144
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.5249544e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.6445297e-05]
+ [1.0376176e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.9347621e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.4241550e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384615663163986
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[ 0.       ]
+ [ 0.       ]
+ [13.0921335]
+ [ 0.       ]
+ [19.300222 ]
+ [13.759794 ]
+ [ 0.       ]
+ [ 0.       ]
+ [19.26105  ]
+ [ 0.       ]
+ [22.940834 ]
+ [ 0.       ]
+ [ 0.       ]]
+INFO:IML-P2-T3:MSE for test set is 144.80796755268105
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[80.34597 ]
+ [74.20837 ]
+ [ 0.      ]
+ [ 0.      ]
+ [79.18632 ]
+ [72.913704]
+ [ 0.      ]
+ [ 0.      ]
+ [66.50456 ]
+ [ 0.      ]
+ [99.48744 ]
+ [60.92327 ]
+ [89.1108  ]]
+INFO:IML-P2-T3:MSE for test set is 2651.2987599240596
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 73.120804]
+ [ 86.510796]
+ [  0.      ]
+ [ 89.71993 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 92.39571 ]
+ [  0.      ]
+ [  0.      ]
+ [118.13582 ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 6064.31283593283
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[  0.      ]
+ [ 76.650055]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [111.54208 ]
+ [  0.      ]
+ [  0.      ]
+ [117.876785]
+ [117.641495]
+ [ 52.29624 ]
+ [ 82.45279 ]]
+INFO:IML-P2-T3:MSE for test set is 3598.1177476177468
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[8.7390341e-05]
+ [5.0000000e-01]
+ [9.9989474e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1928009e-03]
+ [5.0000000e-01]
+ [4.3466560e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9998987e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384626488332315
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[8.4909570e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.2336746e-04]
+ [5.0000000e-01]
+ [1.7702356e-03]
+ [5.0000000e-01]
+ [6.1901986e-08]
+ [2.2066882e-04]
+ [6.8317682e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1349746667194927
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [2.0760839e-01]
+ [5.0000000e-01]
+ [1.1683231e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.6624353e-01]
+ [5.0000000e-01]
+ [8.3063860e-05]
+ [2.9347342e-05]
+ [2.5984426e-11]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.16259484601597446
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.0204448e-06]
+ [2.5698185e-07]
+ [2.1087772e-05]
+ [5.0000000e-01]
+ [3.3982075e-03]
+ [5.0000000e-01]
+ [2.9188136e-04]
+ [5.3253220e-06]
+ [5.0000000e-01]
+ [5.7370908e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11538551052110751
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[3.3502482e-04]
+ [3.7309694e-01]
+ [1.4568798e-04]
+ [1.3676338e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.8296271e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.16455410287352082
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [9.9948835e-01]
+ [9.9996555e-01]
+ [4.6079294e-06]
+ [9.9912530e-01]
+ [5.0000000e-01]
+ [1.5531627e-04]
+ [9.9970585e-01]
+ [5.0000000e-01]
+ [9.9142963e-01]
+ [8.3970018e-03]
+ [2.9208582e-07]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.07693423843591336
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [2.8486836e-03]
+ [5.0000000e-01]
+ [3.7099766e-03]
+ [1.4967103e-03]
+ [1.6308253e-11]
+ [2.1137923e-03]
+ [2.2235245e-03]
+ [5.0000000e-01]
+ [9.4243688e-09]
+ [1.0949486e-03]
+ [5.9460517e-09]
+ [7.0319197e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.05769501727977193
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [2.0851105e-02]
+ [2.9653357e-04]
+ [5.9650702e-08]
+ [5.0000000e-01]
+ [1.6374644e-06]
+ [7.0073620e-05]
+ [9.9856925e-01]
+ [8.2671977e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.0975641e-03]]
+INFO:IML-P2-T3:MSE for test set is 0.09618874604012159
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [4.8450005e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1483565e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.6972184e-04]
+ [3.8428414e-08]
+ [3.3848194e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15384615607300528
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [9.9186736e-01]
+ [2.7846108e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.6731328e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.7167437e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.17308201075456858
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.1190817e-08]
+ [5.0000000e-01]
+ [1.6485687e-04]
+ [5.0000000e-01]
+ [4.9448809e-05]
+ [5.0000000e-01]
+ [7.1878004e-01]
+ [1.5418245e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.5522299e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.1743573020420122
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[12.915302]
+ [ 0.      ]
+ [16.014265]
+ [15.157414]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [16.150095]
+ [ 0.      ]
+ [16.206488]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 162.5075871158706
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[73.46042 ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [97.412544]
+ [70.98093 ]
+ [97.21247 ]
+ [ 0.      ]
+ [64.29501 ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [86.09928 ]]
+INFO:IML-P2-T3:MSE for test set is 3691.3205303302384
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[ 87.86048 ]
+ [ 78.80713 ]
+ [ 78.038025]
+ [  0.      ]
+ [  0.      ]
+ [ 80.42353 ]
+ [102.86068 ]
+ [100.13749 ]
+ [ 87.40123 ]
+ [ 95.927765]
+ [  0.      ]
+ [ 74.86015 ]
+ [102.34653 ]]
+INFO:IML-P2-T3:MSE for test set is 2285.0529604438657
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 63.969604]
+ [ 87.08943 ]
+ [ 61.31928 ]
+ [100.41557 ]
+ [115.79127 ]
+ [ 70.62311 ]
+ [101.5791  ]
+ [  0.      ]
+ [ 77.57895 ]
+ [  0.      ]
+ [  0.      ]
+ [ 71.639984]
+ [ 64.05935 ]]
+INFO:IML-P2-T3:MSE for test set is 1928.1087666419435
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 10
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 10
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 1 0 0 1 0 1 0 0 1] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9932480e-01]
+ [7.9457001e-05]
+ [9.9985170e-01]
+ [1.1037010e-03]
+ [2.2112126e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.5761998e-03]
+ [5.0000000e-01]
+ [9.9972326e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538526278768492
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[3.5520567e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.2886752e-01]
+ [5.0000000e-01]
+ [6.6325593e-01]
+ [1.6012518e-03]
+ [1.6752888e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.19171471797867906
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[3.02058216e-02]
+ [5.73944330e-01]
+ [5.00000000e-01]
+ [6.58822091e-06]
+ [7.78889298e-05]
+ [3.24527682e-05]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.14928626e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [2.09521982e-04]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.14181024045182233
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.0405078e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.2009466e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3673468e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.8963828e-12]
+ [2.1053262e-02]]
+INFO:IML-P2-T3:MSE for test set is 0.15388030178668005
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.3326974e-05]
+ [3.2746963e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.8648354e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.4017192e-05]
+ [5.0000000e-01]
+ [9.9585432e-06]
+ [1.8189731e-03]
+ [7.4426091e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11546736060026776
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 0 1 0 0 1 1 1 0 0 1] and value for the predicted sample is [[0.99821633]
+ [0.5       ]
+ [0.9995602 ]
+ [0.5       ]
+ [0.9991897 ]
+ [0.5       ]
+ [0.5       ]
+ [0.99904746]
+ [0.8210813 ]
+ [0.99999905]
+ [0.00103181]
+ [0.5       ]
+ [0.5       ]]
+INFO:IML-P2-T3:MSE for test set is 0.11784753166330336
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[9.8290166e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.6449891e-07]
+ [5.0107104e-07]
+ [7.8500831e-11]
+ [1.3501788e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.15384615525594408
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [3.1857129e-05]
+ [5.0000000e-01]
+ [1.1322739e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.7324901e-06]
+ [5.0000000e-01]
+ [3.7230834e-07]
+ [5.0000000e-01]
+ [2.2586406e-04]
+ [1.1242643e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.13461538863831704
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [6.6414785e-09]
+ [1.2488948e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.0906231e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.4337896e-06]
+ [5.0000000e-01]
+ [4.9642338e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.15384615403975901
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.4341221e-07]
+ [8.5745160e-05]
+ [2.4115445e-06]
+ [1.5281434e-05]
+ [1.7694834e-04]
+ [9.4048346e-08]
+ [5.0000000e-01]
+ [5.4538784e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.11538461837710122
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.9100027e-04]
+ [5.0000000e-01]
+ [5.0088893e-06]
+ [5.0000000e-01]
+ [1.4313050e-05]
+ [5.0000000e-01]
+ [8.6555690e-01]
+ [4.5610195e-05]
+ [2.3491581e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1223163e-07]
+ [1.8217127e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.15378375594594784
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [19 19 12 12 16 14 17 12 19 14 17 14 12] and value for the predicted sample is [[18.283232]
+ [20.932117]
+ [10.375203]
+ [12.666349]
+ [16.12137 ]
+ [13.088856]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [24.579046]
+ [ 0.      ]
+ [11.624191]]
+INFO:IML-P2-T3:MSE for test set is 96.28914691398629
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 77  77  85  76  88  67  84  85  77  83 100  67  85] and value for the predicted sample is [[  0.      ]
+ [ 73.286514]
+ [ 78.60799 ]
+ [  0.      ]
+ [ 91.56627 ]
+ [ 65.93498 ]
+ [  0.      ]
+ [  0.      ]
+ [ 66.534294]
+ [  0.      ]
+ [115.75185 ]
+ [ 70.83861 ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3118.529763195346
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 98  98 100  97  96  99  96 100  98  99  95  99 100] and value for the predicted sample is [[  0.      ]
+ [ 73.54745 ]
+ [  0.      ]
+ [ 97.409904]
+ [  0.      ]
+ [ 99.7253  ]
+ [  0.      ]
+ [ 86.711426]
+ [  0.      ]
+ [106.50646 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 5945.965738712542
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 80  80  59  95 108  64  90  59  80 117  85  64  59] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [61.82251 ]
+ [93.07915 ]
+ [ 0.      ]
+ [52.262157]
+ [ 0.      ]
+ [66.82039 ]
+ [ 0.      ]
+ [ 0.      ]
+ [92.586426]
+ [59.76438 ]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 4340.006614319673
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[9.4736987e-01]
+ [9.9946624e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4023713e-05]
+ [1.3171560e-03]
+ [6.6277798e-04]
+ [5.0000000e-01]
+ [9.8425263e-01]
+ [9.9996805e-01]
+ [5.0000000e-01]
+ [9.1180875e-05]
+ [5.0000000e-01]
+ [1.3817446e-05]
+ [7.4391055e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.9329913e-06]
+ [1.3203519e-04]
+ [2.4746409e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9998605e-01]
+ [9.9974662e-01]
+ [9.9996901e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.09012084063122323
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[2.79562323e-06]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [4.27578838e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [3.52005191e-05]
+ [5.79306834e-06]
+ [5.00000000e-01]
+ [4.66018764e-06]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [2.62453192e-04]
+ [5.00000000e-01]
+ [9.99977708e-01]
+ [5.00000000e-01]
+ [1.09332966e-07]
+ [3.35280284e-08]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [9.99643922e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15000001521184436
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[9.3330432e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.8700732e-01]
+ [5.0000000e-01]
+ [1.2678170e-02]
+ [5.0000000e-01]
+ [9.9487126e-01]
+ [6.5622269e-04]
+ [5.0000000e-01]
+ [3.6229099e-05]
+ [5.0000000e-01]
+ [9.9220157e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9279920e-05]
+ [5.0000000e-01]
+ [1.4616563e-06]
+ [1.9458012e-03]
+ [2.2993184e-08]
+ [1.5705641e-08]
+ [5.0000000e-01]
+ [5.1325361e-07]
+ [6.9510439e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11001683554235442
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.7510423e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.8146963e-01]
+ [3.4494660e-05]
+ [5.0000000e-01]
+ [2.9106302e-06]
+ [9.5910090e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9957699e-01]
+ [3.0406896e-04]
+ [9.9999547e-01]
+ [5.0000000e-01]
+ [1.9412672e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.0500910e-06]
+ [2.0462753e-06]
+ [5.0000000e-01]
+ [2.8362595e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.13008080607906589
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.0128870e-04]
+ [3.9571361e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.5407972e-04]
+ [1.9016276e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1336500e-02]
+ [6.3378468e-07]
+ [2.2543740e-04]
+ [9.9875486e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9922478e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1181556e-04]
+ [2.0666025e-06]
+ [5.0000000e-01]
+ [2.3589301e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.13001909482153898
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[5.0000000e-01]
+ [9.9941897e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.0257335e-04]
+ [5.0000000e-01]
+ [8.4536514e-05]
+ [8.9908397e-01]
+ [9.9831665e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1379867e-06]
+ [5.0000000e-01]
+ [9.9688941e-01]
+ [9.9903047e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9630910e-01]
+ [9.5178555e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15040846248862275
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0] and value for the predicted sample is [[5.00000000e-01]
+ [5.00000000e-01]
+ [1.94910716e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [2.16465618e-04]
+ [1.49305826e-02]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [6.70077238e-09]
+ [6.31245530e-06]
+ [6.05528010e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.29078526e-05]
+ [1.04113834e-13]
+ [9.99879479e-01]
+ [2.36574817e-03]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.55399747e-04]
+ [5.00000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1400107741822016
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[1.0940066e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.3044820e-05]
+ [5.0000000e-01]
+ [1.1688320e-05]
+ [5.0000000e-01]
+ [9.9997604e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.6510607e-03]
+ [1.1500376e-03]
+ [1.0244974e-08]
+ [8.7388081e-04]
+ [5.0000000e-01]
+ [1.7900023e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1600019008606071
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.00000000e-01]
+ [1.45594822e-06]
+ [3.33439966e-05]
+ [5.00000000e-01]
+ [1.05606356e-04]
+ [2.76204028e-05]
+ [5.00000000e-01]
+ [1.39105556e-04]
+ [5.38519726e-06]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [8.96575630e-01]
+ [3.50373157e-05]
+ [5.00000000e-01]
+ [5.88215771e-05]
+ [5.00000000e-01]
+ [2.87636765e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.22166483e-07]
+ [4.81797201e-07]
+ [2.30425412e-05]
+ [3.40205661e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.11042786887558548
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.5483809e-02]
+ [2.0566670e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4875007e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1912103e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.8528422e-04]
+ [4.4341874e-04]
+ [5.0000000e-01]
+ [4.4300428e-11]
+ [3.9738943e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.8442417e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3165334e-05]
+ [5.0000000e-01]
+ [7.6732598e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.14003229768619405
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.00000000e-01]
+ [5.00000000e-01]
+ [4.41158097e-03]
+ [5.00000000e-01]
+ [6.63084968e-04]
+ [5.00000000e-01]
+ [8.68936710e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [3.60086233e-05]
+ [1.11901507e-01]
+ [1.40311013e-05]
+ [5.00000000e-01]
+ [1.74459165e-05]
+ [6.18281169e-03]
+ [2.21295508e-07]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.34479546e-11]
+ [5.57816691e-08]
+ [5.58135616e-06]
+ [1.22266545e-04]
+ [9.33716001e-06]
+ [5.00000000e-01]
+ [9.54615360e-04]]
+INFO:IML-P2-T3:MSE for test set is 0.10050327037262206
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [19.580875]
+ [14.186607]
+ [18.286919]
+ [12.259762]
+ [19.808691]
+ [10.565643]
+ [13.385118]
+ [20.463535]
+ [17.51431 ]
+ [ 0.      ]
+ [17.728878]
+ [17.813639]
+ [15.186707]
+ [ 0.      ]
+ [19.266098]
+ [ 0.      ]
+ [22.107513]
+ [12.614915]
+ [17.946884]
+ [13.868381]
+ [13.872054]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 84.03830601367605
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[ 72.479416]
+ [ 84.938995]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 94.50737 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [109.5943  ]
+ [ 55.28427 ]
+ [  0.      ]
+ [ 83.708496]
+ [ 90.313156]
+ [ 68.81328 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 75.423965]]
+INFO:IML-P2-T3:MSE for test set is 4802.171650729896
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[  0.      ]
+ [101.811226]
+ [ 99.66944 ]
+ [  0.      ]
+ [ 95.05313 ]
+ [  0.      ]
+ [ 94.40678 ]
+ [ 87.84603 ]
+ [  0.      ]
+ [ 85.7082  ]
+ [  0.      ]
+ [ 94.95373 ]
+ [  0.      ]
+ [ 89.56676 ]
+ [ 87.80437 ]
+ [115.94404 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 99.59136 ]
+ [103.18464 ]
+ [  0.      ]
+ [ 99.26973 ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 4528.46820862734
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[ 93.60509 ]
+ [  0.      ]
+ [ 77.238434]
+ [ 77.228516]
+ [ 76.88953 ]
+ [ 82.63833 ]
+ [ 47.91435 ]
+ [101.568855]
+ [ 53.40592 ]
+ [  0.      ]
+ [ 84.401   ]
+ [ 75.351654]
+ [ 88.71707 ]
+ [  0.      ]
+ [  0.      ]
+ [ 83.817505]
+ [  0.      ]
+ [  0.      ]
+ [ 62.24215 ]
+ [ 93.15558 ]
+ [  0.      ]
+ [  0.      ]
+ [126.2244  ]
+ [  0.      ]
+ [  0.      ]]
+INFO:IML-P2-T3:MSE for test set is 3289.969518683223
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_data.csv -pred data\predictions_ANNs.zip -scale standard
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: data\predictions_ANNs.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_data.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANNs.zip -scale standard
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: data\predictions_ANNs.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l preprocessed_train_label.csv -test preprocessed_test.csv -pred data\predictions_ANNs.zip -scale standard -nb_pat 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_ANNs.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANNs.zip -scale standard -nb_pat 20
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 20
+INFO:IML-P2-T3:predictions: data\predictions_ANNs.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[9.9611157e-01]
+ [9.9769396e-01]
+ [1.2293666e-04]
+ [5.0000000e-01]
+ [1.5229451e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.5019495e-05]
+ [5.0000000e-01]
+ [9.9929166e-01]
+ [3.6488345e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.5727799e-07]
+ [7.6027244e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.1084522e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9897110e-01]
+ [1.3083890e-04]
+ [5.0000000e-01]
+ [9.9946851e-01]
+ [9.8831964e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.110006373240603
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[1.1230529e-04]
+ [5.0000000e-01]
+ [3.1700782e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.5040530e-03]
+ [5.0000000e-01]
+ [1.7737655e-04]
+ [5.2122328e-07]
+ [2.5749139e-06]
+ [9.5586998e-08]
+ [1.1562591e-06]
+ [5.0000000e-01]
+ [6.7603213e-07]
+ [5.0000000e-01]
+ [4.7526450e-07]
+ [9.9999809e-01]
+ [3.0043643e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13000089848529625
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9831510e-01]
+ [9.9876273e-01]
+ [4.4754683e-04]
+ [6.8262423e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9380529e-01]
+ [9.9501401e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.4907108e-05]
+ [5.6074548e-04]
+ [6.7265109e-09]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.9539614e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.15000274705787697
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [9.9733800e-01]
+ [5.0000000e-01]
+ [8.7153545e-04]
+ [5.0000000e-01]
+ [6.1953710e-05]
+ [9.7663587e-01]
+ [5.0000000e-01]
+ [1.9446309e-06]
+ [1.6860256e-03]
+ [5.0000000e-01]
+ [9.8736435e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [4.2184913e-03]
+ [3.2192081e-02]
+ [9.3964018e-06]
+ [5.0000000e-01]
+ [9.7033910e-07]
+ [5.0000000e-01]
+ [1.7510472e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13007081442153054
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 1 0 0 0 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.0993244e-08]
+ [2.9684568e-07]
+ [9.9972636e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.1780946e-04]
+ [5.6518191e-05]
+ [9.9252641e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9764794e-01]
+ [9.9619907e-01]
+ [5.0000000e-01]
+ [1.3191940e-04]
+ [9.9998522e-01]
+ [5.0000000e-01]
+ [6.3691790e-05]
+ [1.7241876e-04]
+ [5.8600202e-05]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.12000304056454429
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 0 0 0 0 0 1 1 1 0 0 0 0 1 1 0 0 0 1 0 1 1 1] and value for the predicted sample is [[9.9522626e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.2751014e-04]
+ [5.0000000e-01]
+ [2.6679007e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9963093e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.9998784e-01]
+ [5.0000000e-01]
+ [3.3449924e-05]
+ [1.4460603e-08]
+ [1.7946182e-09]
+ [9.9689072e-01]
+ [1.8555649e-03]
+ [9.9481320e-01]
+ [8.3927560e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13103583493152787
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [4.9977200e-03]
+ [5.6856388e-06]
+ [1.4597505e-03]
+ [1.2225464e-02]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [6.9414455e-07]
+ [5.0000000e-01]
+ [6.2606205e-06]
+ [5.0000000e-01]
+ [1.1698549e-02]
+ [5.0000000e-01]
+ [1.5726637e-03]
+ [5.6117933e-08]
+ [5.0000000e-01]
+ [3.6805050e-06]
+ [4.6161480e-14]
+ [9.9997067e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.1715734e-06]
+ [9.3520666e-04]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1100126709966825
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 1] and value for the predicted sample is [[5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.05503794e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.50604490e-06]
+ [9.00601130e-03]
+ [5.22634913e-08]
+ [5.00000000e-01]
+ [9.99890924e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.34796940e-03]
+ [2.47797905e-03]
+ [9.99342024e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [1.12987495e-04]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [5.00000000e-01]
+ [4.76269952e-06]
+ [9.28497640e-04]
+ [9.99939680e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1300036160055778
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.4190729e-04]
+ [5.0000000e-01]
+ [5.2899623e-04]
+ [5.0000000e-01]
+ [3.9599105e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [7.1304885e-04]
+ [6.3197981e-06]
+ [5.0000000e-01]
+ [5.3406711e-06]
+ [2.1804999e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1800000362097893
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[1.3964957e-01]
+ [9.7428192e-04]
+ [5.0504232e-06]
+ [3.7981410e-04]
+ [8.0459264e-05]
+ [5.0000000e-01]
+ [2.6169621e-07]
+ [3.4007771e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.2360208e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.9548463e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [2.3527801e-04]
+ [7.5220087e-05]
+ [2.7674171e-10]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.13078028462997737
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] and value for the predicted sample is [[2.9642947e-06]
+ [5.0000000e-01]
+ [4.8118510e-04]
+ [1.2929437e-08]
+ [5.0000000e-01]
+ [8.1024859e-03]
+ [6.7000117e-05]
+ [3.1787027e-03]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [3.3415306e-02]
+ [4.0602632e-07]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.0077610e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [8.6936051e-01]
+ [5.0000000e-01]
+ [8.1193977e-04]
+ [5.0000000e-01]
+ [5.3601475e-06]
+ [2.8722054e-08]
+ [1.6599796e-03]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.1406855800142707
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [16 12 21 19 14 18 15 21 12 14 19 19 21 19 17 15 17 17 14 20 16 17 14 16
+ 17] and value for the predicted sample is [[ 0.      ]
+ [10.61571 ]
+ [ 0.      ]
+ [ 0.      ]
+ [14.5016  ]
+ [18.893116]
+ [15.716953]
+ [ 0.      ]
+ [12.367365]
+ [13.630654]
+ [21.193186]
+ [ 0.      ]
+ [ 0.      ]
+ [16.682337]
+ [ 0.      ]
+ [ 0.      ]
+ [18.956787]
+ [ 0.      ]
+ [ 0.      ]
+ [26.913584]
+ [16.147053]
+ [19.528595]
+ [13.288114]
+ [15.659588]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 146.4638909917007
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 88  85  60 110  78  99  81  60  85  83  77 110  60 110  84 103  77 100
+  67  72  88 100  83  88  77] and value for the predicted sample is [[  0.      ]
+ [  0.      ]
+ [ 45.51892 ]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 66.934494]
+ [ 73.026184]
+ [ 93.094185]
+ [  0.      ]
+ [  0.      ]
+ [103.184296]
+ [  0.      ]
+ [108.53041 ]
+ [ 68.304565]
+ [103.00766 ]
+ [ 65.10428 ]
+ [  0.      ]
+ [  0.      ]
+ [ 69.88484 ]
+ [ 86.303246]
+ [  0.      ]
+ [  0.      ]
+ [  0.      ]
+ [ 76.149   ]]
+INFO:IML-P2-T3:MSE for test set is 3983.2513163838394
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 96 100  96  97  94  95  98  96 100  99  98  97  96  97  96  96  97  95
+  99  97  96  95  99  96  97] and value for the predicted sample is [[  0.     ]
+ [105.625  ]
+ [ 91.43947]
+ [  0.     ]
+ [ 91.96444]
+ [ 92.75271]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [ 84.2282 ]
+ [101.74208]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [103.11998]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [100.42215]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [100.69293]
+ [ 96.28206]]
+INFO:IML-P2-T3:MSE for test set is 5668.909075997516
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [108  59  88  76  77  93  53  88  59 117  80  76  88  76  90  75  79  85
+  64  84 108  85 117 108  79] and value for the predicted sample is [[ 0.      ]
+ [49.572086]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [88.118286]
+ [47.413525]
+ [ 0.      ]
+ [ 0.      ]
+ [ 0.      ]
+ [87.282745]
+ [67.7462  ]
+ [89.14179 ]
+ [67.29426 ]
+ [73.84441 ]
+ [78.09669 ]
+ [88.92416 ]
+ [87.581604]
+ [67.89771 ]
+ [ 0.      ]
+ [ 0.      ]
+ [84.511475]
+ [ 0.      ]
+ [ 0.      ]
+ [90.87669 ]]
+INFO:IML-P2-T3:MSE for test set is 4038.9766111893778
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+subtasks_ANN.py -train_f data\preprocessed_train.csv -train_l data\preprocessed_train_label.csv -test data\preprocessed_test.csv -pred data\predictions_ANNs.zip -scale standard -nb_pat 5
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:nb_of_patients: 5
+INFO:IML-P2-T3:predictions: data\predictions_ANNs.zip
+INFO:IML-P2-T3:scaler: standard
+INFO:IML-P2-T3:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T3:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each medical test
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using standard.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Beggining ANN training for medical tests.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T3:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 0 1 0 0 1] and value for the predicted sample is [[8.7304521e-01]
+ [9.9865937e-01]
+ [1.6575072e-05]
+ [5.0000000e-01]
+ [1.2394465e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.10944561675152029
+INFO:IML-P2-T3:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T3:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [6.3050032e-07]
+ [4.4883644e-10]
+ [2.1336843e-06]
+ [2.7441777e-07]
+ [8.1538719e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.07142857143878731
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T3:Starting neural network training for LABEL_AST
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [1.3055204e-07]
+ [1.8193790e-08]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.17857142857143105
+INFO:IML-P2-T3:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T3:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.2177959e-07]
+ [3.4289363e-07]
+ [5.0000000e-01]
+ [3.8392045e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.14285714285926746
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [1.0279423e-06]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.21428571428586524
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T3:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [1 1 1 1 0 0 1] and value for the predicted sample is [[9.8152691e-01]
+ [9.9988043e-01]
+ [9.9994195e-01]
+ [9.9134409e-01]
+ [3.5898764e-05]
+ [7.8175726e-06]
+ [9.9537718e-01]]
+INFO:IML-P2-T3:MSE for test set is 6.250988076822985e-05
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T3:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [3.8443085e-07]
+ [4.0553094e-10]
+ [2.1362382e-04]
+ [6.6709866e-08]
+ [5.0000000e-01]
+ [3.5079778e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.07142857812369696
+INFO:IML-P2-T3:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T3:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 0 0 0] and value for the predicted sample is [[0.00498283]
+ [0.5       ]
+ [0.5       ]
+ [0.0009337 ]
+ [0.5       ]
+ [0.5       ]
+ [0.002723  ]]
+INFO:IML-P2-T3:MSE for test set is 0.14286187359186237
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[3.3278127e-07]
+ [5.0000000e-01]
+ [2.0497795e-05]
+ [7.5368365e-07]
+ [5.0000000e-01]
+ [1.5823107e-06]
+ [5.5847580e-05]]
+INFO:IML-P2-T3:MSE for test set is 0.07142857193461348
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T3:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 1 0 0 0 0] and value for the predicted sample is [[1.0347564e-02]
+ [2.8247459e-04]
+ [9.9974722e-01]
+ [4.0252265e-04]
+ [5.0000000e-01]
+ [4.3534119e-06]
+ [5.0000000e-01]]
+INFO:IML-P2-T3:MSE for test set is 0.07144391111582452
+INFO:IML-P2-T3:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T3:Beggining ANN training for sepsis.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T3:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [0 0 0 0 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [3.6131500e-08]
+ [5.0000000e-01]
+ [1.6084383e-06]
+ [6.8799636e-08]
+ [5.0000000e-01]
+ [7.2297807e-06]]
+INFO:IML-P2-T3:MSE for test set is 0.1071428571506947
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T3:Beggining ANN training for vital signs.
+INFO:IML-P2-T3:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T3:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [12 12 19 16 17 12 16] and value for the predicted sample is [[ 0.      ]
+ [10.858203]
+ [20.055424]
+ [17.262722]
+ [20.561184]
+ [ 0.      ]
+ [ 0.      ]]
+INFO:IML-P2-T3:MSE for test set is 80.09915966721344
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 85  85  77  88 100  76  88] and value for the predicted sample is [[74.90721]
+ [74.07533]
+ [ 0.     ]
+ [ 0.     ]
+ [ 0.     ]
+ [89.66871]
+ [ 0.     ]]
+INFO:IML-P2-T3:MSE for test set is 4546.4351915505
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [100 100  98  96  95  97  96] and value for the predicted sample is [[  0.      ]
+ [ 85.70298 ]
+ [102.67636 ]
+ [ 93.88842 ]
+ [108.854836]
+ [102.90559 ]
+ [ 76.11988 ]]
+INFO:IML-P2-T3:MSE for test set is 1550.3976375065893
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [ 59  59  80 108  85  95 108] and value for the predicted sample is [[ 58.07453]
+ [  0.     ]
+ [  0.     ]
+ [  0.     ]
+ [ 80.45798]
+ [  0.     ]
+ [102.99582]]
+INFO:IML-P2-T3:MSE for test set is 4373.789755522548
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Get predictions for medical tests.
+INFO:IML-P2-T3:Get predictions for sepsis.
+INFO:IML-P2-T3:Get predictions for vital signs.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file

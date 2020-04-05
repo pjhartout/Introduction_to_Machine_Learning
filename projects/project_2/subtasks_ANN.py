@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-This script is for project2, subtasks 1 and 2, which aims to perform the following tasks:
- * Preprocess the ICU data
+This script is for project2, which aims to perform the following tasks:
  * Resample these data when they are unbalanced
  * Scale the data
- * Fits SVMs
+ * Fits ANN
  * exports the results in a zip file
 
 example usage from CLI:
- $ python3 subtask1and2.py --train_features /path/to/train_features.csv
-     --train_labels /path/to/train_labels.csv
-     --test_features /path/to/test_features.csv
-     --predictions /path/to/predictions_subtask3.zip
-     --k_fold 5
+ $ python3 subtasks_ANN.py --train_features /path/to/preprocessed_train_features.csv
+     --train_labels /path/to/preprocessed_train_labels.csv
+     --test_features /path/to/preprocessed_test_features.csv
+     --predictions /path/to/preprocessed_predictions_subtask3.zip
      --scaler minmax
      --model ANN
      --epochs 100
 
 For help, run:
- $ subtask1and2.py -h
+ $ subtasks_ANN.py -h
 
 TODO:
     * Discuss next steps to improve model performance
@@ -107,11 +105,27 @@ def data_formatting(df_train, df_train_label, logger):
     X_train = df_train.drop(
         columns=IDENTIFIERS
     ).values
+
+    # Create list with different label for each medical test
+    logger.info("Creating a list of labels for each medical test")
+    y_train_medical_tests = []
+    for test in MEDICAL_TESTS:
+        y_train_medical_tests.append(df_train_label[test].astype(int).values)
+    
+    # Create list with different label for sepsis
+    logger.info("Creating a list of labels for each medical test")
+    y_train_sepsis = []
+    for sepsis in SEPSIS:
+        y_train_sepsis.append(df_train_label[sepsis].astype(int).values)
+
+
     # Create list with different label for each vital sign
     logger.info("Creating a list of labels for each vital sign")
     y_train_vital_signs = []
     for sign in VITAL_SIGNS:
         y_train_vital_signs.append(df_train_label[sign].astype(int).values)
+    
+
 
     # Scale data to avoid convergence warning
     logger.info(f"Scaling data using {FLAGS.scaler}.")
@@ -123,92 +137,8 @@ def data_formatting(df_train, df_train_label, logger):
 
     X_train = scaler.fit_transform(X_train)
 
-    # Also transform the outputs as it may be better for the network
-    # See TO DO: to we scale labels?
-    vital_signs_scales = []
-    # if FLAGS.model == "ANN":
-    #     for i, sign in enumerate(VITAL_SIGNS):
-    #         label_scaler = MinMaxScaler()
-    #         y_train_vital_signs[i] = label_scaler.fit_transform(y_train_vital_signs[i].reshape(-1, 1))
-    #         vital_signs_scales.append(label_scaler.scale_)
-    #         y_train_vital_signs[i] = y_train_vital_signs[i].reshape(-1)
 
-    return X_train, y_train_vital_signs
-
-
-def get_vital_signs_svr_models(X_train, y_train_vital_signs, param_grid):
-    """Fit SVR on given data, using gridsearch to optimize hyperparaneters
-
-    Args:
-        X_train (np.ndarray): (n_samples, n_features) array containing features
-        y_train_vital_signs (list): list of np.ndarray (n_samples,) array containing labels for each
-            vital sign
-        param_grid (dict): dictionary containing the entries for the hyperparameter tuning.
-
-    Returns:
-        svr_models, scores (list): list of fitted models and scores for each vital sign.
-    """
-
-    svr_models = []
-    scores = []
-    for i, test in enumerate(VITAL_SIGNS):
-        logger.info(f"Starting iteration for test {test}")
-        svr = SVR()
-        cores = multiprocessing.cpu_count() - 2
-        tuned_svr = GridSearchCV(
-            estimator=svr,
-            param_grid=param_grid,
-            n_jobs=cores,
-            scoring="r2",
-            cv=FLAGS.k_fold,
-            verbose=0,
-        )
-        tuned_svr.fit(X_train, y_train_vital_signs[i])
-        svr_models.append(tuned_svr.best_estimator_)
-        scores.append(tuned_svr.best_score_)
-
-    return svr_models, scores
-
-
-def get_vital_signs_predictions(X_test, test_pids, models, device):
-    """Function to obtain predictions for every model, as a confidence level : the closer to 1
-    (resp 0), the more confidently) the sample belongs to class 1 (resp 0).
-
-    Args:
-        X_test (np.ndarray): array of preprocessed test values
-        test_pids (np.ndarray): array of patient ids in test set
-        svm_models (list): list of models for each of the medical tests
-
-    Returns:
-        df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for
-            their respective tests, containing for each patient id the predicted label as a confidence
-            level.
-    """
-    df_pred = pd.DataFrame()
-
-    for i, test in enumerate(VITAL_SIGNS):
-        if FLAGS.model == "SVR":
-            # Compute prediction
-            y_pred = models[i].predict(X_test)
-            y_mean = [
-                np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
-            ]
-            df = pd.DataFrame({test: y_mean}, index=test_pids)
-            df_pred = pd.concat([df_pred, df], axis=1)
-        else:
-            # Switch network to eval mode to make sure all dropout layers are there, etc..
-            y_pred = (
-                models[i](torch.from_numpy(X_test).to(device).float())
-                .cpu()
-                .detach()
-                .numpy()
-            )
-            y_mean = [
-                np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
-            ]
-            df = pd.DataFrame({test: y_mean}, index=test_pids)
-            df_pred = pd.concat([df_pred, df], axis=1)
-    return df_pred
+    return X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs
 
 
 def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
@@ -237,20 +167,21 @@ class Feedforward(torch.nn.Module):
     modified in the function where the network is trained.
     """
 
-    def __init__(self, input_size, hidden_size, p=0.2):
+    def __init__(self, input_size, hidden_size, subtask, p=0.2):
         super(Feedforward, self).__init__()
+        self.subtask = subtask
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.dropout = torch.nn.Dropout(p=p)
-        self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
-        torch.nn.init.xavier_normal_(self.fc1.weight)
         self.bn = torch.nn.BatchNorm1d(hidden_size)
         self.relu = torch.nn.ReLU()
+        self.sigmoid = torch.nn.Sigmoid()
+        self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
+        torch.nn.init.xavier_normal_(self.fc1.weight)
         self.fc2 = torch.nn.Linear(self.hidden_size, hidden_size)
         torch.nn.init.xavier_normal_(self.fc2.weight)
         self.fc3 = torch.nn.Linear(self.hidden_size, 1)
         torch.nn.init.xavier_normal_(self.fc3.weight)
-        self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, x):
         """Function where the forward pass is defined. The backward pass is deternmined by the
@@ -259,11 +190,13 @@ class Feedforward(torch.nn.Module):
         Args:
             x (torch.Tensor): Tensor (n_samples,n_features) tensor containing training input
                 features
+            subtask (int): subtask performed (choice: 1,2,3)
 
         Returns:
             output (torch.Tensor): (n_samples,n_features) tensor containing
                 the predicted output for each sample.
         """
+        assert (self.subtask in [1,2,3])
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.relu(hidden_bn)
@@ -271,7 +204,10 @@ class Feedforward(torch.nn.Module):
         hidden_2_bn = self.bn(hidden_2)
         relu_2 = self.relu(hidden_2_bn)
         output = self.dropout(self.fc3(relu_2))
-        output = self.relu(output)
+        if self.subtask==3:
+            output = self.relu(output)
+        else:
+            output = self.sigmoid(output)
         return output
 
 
@@ -292,12 +228,13 @@ class Data(Dataset):
         return self.len
 
 
-def get_vital_signs_ann_models(x_input, y_input, logger, device):
+def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
 
     Args:
         x_input (np.ndarray): (n_samples,n_features) array containing the training features
         y_input (np.ndarray): (n_samples,) array containing the training labels
+        subtask (int): subtask to be performed (choice: 1, 2, 3)
         logger (Logger): logger
         device (torch.device): device on which the tensors should be placed (CPU/CUDA GPU)
 
@@ -305,11 +242,13 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         ann_models (list): list of trained feedforward neural networks
         scores (list): list of the testing scores of the trained feedforward neural networks
     """
-    logger.info(f"Using {device} to train the neural network.")
+    assert (subtask in [1,2,3])
+    logger.info("Using {} to train the neural network for substask {}.".format(device, subtask))
     ann_models = []
     scores = []
-    for i, sign in enumerate(VITAL_SIGNS):
-        logger.info(f"Starting neural network training for vital sign {sign}")
+    topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
+    for i, sign in enumerate(topred):
+        logger.info(f"Starting neural network training for {sign}")
         X_train, X_test, y_train, y_test = train_test_split(
             x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
         )
@@ -317,7 +256,7 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-        model = Feedforward(35, 150, 0.0)
+        model = Feedforward(35, 150, subtask, 0.5)
         criterion = torch.nn.MSELoss()
         #optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
@@ -361,6 +300,40 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         scores.append(test_error)
     return ann_models, scores
 
+def get_predictions(X_test, test_pids, models, subtask, device):
+    """Function to obtain predictions for every model, as a confidence level for subtask 1 and 2
+    (the closer to 1 (resp 0), the more confidently the sample belongs to class 1 (resp 0)) or as 
+    a value prediction for subtask 3
+
+    Args:
+        X_test (np.ndarray): array of preprocessed test values
+        test_pids (np.ndarray): array of patient ids in test set
+        models (list): list of models for each of the medical tests
+        subtask (int): subtask to be performed (choice: 1, 2, 3)
+        device (torch.device): device on which the tensors should be placed (CPU/CUDA GPU)
+
+    Returns:
+        df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for
+            their respective tests, containing for each patient id the predicted label as a confidence
+            level.
+    """
+    df_pred = pd.DataFrame()
+
+    topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
+    for i, test in enumerate(topred):
+        # Switch network to eval mode to make sure all dropout layers are there, etc..
+        y_pred = (
+            models[i](torch.from_numpy(X_test).to(device).float())
+            .cpu()
+            .detach()
+            .numpy()
+        )
+        y_mean = [
+            np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
+        ]
+        df = pd.DataFrame({test: y_mean}, index=test_pids)
+        df_pred = pd.concat([df_pred, df], axis=1)
+    return df_pred
 
 def main(logger):
     """Primary function reading, preprocessing and modelling the data
@@ -376,50 +349,62 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    X_train, y_train_vital_signs = data_formatting(
+    X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs = data_formatting(
         df_train, df_train_label, logger
     )
 
     logger.info("Beginning modelling process.")
 
-    if FLAGS.model == "SVR":
-        device=None
-        # train model here
-        param_grid = {
-            "kernel": ["linear", "poly", "rbf", "sigmoid"],
-            "degree": np.arange(1, 4, 1),
-            "gamma": np.linspace(0.1, 10, num=3),
-            "coef0": [0],
-            "tol": [0.001],
-            "C": np.linspace(0.1, 10, num=3),
-            "epsilon": [0.1],
-            "shrinking": [True],
-            "cache_size": [1000],
-            "verbose": [2],
-            "max_iter": [1000],
-        }
-        vital_signs_models, vital_signs_models_scores = get_vital_signs_svr_models(
-            X_train, y_train_vital_signs, param_grid
-        )
-    else:
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        vital_signs_models, scores = get_vital_signs_ann_models(
-            X_train, y_train_vital_signs, logger, device
-        )
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # get models and scores for substasks 1, 2 and 3
+    logger.info("Beggining ANN training for medical tests.")
+    medical_tests_models, scores = get_ann_models(
+        X_train, y_train_medical_tests, 1, logger, device
+    )
+
+    logger.info("Beggining ANN training for sepsis.")
+    sepsis_models, scores = get_ann_models(
+        X_train, y_train_sepsis, 2, logger, device
+    )
+
+    logger.info("Beggining ANN training for vital signs.")
+    vital_signs_models, scores = get_ann_models(
+        X_train, y_train_vital_signs, 3, logger, device
+    )
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test[IDENTIFIERS].values)
     logger.info("Fetch predictions.")
     X_test = df_test.drop(columns=IDENTIFIERS).values
-    vital_signs_predictions = get_vital_signs_predictions(
-        X_test, test_pids, vital_signs_models, device
+
+    # get the predictions for all subtasks
+    logger.info("Get predictions for medical tests.")
+    medical_tests_predictions = get_predictions(
+        X_test, test_pids, medical_tests_models, 1, device
     )
 
+    logger.info("Get predictions for sepsis.")
+    sepsis_predictions = get_predictions(
+        X_test, test_pids, sepsis_models, 2, device
+    )
+
+    logger.info("Get predictions for vital signs.")
+    vital_signs_predictions = get_predictions(
+        X_test, test_pids, vital_signs_models, 3, device
+    )
+    df_predictions = pd.DataFrame(test_pids, columns=["pid"])
+    df_predictions = df_predictions.merge(medical_tests_predictions, 
+        left_index=True, right_index=True)
+    print(df_predictions)
+    df_predictions = df_predictions.merge(sepsis_predictions,
+        left_index=True, right_index=True)
+    df_predictions = df_predictions.merge(vital_signs_predictions,
+        left_index=True, right_index=True)
     logger.info("Export predictions DataFrame to a zip file")
     # Export pandas dataframe to zip archive.
-    vital_signs_predictions.to_csv(
+    df_predictions.to_csv(
         FLAGS.predictions, index=False, float_format="%.3f", compression=dict(method='zip',
-                        archive_name='predictions_subtask3.csv')  
+                        archive_name='predictions.csv')  
     )
 
 
@@ -480,23 +465,6 @@ if __name__ == "__main__":
         required=True,
         help="Scaler to be used to transform the data.",
         choices=["minmax", "standard"],
-    )
-
-    parser.add_argument(
-        "--k_fold",
-        "-k",
-        type=int,
-        required=False,
-        help="k to perform k-fold cv in the gridsearch",
-    )
-
-    parser.add_argument(
-        "--model",
-        "-m",
-        type=str,
-        required=True,
-        help="whether to train a neural network or an SVR for the tasks",
-        choices=["SVR", "ANN"],
     )
 
     parser.add_argument(
