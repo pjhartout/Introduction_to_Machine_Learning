@@ -1,0 +1,110 @@
+INFO:IML-P2-T1T2:Loading data
+INFO:IML-P2-T1T2:Finished Loading data
+INFO:IML-P2-T1T2:Creating a list of labels for each vital sign
+INFO:IML-P2-T1T2:Scaling data using standard.
+INFO:IML-P2-T1T2:Beginning sampling strategy for medical tests
+INFO:IML-P2-T1T2:Performing oversampling for 0 of 10 medical tests (LABEL_BaseExcess).
+INFO:IML-P2-T1T2:Performing oversampling for 1 of 10 medical tests (LABEL_Fibrinogen).
+INFO:IML-P2-T1T2:Performing oversampling for 2 of 10 medical tests (LABEL_AST).
+INFO:IML-P2-T1T2:Performing oversampling for 3 of 10 medical tests (LABEL_Alkalinephos).
+INFO:IML-P2-T1T2:Performing oversampling for 4 of 10 medical tests (LABEL_Bilirubin_total).
+INFO:IML-P2-T1T2:Performing oversampling for 5 of 10 medical tests (LABEL_Lactate).
+INFO:IML-P2-T1T2:Performing oversampling for 6 of 10 medical tests (LABEL_TroponinI).
+INFO:IML-P2-T1T2:Loading data
+INFO:IML-P2-T1T2:Finished Loading data
+INFO:IML-P2-T1T2:Creating a list of labels for each vital sign
+INFO:IML-P2-T1T2:Scaling data using standard.
+INFO:IML-P2-T1T2:Beginning sampling strategy for medical tests
+INFO:IML-P2-T1T2:Performing oversampling for 0 of 10 medical tests (LABEL_BaseExcess).
+INFO:IML-P2-T1T2:Performing oversampling for 1 of 10 medical tests (LABEL_Fibrinogen).
+INFO:IML-P2-T1T2:Performing oversampling for 2 of 10 medical tests (LABEL_AST).
+INFO:IML-P2-T1T2:Performing oversampling for 3 of 10 medical tests (LABEL_Alkalinephos).
+INFO:IML-P2-T1T2:Performing oversampling for 4 of 10 medical tests (LABEL_Bilirubin_total).
+INFO:IML-P2-T1T2:Performing oversampling for 5 of 10 medical tests (LABEL_Lactate).
+INFO:IML-P2-T1T2:Performing oversampling for 6 of 10 medical tests (LABEL_TroponinI).
+INFO:IML-P2-T1T2:Performing oversampling for 7 of 10 medical tests (LABEL_SaO2).
+INFO:IML-P2-T1T2:Performing oversampling for 8 of 10 medical tests (LABEL_Bilirubin_direct).
+INFO:IML-P2-T1T2:Performing oversampling for 9 of 10 medical tests (LABEL_EtCO2).
+INFO:IML-P2-T1T2:Performing oversampling for SEPSIS.
+INFO:IML-P2-T1T2:Beginning modelling process.
+INFO:IML-P2-T1T2:Perform gridsearch for linear SVM on medical tests.
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_BaseExcess
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Fibrinogen
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_AST
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Alkalinephos
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_total
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Lactate
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_TroponinI
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_SaO2
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_direct
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_EtCO2
+INFO:IML-P2-T1T2:Perform gridsearch for non-linear SVM on medical tests.
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_BaseExcess
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Fibrinogen
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_AST
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Alkalinephos
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_total
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Lactate
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_TroponinI
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_SaO2
+INFO:IML-P2-T1T2:Loading data
+INFO:IML-P2-T1T2:Finished Loading data
+INFO:IML-P2-T1T2:Creating a list of labels for each vital sign
+INFO:IML-P2-T1T2:Scaling data using standard.
+INFO:IML-P2-T1T2:Beginning sampling strategy for medical tests
+INFO:IML-P2-T1T2:Loading data
+INFO:IML-P2-T1T2:Finished Loading data
+INFO:IML-P2-T1T2:Creating a list of labels for each vital sign
+INFO:IML-P2-T1T2:Scaling data using standard.
+INFO:IML-P2-T1T2:Beginning sampling strategy for medical tests
+INFO:IML-P2-T1T2:Performing oversampling for 0 of 10 medical tests (LABEL_BaseExcess).
+INFO:IML-P2-T1T2:Performing oversampling for 1 of 10 medical tests (LABEL_Fibrinogen).
+INFO:IML-P2-T1T2:Performing oversampling for 2 of 10 medical tests (LABEL_AST).
+INFO:IML-P2-T1T2:Performing oversampling for 3 of 10 medical tests (LABEL_Alkalinephos).
+INFO:IML-P2-T1T2:Performing oversampling for 4 of 10 medical tests (LABEL_Bilirubin_total).
+INFO:IML-P2-T1T2:Performing oversampling for 5 of 10 medical tests (LABEL_Lactate).
+INFO:IML-P2-T1T2:Performing oversampling for 6 of 10 medical tests (LABEL_TroponinI).
+INFO:IML-P2-T1T2:Performing oversampling for 7 of 10 medical tests (LABEL_SaO2).
+INFO:IML-P2-T1T2:Performing oversampling for 8 of 10 medical tests (LABEL_Bilirubin_direct).
+INFO:IML-P2-T1T2:Performing oversampling for 9 of 10 medical tests (LABEL_EtCO2).
+INFO:IML-P2-T1T2:Performing oversampling for SEPSIS.
+INFO:IML-P2-T1T2:Beginning modelling process.
+INFO:IML-P2-T1T2:Perform gridsearch for linear SVM on medical tests.
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_BaseExcess
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Fibrinogen
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_AST
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Alkalinephos
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_total
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Lactate
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_TroponinI
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_SaO2
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_direct
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_EtCO2
+INFO:IML-P2-T1T2:Perform gridsearch for non-linear SVM on medical tests.
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_BaseExcess
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Fibrinogen
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_AST
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Alkalinephos
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_total
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Lactate
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_TroponinI
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_SaO2
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_Bilirubin_direct
+INFO:IML-P2-T1T2:Starting iteration for test LABEL_EtCO2
+INFO:IML-P2-T1T2:Linear SVM results [0.7153388218005378, 0.6653694261675194, 0.6338871737434544, 0.6320283193751208, 0.6313182721845398, 0.6744243138499793, 0.6941887669965187, 0.6837958797811343, 0.6492099980113134, 0.7486549590610593]
+INFO:IML-P2-T1T2:Nonlinear SVM results [0.7613868830586445, 0.8585329544299632, 0.7112578966302234, 0.715808794173458, 0.7128886147978442, 0.7420414499085605, 0.8672384729700353, 0.7457637527750609, 0.9167792616599794, 0.8872338033929242]
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_BaseExcess is 0.7613868830586445 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_Fibrinogen is 0.8585329544299632 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_AST is 0.7112578966302234 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_Alkalinephos is 0.715808794173458 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_Bilirubin_total is 0.7128886147978442 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_Lactate is 0.7420414499085605 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_TroponinI is 0.8672384729700353 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_SaO2 is 0.7457637527750609 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_Bilirubin_direct is 0.9167792616599794 achieved by the nonlinear model
+INFO:IML-P2-T1T2:The performance for the model for the test LABEL_EtCO2 is 0.8872338033929242 achieved by the nonlinear model
+INFO:IML-P2-T1T2:Perform gridsearch for linear SVM on SEPSIS.
+INFO:IML-P2-T1T2:Perform gridsearch for non-linear SVM on SEPSIS.
+INFO:IML-P2-T1T2:The best model for SEPSIS is the non-linear svm
+INFO:IML-P2-T1T2:Fetch predictions.
+INFO:IML-P2-T1T2:Export predictions DataFrame to a zip file
