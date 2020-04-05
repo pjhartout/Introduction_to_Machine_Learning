@@ -39,7 +39,8 @@ import sys
 import time
 
 import torch
-
+from imblearn.over_sampling import ADASYN, SMOTE
+from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -82,7 +83,7 @@ def load_data():
         rows_to_load = None
     df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
     df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
-    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
+    df_test = pd.read_csv(FLAGS.test_features)
     return df_train, df_train_label, df_test
 
 
@@ -140,6 +141,37 @@ def data_formatting(df_train, df_train_label, logger):
 
     return X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs
 
+
+def oversampling_strategies(X_train, y_train, strategy):
+    """Function that uses a strategy to balance the dataset.
+
+    Args:
+        X_train (numpy.ndarray): array containing the features that need to be balanced
+        y_train (numpy.ndarray): array containing the data labels
+        strategy (int): sampling strategy to be adopted
+
+    Returns:
+        X_train_resampled, y_train_resampled (numpy.ndarray): resampled features and labels
+        according to the chosen strategy
+    """
+
+    # Oversampling methods
+    if strategy == "adasyn":
+        sampling_method = ADASYN()
+    if strategy == "smote":
+        sampling_method = SMOTE()
+
+    # Undersampling methods
+    if strategy == "clustercentroids":
+        sampling_method = ClusterCentroids(random_state=42)
+    if strategy == "random":
+        sampling_method = RandomUnderSampler(random_state=0, replacement=True)
+
+    X_train_resampled, y_train_resampled = sampling_method.fit_sample(
+        X_train, y_train
+    )
+
+    return X_train_resampled, y_train_resampled
 
 def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     """Converts a number of np.ndarrays to tensors placed on the device specified.
@@ -252,6 +284,9 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train, X_test, y_train, y_test = train_test_split(
             x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
         )
+        if subtask==1:
+            logger.info("Performing {} strategy for oversampling for {}".format(FLAGS.sampling_strategy, sign))
+            X_train, y_train = oversampling_strategies(X_train, y_train, FLAGS.sampling_strategy)
         logger.info("Converting arrays to tensors")
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
@@ -373,7 +408,7 @@ def main(logger):
     )
 
     # get the unique test ids of patients
-    test_pids = np.unique(df_test[IDENTIFIERS].values)
+    test_pids = np.unique(df_test["pid"].values)
     logger.info("Fetch predictions.")
     X_test = df_test.drop(columns=IDENTIFIERS).values
 
@@ -468,6 +503,16 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--epochs", "-ep", type=int, required=False, help="", default=100
+    )
+
+    parser.add_argument(
+        "--sampling_strategy",
+        "-samp",
+        type=str,
+        required=True,
+        help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
+        "any of adasyn, smote, clustercentroids or random.",
+        choices=["adasyn", "smote", "clustercentroids", "random"],
     )
 
     FLAGS = parser.parse_args()
