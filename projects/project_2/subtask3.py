@@ -35,6 +35,8 @@ __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch"
 import multiprocessing
 import argparse
 import logging
+import os
+import shutil
 import sys
 import time
 
@@ -42,6 +44,7 @@ import torch
 
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -240,10 +243,13 @@ class Feedforward(torch.nn.Module):
         self.hidden_size = hidden_size
         self.dropout = torch.nn.Dropout(p=p)
         self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
+        torch.nn.init.xavier_normal_(self.fc1.weight)
         self.bn = torch.nn.BatchNorm1d(hidden_size)
         self.relu = torch.nn.ReLU()
         self.fc2 = torch.nn.Linear(self.hidden_size, hidden_size)
+        torch.nn.init.xavier_normal_(self.fc2.weight)
         self.fc3 = torch.nn.Linear(self.hidden_size, 1)
+        torch.nn.init.xavier_normal_(self.fc3.weight)
         self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, x):
@@ -321,21 +327,23 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
         if torch.cuda.is_available():
             model.cuda()
         model.float()
-        writer = SummaryWriter()
-        logger.info("Commencing neural network training")
 
-        for epoch in range(FLAGS.epochs):
-            tic = time.perf_counter()
+        logger.info("Removing data from previous run")
+        dirpath = 'runs'
+        if os.path.exists(dirpath) and os.path.isdir(dirpath):
+            shutil.rmtree(dirpath)
+
+        logger.info("Commencing neural network training")
+        writer = SummaryWriter()
+        for epoch in tqdm(list(range(FLAGS.epochs))):
             for x, y in trainloader:
                 yhat = model(x)
                 loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                LOSS.append(loss)
-                writer.add_scalar("Training_loss", loss, epoch)
-            toc = time.perf_counter()
-            print(f"Finished epoch {epoch} in {toc - tic:0.4f} seconds", end="\r")
+            LOSS.append(loss)
+            writer.add_scalar("Training_loss", loss, epoch)
         writer.close()
 
         X_test_tensor = X_test_tensor.to(device)

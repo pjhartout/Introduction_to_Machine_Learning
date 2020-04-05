@@ -479,9 +479,6 @@ def main(logger):
     param_grid_non_linear = {
         "C": np.linspace(0.1, 10, num=3),
         "kernel": ["rbf", "sigmoid"],
-        "degree": range(
-            1, 2
-        ),  # This really dictates the runtime of the algorithm, to tune carefully.
         "gamma": np.linspace(0.1, 10, num=3),  # for poly or rbf kernel
         "coef0": [0],
         "shrinking": [True],
