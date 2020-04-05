@@ -42192,3 +42192,194 @@ INFO:IML-P2-T3:MSE for test set is 99.07114291109384
 INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
 INFO:IML-P2-T3:Fetch predictions.
 INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+/home/philiphartout/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler minmax --model ANN --epochs 50
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 50
+INFO:IML-P2-T3:k_fold: 5
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip
+INFO:IML-P2-T3:scaler: minmax
+INFO:IML-P2-T3:test_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv
+INFO:IML-P2-T3:train_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using minmax.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cuda:0 to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Usage:
+/home/philiphartout/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler minmax --model ANN --epochs 50
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 50
+INFO:IML-P2-T3:k_fold: 5
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip
+INFO:IML-P2-T3:scaler: minmax
+INFO:IML-P2-T3:test_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv
+INFO:IML-P2-T3:train_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using minmax.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cuda:0 to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [17 18  1 ... 17 14 17] and value for the predicted sample is [[16.56905 ]
+ [17.029696]
+ [ 8.751828]
+ ...
+ [18.717705]
+ [13.724243]
+ [17.872002]]
+INFO:IML-P2-T3:MSE for test set is 5.719492637052329
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Usage:
+/home/philiphartout/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler minmax --model ANN --epochs 50
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 50
+INFO:IML-P2-T3:k_fold: 5
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip
+INFO:IML-P2-T3:scaler: minmax
+INFO:IML-P2-T3:test_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv
+INFO:IML-P2-T3:train_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using minmax.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cuda:0 to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [17 18  1 ... 17 14 17] and value for the predicted sample is [[18.375229]
+ [17.786686]
+ [10.443424]
+ ...
+ [16.942112]
+ [15.65127 ]
+ [16.847237]]
+INFO:IML-P2-T3:MSE for test set is 5.638632263848464
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Usage:
+/home/philiphartout/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler minmax --model ANN --epochs 100
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:k_fold: 5
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip
+INFO:IML-P2-T3:scaler: minmax
+INFO:IML-P2-T3:test_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv
+INFO:IML-P2-T3:train_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using minmax.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cuda:0 to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [17 18  1 ... 17 14 17] and value for the predicted sample is [[16.268768]
+ [17.529781]
+ [ 8.443678]
+ ...
+ [17.857574]
+ [13.742508]
+ [17.865433]]
+INFO:IML-P2-T3:MSE for test set is 5.003545650558648
+INFO:IML-P2-T3:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [70 67 75 ... 72 81 75] and value for the predicted sample is [[69.279816]
+ [74.51363 ]
+ [79.53744 ]
+ ...
+ [74.6209  ]
+ [75.40265 ]
+ [87.506165]]
+INFO:IML-P2-T3:MSE for test set is 82.02412338386596
+INFO:IML-P2-T3:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [95 96 99 ... 96 96 93] and value for the predicted sample is [[96.53384]
+ [96.53384]
+ [96.53384]
+ ...
+ [96.53384]
+ [96.53384]
+ [96.53384]]
+INFO:IML-P2-T3:MSE for test set is 3.8829267402627305
+INFO:IML-P2-T3:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training
+INFO:IML-P2-T3:Value of the test sample if [75 90 73 ... 85 74 78] and value for the predicted sample is [[0.]
+ [0.]
+ [0.]
+ ...
+ [0.]
+ [0.]
+ [0.]]
+INFO:IML-P2-T3:MSE for test set is 7209.688953233307
+INFO:IML-P2-T3:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T3:Fetch predictions.
+INFO:IML-P2-T3:Export predictions DataFrame to a zip file
+INFO:IML-P2-T3:Usage:
+/home/philiphartout/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/subtask3.py --train_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv --train_labels ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv --test_features ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip --k_fold 5 --scaler minmax --model ANN --epochs 100
+
+INFO:IML-P2-T3:All settings used:
+INFO:IML-P2-T3:epochs: 100
+INFO:IML-P2-T3:k_fold: 5
+INFO:IML-P2-T3:model: ANN
+INFO:IML-P2-T3:nb_of_patients: None
+INFO:IML-P2-T3:predictions: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtask3.zip
+INFO:IML-P2-T3:scaler: minmax
+INFO:IML-P2-T3:test_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_test.csv
+INFO:IML-P2-T3:train_features: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train.csv
+INFO:IML-P2-T3:train_labels: ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/preprocessed_train_label.csv
+INFO:IML-P2-T3:Loading data
+INFO:IML-P2-T3:Finished Loading data
+INFO:IML-P2-T3:Creating a list of labels for each vital sign
+INFO:IML-P2-T3:Scaling data using minmax.
+INFO:IML-P2-T3:Beginning modelling process.
+INFO:IML-P2-T3:Using cuda:0 to train the neural network.
+INFO:IML-P2-T3:Starting neural network training for vital sign LABEL_RRate
+INFO:IML-P2-T3:Converting arrays to tensors
+INFO:IML-P2-T3:Removing data from previous run
+INFO:IML-P2-T3:Commencing neural network training

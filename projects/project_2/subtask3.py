@@ -342,12 +342,15 @@ def get_vital_signs_ann_models(x_input, y_input, logger, device):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
+            X_test_tensor = X_test_tensor.to(device)
+            y_pred = model(X_test_tensor).cpu().detach().numpy()
+            test_error = mean_squared_error(y_test, y_pred)
             LOSS.append(loss)
             writer.add_scalar("Training_loss", loss, epoch)
+            writer.add_scalar("Testing_loss", test_error, epoch)
         writer.close()
 
-        X_test_tensor = X_test_tensor.to(device)
-        y_pred = model(X_test_tensor).cpu().detach().numpy()
+
         logger.info(f"Value of the test sample if {y_test} and value for the predicted "
                     f"sample is {y_pred}")
         test_error = mean_squared_error(y_test, y_pred)
