@@ -395,7 +395,6 @@ def main(logger):
     df_predictions = pd.DataFrame(test_pids, columns=["pid"])
     df_predictions = df_predictions.merge(medical_tests_predictions, 
         left_index=True, right_index=True)
-    print(df_predictions)
     df_predictions = df_predictions.merge(sepsis_predictions,
         left_index=True, right_index=True)
     df_predictions = df_predictions.merge(vital_signs_predictions,
