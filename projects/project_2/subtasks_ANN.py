@@ -369,6 +369,7 @@ def get_predictions(X_test, test_pids, models, subtask, device):
         ]
         df = pd.DataFrame({test: y_mean}, index=test_pids)
         df_pred = pd.concat([df_pred, df], axis=1)
+    df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
 def main(logger):
@@ -433,11 +434,11 @@ def main(logger):
     )
     df_predictions = pd.DataFrame(test_pids, columns=["pid"])
     df_predictions = df_predictions.merge(medical_tests_predictions, 
-        left_index=True, right_index=True)
+        left_on="pid", right_on="pid")
     df_predictions = df_predictions.merge(sepsis_predictions,
-        left_index=True, right_index=True)
+        left_on="pid", right_on="pid")
     df_predictions = df_predictions.merge(vital_signs_predictions,
-        left_index=True, right_index=True)
+        left_on="pid", right_on="pid")
     logger.info("Export predictions DataFrame to a zip file")
     # # Export pandas dataframe to zip archive.
     # df_predictions.to_csv(
