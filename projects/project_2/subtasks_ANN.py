@@ -449,7 +449,7 @@ def main(logger):
 
     with zipfile.ZipFile('predictions.zip', 'w') as zf:
         zf.write('predictions.csv')
-    os.remove('predictionss.csv')
+    os.remove('predictions.csv')
 
 
 if __name__ == "__main__":
