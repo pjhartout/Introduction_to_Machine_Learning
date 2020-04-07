@@ -36,6 +36,7 @@ import logging
 import os
 import shutil
 import sys
+import zipfile
 import time
 
 import torch
@@ -388,6 +389,9 @@ def main(logger):
         df_train, df_train_label, logger
     )
 
+    logger.info("Removing runs directory to wipe previous training iterations.")
+    shutil.rmtree("runs")
+
     logger.info("Beginning modelling process.")
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -435,11 +439,17 @@ def main(logger):
     df_predictions = df_predictions.merge(vital_signs_predictions,
         left_index=True, right_index=True)
     logger.info("Export predictions DataFrame to a zip file")
-    # Export pandas dataframe to zip archive.
-    df_predictions.to_csv(
-        FLAGS.predictions, index=False, float_format="%.3f", compression=dict(method='zip',
-                        archive_name='predictions.csv')  
-    )
+    # # Export pandas dataframe to zip archive.
+    # df_predictions.to_csv(
+    #     FLAGS.predictions, index=False, float_format="%.3f", compression=dict(method='zip',
+    #                     archive_name='predictions.csv')
+    # )
+    # Alternative way to export to CSV that works.
+    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig')
+
+    with zipfile.ZipFile('predictions.zip', 'w') as zf:
+        zf.write('predictions.csv')
+    os.remove('predictionss.csv')
 
 
 if __name__ == "__main__":
@@ -519,10 +529,10 @@ if __name__ == "__main__":
 
     # clear logger.
     logging.basicConfig(
-        level=logging.DEBUG, filename="script_status_subtask3.log"
+        level=logging.DEBUG, filename="log_subtasks_ANN.log"
     )
 
-    logger = logging.getLogger("IML-P2-T3")
+    logger = logging.getLogger("IML-P2-T123-ANN")
 
     # Create a second stream handler for logging to `stderr`, but set
     # its log level to be a little bit smaller such that we only have
