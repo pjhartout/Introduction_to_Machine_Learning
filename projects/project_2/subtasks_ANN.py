@@ -446,7 +446,7 @@ def main(logger):
     #                     archive_name='predictions.csv')
     # )
     # Alternative way to export to CSV that works.
-    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig')
+    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig', float_format='%.3f')
 
     with zipfile.ZipFile('predictions.zip', 'w') as zf:
         zf.write('predictions.csv')

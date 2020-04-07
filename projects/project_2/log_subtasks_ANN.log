@@ -1,0 +1,274 @@
+INFO:IML-P2-T123-ANN:Usage:
+subtasks_ANN.py -train_l data\preprocessed_train_label.csv -train_f data\preprocessed_train.csv -test data\preprocessed_test.csv -pred data\predictions_ANN.zip -scale standard -nb_pat 1000 -samp adasyn
+
+INFO:IML-P2-T123-ANN:All settings used:
+INFO:IML-P2-T123-ANN:epochs: 100
+INFO:IML-P2-T123-ANN:nb_of_patients: 1000
+INFO:IML-P2-T123-ANN:predictions: data\predictions_ANN.zip
+INFO:IML-P2-T123-ANN:sampling_strategy: adasyn
+INFO:IML-P2-T123-ANN:scaler: standard
+INFO:IML-P2-T123-ANN:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T123-ANN:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T123-ANN:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T123-ANN:Loading data
+INFO:IML-P2-T123-ANN:Finished Loading data
+INFO:IML-P2-T123-ANN:Creating a list of labels for each medical test
+INFO:IML-P2-T123-ANN:Creating a list of labels for each medical test
+INFO:IML-P2-T123-ANN:Creating a list of labels for each vital sign
+INFO:IML-P2-T123-ANN:Scaling data using standard.
+INFO:IML-P2-T123-ANN:Removing runs directory to wipe previous training iterations.
+INFO:IML-P2-T123-ANN:Beginning modelling process.
+INFO:IML-P2-T123-ANN:Beggining ANN training for medical tests.
+INFO:IML-P2-T123-ANN:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[0.5      ]
+ [0.5      ]
+ [0.9958171]
+ ...
+ [0.5      ]
+ [0.5      ]
+ [0.5      ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14098729765688225
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Fibrinogen
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 0 ... 0 0 0] and value for the predicted sample is [[0.00086522]
+ [0.02281659]
+ [0.5       ]
+ ...
+ [0.5       ]
+ [0.5       ]
+ [0.5       ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.1357450754913174
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Fibrinogen
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_AST
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_AST
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ ...
+ [8.8543229e-06]
+ [9.2862017e-04]
+ [5.0531935e-06]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.13764820322557622
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_AST
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Alkalinephos
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Alkalinephos
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ ...
+ [5.0000000e-01]
+ [1.4462590e-03]
+ [2.1403976e-06]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14348884645114357
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Alkalinephos
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Bilirubin_total
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Bilirubin_total
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.0000000e-01]
+ [5.0000000e-01]
+ ...
+ [1.2522016e-05]
+ [5.0000000e-01]
+ [2.4213686e-03]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14106998147357344
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Bilirubin_total
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Lactate
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Lactate
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[1.6346455e-04]
+ [8.9330943e-03]
+ [9.9954271e-01]
+ ...
+ [5.0000000e-01]
+ [2.3679754e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14437980203443904
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Lactate
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_TroponinI
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_TroponinI
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 0 ... 0 0 0] and value for the predicted sample is [[0.5]
+ [0.5]
+ [0.5]
+ ...
+ [0.5]
+ [0.5]
+ [0.5]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.13373219871714837
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_TroponinI
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_SaO2
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_SaO2
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [1 0 1 ... 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [5.7444838e-03]
+ [9.7577775e-01]
+ ...
+ [5.0000000e-01]
+ [5.0000000e-01]
+ [9.5207378e-04]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14261499722518806
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_SaO2
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Bilirubin_direct
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Bilirubin_direct
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 1 ... 0 0 0] and value for the predicted sample is [[0.00151759]
+ [0.05620873]
+ [0.5       ]
+ ...
+ [0.5       ]
+ [0.5       ]
+ [0.5       ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.1355971342145431
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Bilirubin_direct
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_EtCO2
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_EtCO2
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 0 ... 0 0 0] and value for the predicted sample is [[5.0000000e-01]
+ [8.3042886e-03]
+ [2.2805810e-03]
+ ...
+ [2.2705072e-04]
+ [5.0000000e-01]
+ [5.0000000e-01]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.12881740809184164
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_EtCO2
+INFO:IML-P2-T123-ANN:Beggining ANN training for sepsis.
+INFO:IML-P2-T123-ANN:Using cpu to train the neural network for substask 2.
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Sepsis
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [0 0 0 ... 0 0 0] and value for the predicted sample is [[0.5]
+ [0.5]
+ [0.5]
+ ...
+ [0.5]
+ [0.5]
+ [0.5]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.14171131059638004
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Sepsis
+INFO:IML-P2-T123-ANN:Beggining ANN training for vital signs.
+INFO:IML-P2-T123-ANN:Using cpu to train the neural network for substask 3.
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_RRate
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [21 22 18 ... 22 19 20] and value for the predicted sample is [[ 0.      ]
+ [23.711908]
+ [16.384289]
+ ...
+ [21.18167 ]
+ [ 0.      ]
+ [ 0.      ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 170.71719634111108
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_RRate
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_ABPm
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [ 98 102  72 ...  58  76  88] and value for the predicted sample is [[88.83736 ]
+ [ 0.      ]
+ [77.623886]
+ ...
+ [57.00901 ]
+ [69.83427 ]
+ [93.28669 ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 3322.537858138738
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_ABPm
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_SpO2
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [96 97 98 ... 98 95 97] and value for the predicted sample is [[ 0.      ]
+ [ 0.      ]
+ [93.760216]
+ ...
+ [96.35024 ]
+ [ 0.      ]
+ [94.73676 ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 4531.101621009382
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_SpO2
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Heartrate
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [ 88  89  86 ... 111  79 121] and value for the predicted sample is [[  0.     ]
+ [  0.     ]
+ [  0.     ]
+ ...
+ [114.60902]
+ [ 83.3508 ]
+ [  0.     ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 3685.4601202682848
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_Heartrate
+INFO:IML-P2-T123-ANN:Fetch predictions.
+INFO:IML-P2-T123-ANN:Get predictions for medical tests.
+INFO:IML-P2-T123-ANN:Get predictions for sepsis.
+INFO:IML-P2-T123-ANN:Get predictions for vital signs.
+INFO:IML-P2-T123-ANN:Export predictions DataFrame to a zip file
+INFO:IML-P2-T123-ANN:Usage:
+subtasks_ANN.py -train_l data\preprocessed_train_label.csv -train_f data\preprocessed_train.csv -test data\preprocessed_test.csv -pred data\predictions_ANN_10000.zip -scale standard -nb_pat 10000 -samp adasyn
+
+INFO:IML-P2-T123-ANN:All settings used:
+INFO:IML-P2-T123-ANN:epochs: 100
+INFO:IML-P2-T123-ANN:nb_of_patients: 10000
+INFO:IML-P2-T123-ANN:predictions: data\predictions_ANN_10000.zip
+INFO:IML-P2-T123-ANN:sampling_strategy: adasyn
+INFO:IML-P2-T123-ANN:scaler: standard
+INFO:IML-P2-T123-ANN:test_features: data\preprocessed_test.csv
+INFO:IML-P2-T123-ANN:train_features: data\preprocessed_train.csv
+INFO:IML-P2-T123-ANN:train_labels: data\preprocessed_train_label.csv
+INFO:IML-P2-T123-ANN:Loading data
+INFO:IML-P2-T123-ANN:Finished Loading data
+INFO:IML-P2-T123-ANN:Creating a list of labels for each medical test
+INFO:IML-P2-T123-ANN:Creating a list of labels for each medical test
+INFO:IML-P2-T123-ANN:Creating a list of labels for each vital sign
+INFO:IML-P2-T123-ANN:Scaling data using standard.
+INFO:IML-P2-T123-ANN:Removing runs directory to wipe previous training iterations.
+INFO:IML-P2-T123-ANN:Beginning modelling process.
+INFO:IML-P2-T123-ANN:Beggining ANN training for medical tests.
+INFO:IML-P2-T123-ANN:Using cpu to train the neural network for substask 1.
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Converting arrays to tensors
+INFO:IML-P2-T123-ANN:Removing data from previous run
+INFO:IML-P2-T123-ANN:Commencing neural network training
+INFO:IML-P2-T123-ANN:Value of the test sample if [1 0 0 ... 0 0 0] and value for the predicted sample is [[0.5       ]
+ [0.06987274]
+ [0.5       ]
+ ...
+ [0.5       ]
+ [0.09108777]
+ [0.5       ]]
+INFO:IML-P2-T123-ANN:MSE for test set is 0.16195277203920225
+INFO:IML-P2-T123-ANN:Finished test for vital sign LABEL_BaseExcess
+INFO:IML-P2-T123-ANN:Starting neural network training for LABEL_Fibrinogen
+INFO:IML-P2-T123-ANN:Performing adasyn strategy for oversampling for LABEL_Fibrinogen
