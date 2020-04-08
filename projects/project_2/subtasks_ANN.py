@@ -306,7 +306,8 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
             shutil.rmtree(dirpath + "/" + fileName)
 
         logger.info("Commencing neural network training.")
-        writer = SummaryWriter(log_dir=f"runs/network_{topred[i]}")
+        now = time.strftime("%Y%m%d-%H%M%S")
+        writer = SummaryWriter(log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}")
         for epoch in tqdm(list(range(FLAGS.epochs))):
             LOSS = []
             for x, y in trainloader:
@@ -376,7 +377,7 @@ def get_predictions(X_test, test_pids, models, subtask, device):
             .detach()
             .numpy()
         )
-        df = pd.DataFrame(y_pred, index=test_pids)
+        df = pd.DataFrame(y_pred, index=test_pids, columns=[topred[i]])
         df_pred = df_pred.merge(df, left_index=True, right_index=True)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
