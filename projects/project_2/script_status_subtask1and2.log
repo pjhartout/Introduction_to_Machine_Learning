@@ -2,3 +2,20 @@ INFO:Data preprocessing:Loading data
 INFO:Data preprocessing:Finished Loading data
 INFO:Data preprocessing:Preprocessing training set
 INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Getting quantile information
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Add trends for: ['Temp', 'RRate', 'ABPm', 'ABPd', 'SpO2', 'Heartrate', 'ABPs']
+INFO:Data preprocessing:Imputing values for columns where there is not enough information for trendsbut enough to make an average for each patient.
+INFO:Data preprocessing:Imputing for the remaining columns where no specific patient average can be found
+INFO:Data preprocessing:Preprocessing test set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Getting quantile information
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Add trends for: ['Temp', 'RRate', 'ABPm', 'ABPd', 'SpO2', 'Heartrate', 'ABPs']
+INFO:Data preprocessing:Imputing values for columns where there is not enough information for trendsbut enough to make an average for each patient.
+INFO:Data preprocessing:Imputing for the remaining columns where no specific patient average can be found
+INFO:Data preprocessing:Export preprocessed train and test set
