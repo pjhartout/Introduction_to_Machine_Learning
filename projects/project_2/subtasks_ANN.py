@@ -20,8 +20,7 @@ For help, run:
  $ subtasks_ANN.py -h
 
 TODO:
-    * Discuss next steps to improve model performance
-    * Do we scale the labels?
+    * Scale labels for sigmoid function for classifiers
 
 Following Google style guide: http://google.github.io/styleguide/pyguide.html
 
@@ -46,13 +45,13 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from sklearn.svm import SVR
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import f1_score, mean_squared_error, accuracy_score
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
-IDENTIFIERS = ["pid", "Time"]
+IDENTIFIERS = ["pid"]
 MEDICAL_TESTS = [
     "LABEL_BaseExcess",
     "LABEL_Fibrinogen",
@@ -78,12 +77,8 @@ def load_data():
         preprocessed training features, training labels and testing features respectively.
 
     """
-    if FLAGS.nb_of_patients is not None:
-        rows_to_load = (FLAGS.nb_of_patients * 12) + 1
-    else:
-        rows_to_load = None
-    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
-    df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
+    df_train = pd.read_csv(FLAGS.train_features, nrows=FLAGS.nb_of_patients)
+    df_train_label = pd.read_csv(FLAGS.train_labels, nrows=FLAGS.nb_of_patients)
     df_test = pd.read_csv(FLAGS.test_features)
     return df_train, df_train_label, df_test
 
@@ -126,8 +121,6 @@ def data_formatting(df_train, df_train_label, logger):
     y_train_vital_signs = []
     for sign in VITAL_SIGNS:
         y_train_vital_signs.append(df_train_label[sign].astype(int).values)
-    
-
 
     # Scale data to avoid convergence warning
     logger.info(f"Scaling data using {FLAGS.scaler}.")
@@ -229,7 +222,7 @@ class Feedforward(torch.nn.Module):
             output (torch.Tensor): (n_samples,n_features) tensor containing
                 the predicted output for each sample.
         """
-        assert (self.subtask in [1,2,3])
+        assert (self.subtask in [1, 2, 3])
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.relu(hidden_bn)
@@ -237,10 +230,10 @@ class Feedforward(torch.nn.Module):
         hidden_2_bn = self.bn(hidden_2)
         relu_2 = self.relu(hidden_2_bn)
         output = self.dropout(self.fc3(relu_2))
-        if self.subtask==3:
-            output = self.relu(output)
-        else:
+        if self.subtask == 1 or self.subtask == 2:
             output = self.sigmoid(output)
+        else:
+            output = self.relu(output)
         return output
 
 
@@ -259,6 +252,7 @@ class Data(Dataset):
 
     def __len__(self):
         return self.len
+
 
 
 def get_ann_models(x_input, y_input, subtask, logger, device):
@@ -285,55 +279,73 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train, X_test, y_train, y_test = train_test_split(
             x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
         )
-        if subtask==1:
-            logger.info("Performing {} strategy for oversampling for {}".format(FLAGS.sampling_strategy, sign))
+        if subtask in [1, 2]:
+            logger.info("Performing {} strategy for oversampling for {}".format(
+                FLAGS.sampling_strategy, sign))
             X_train, y_train = oversampling_strategies(X_train, y_train, FLAGS.sampling_strategy)
         logger.info("Converting arrays to tensors")
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-        model = Feedforward(35, 150, subtask, 0.5)
+        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
         criterion = torch.nn.MSELoss()
         #optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
         batch_size = 2048  # Ideally we want any multiple of 12 here
         trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
-        LOSS = []
+
         if torch.cuda.is_available():
             model.cuda()
         model.float()
 
-        logger.info("Removing data from previous run")
-        dirpath = 'runs'
-        if os.path.exists(dirpath) and os.path.isdir(dirpath):
-            shutil.rmtree(dirpath)
+        logger.info("Removing data from previous run if there was any.")
+        dirpath = os.path.join(os.getcwd(), 'runs')
+        fileList = os.listdir(dirpath)
+        for fileName in fileList:
+            shutil.rmtree(dirpath + "/" + fileName)
 
-        logger.info("Commencing neural network training")
-        writer = SummaryWriter()
+        logger.info("Commencing neural network training.")
+        writer = SummaryWriter(log_dir=f"runs/network_{topred[i]}")
         for epoch in tqdm(list(range(FLAGS.epochs))):
+            LOSS = []
             for x, y in trainloader:
                 yhat = model(x)
                 loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
+                LOSS.append(loss)
             X_test_tensor = X_test_tensor.to(device)
-            y_pred = model(X_test_tensor).cpu().detach().numpy()
-            test_error = mean_squared_error(y_test, y_pred)
-            LOSS.append(loss)
-            writer.add_scalar("Training_loss", loss, epoch)
-            writer.add_scalar("Testing_loss", test_error, epoch)
+            y_test_pred = model(X_test_tensor).cpu().detach().numpy()
+            y_train_pred = model(X_train_tensor).cpu().detach().numpy()
+            loss_average = sum(LOSS) / len(LOSS)
+            writer.add_scalar("Training_loss", loss_average, epoch)
+
+            if subtask in [1, 2]:
+                y_test_pred = np.rint(y_test_pred)
+                y_train_pred = np.around(y_train_pred)
+                train_acc = accuracy_score(y_train_pred, y_train)
+                test_acc = accuracy_score(y_test_pred, y_test)
+                f1_score_train = f1_score(y_train, y_train_pred)
+                f1_score_test = f1_score(y_test, y_test_pred)
+                writer.add_scalar("Training_acc", train_acc, epoch)
+                writer.add_scalar("Testing_acc", test_acc, epoch)
+                writer.add_scalar("Training_f1", f1_score_train, epoch)
+                writer.add_scalar("Testing_f1", f1_score_test, epoch)
+            if subtask == 3:
+                mse_score_train = mean_squared_error(y_train, y_train_pred)
+                mse_score_test = mean_squared_error(y_test, y_test_pred)
+                writer.add_scalar("Training_mse", mse_score_train, epoch)
+                writer.add_scalar("Testing_mse", mse_score_test, epoch)
+
         writer.close()
 
-
-        logger.info(f"Value of the test sample if {y_test} and value for the predicted "
-                    f"sample is {y_pred}")
-        test_error = mean_squared_error(y_test, y_pred)
-        logger.info(f"MSE for test set is {test_error}")
-        logger.info(f"Finished test for vital sign {sign}")
+        logger.info(f"Value of the test sample is {y_test} and value for the predicted "
+                    f"sample is {y_test_pred}")
+        logger.info(f"Finished test for {sign}")
         ann_models.append(model)
-        scores.append(test_error)
+        scores.append(LOSS)
     return ann_models, scores
 
 def get_predictions(X_test, test_pids, models, subtask, device):
@@ -350,10 +362,10 @@ def get_predictions(X_test, test_pids, models, subtask, device):
 
     Returns:
         df_pred (pandas.core.DataFrame): contains the predictions made by each of the models for
-            their respective tests, containing for each patient id the predicted label as a confidence
-            level.
+            their respective tests, containing for each patient id the predicted label as a
+            confidence level.
     """
-    df_pred = pd.DataFrame()
+    df_pred = pd.DataFrame(index=test_pids)
 
     topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
     for i, test in enumerate(topred):
@@ -364,11 +376,8 @@ def get_predictions(X_test, test_pids, models, subtask, device):
             .detach()
             .numpy()
         )
-        y_mean = [
-            np.mean(y_pred[i : i + 12]) for i in range(len(test_pids))
-        ]
-        df = pd.DataFrame({test: y_mean}, index=test_pids)
-        df_pred = pd.concat([df_pred, df], axis=1)
+        df = pd.DataFrame(y_pred, index=test_pids)
+        df_pred = df_pred.merge(df, left_index=True, right_index=True)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
@@ -389,9 +398,6 @@ def main(logger):
     X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs = data_formatting(
         df_train, df_train_label, logger
     )
-
-    logger.info("Removing runs directory to wipe previous training iterations.")
-    shutil.rmtree("runs")
 
     logger.info("Beginning modelling process.")
 
@@ -446,7 +452,8 @@ def main(logger):
     #                     archive_name='predictions.csv')
     # )
     # Alternative way to export to CSV that works.
-    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig')
+    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig',
+                          float_format='%.2f')
 
     with zipfile.ZipFile('predictions.zip', 'w') as zf:
         zf.write('predictions.csv')
