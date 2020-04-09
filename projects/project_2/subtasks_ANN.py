@@ -206,8 +206,10 @@ class Feedforward(torch.nn.Module):
         torch.nn.init.xavier_normal_(self.fc1.weight)
         self.fc2 = torch.nn.Linear(self.hidden_size, hidden_size)
         torch.nn.init.xavier_normal_(self.fc2.weight)
-        self.fc3 = torch.nn.Linear(self.hidden_size, 1)
+        self.fc3 = torch.nn.Linear(self.hidden_size, hidden_size)
         torch.nn.init.xavier_normal_(self.fc3.weight)
+        self.fc4 = torch.nn.Linear(self.hidden_size, 1)
+        torch.nn.init.xavier_normal_(self.fc4.weight)
 
     def forward(self, x):
         """Function where the forward pass is defined. The backward pass is deternmined by the
@@ -229,7 +231,10 @@ class Feedforward(torch.nn.Module):
         hidden_2 = self.dropout(self.fc2(relu))
         hidden_2_bn = self.bn(hidden_2)
         relu_2 = self.relu(hidden_2_bn)
-        output = self.dropout(self.fc3(relu_2))
+        hidden_3 = self.dropout(self.fc3(relu))
+        hidden_3_bn = self.bn(hidden_3)
+        relu_3 = self.relu(hidden_3_bn)
+        output = self.fc4(relu_3)
         if self.subtask == 1 or self.subtask == 2:
             output = self.sigmoid(output)
         else:
@@ -288,7 +293,10 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
             X_train, X_test, y_train, y_test, device
         )
         model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
-        criterion = torch.nn.MSELoss()
+        if subtask==3:
+            criterion = torch.nn.MSELoss()
+        else:
+            criterion = torch.nn.BCELoss()
         #optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
@@ -324,12 +332,14 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
             writer.add_scalar("Training_loss", loss_average, epoch)
 
             if subtask in [1, 2]:
-                y_test_pred = np.rint(y_test_pred)
-                y_train_pred = np.around(y_train_pred)
-                train_acc = accuracy_score(y_train_pred, y_train)
-                test_acc = accuracy_score(y_test_pred, y_test)
-                f1_score_train = f1_score(y_train, y_train_pred)
-                f1_score_test = f1_score(y_test, y_test_pred)
+                # can change decision boundary (0.5 is equivalent to rounding)
+                db = np.vectorize(lambda x : (0 if x<0.5 else 1))
+                y_test_pred_bin = db(y_test_pred)
+                y_train_pred_bin = db(y_train_pred)
+                train_acc = accuracy_score(y_train_pred_bin, y_train)
+                test_acc = accuracy_score(y_test_pred_bin, y_test)
+                f1_score_train = f1_score(y_train, y_train_pred_bin)
+                f1_score_test = f1_score(y_test, y_test_pred_bin)
                 writer.add_scalar("Training_acc", train_acc, epoch)
                 writer.add_scalar("Testing_acc", test_acc, epoch)
                 writer.add_scalar("Training_f1", f1_score_train, epoch)
