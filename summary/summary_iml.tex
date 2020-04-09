@@ -1826,13 +1826,6 @@ Pooling layers (equivalent to subsampling) can be added. In some applications, e
 
 An example of CNN architecture can be found in figure \ref{cnn-arch}.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=.5\textwidth]{figures/cnn-arch.png}
-    \caption{Typical CNN architecture.}
-    \label{cnn-arch}
-\end{figure}
-
 \subsection{Computational efficiency}
 
 A key operation for backpropagation training is the dense matrix vector multiplications. These are very suitable on general purpose GPUs and much work on special purpose hardware, for instance TPUs. They have been reponsible for large improvement in computations in recent years. 
@@ -1880,5 +1873,501 @@ The difference is that kernels optimize $\alpha$'s only. It is therefore convex.
 
 \section{Clustering}
 
+\begin{definition}[Unsupervised learning]
+    Unsupervised learning consists of learning a representation of the data without labels, which is typically useful for data analysis, finding patterns and visualization. Most common methods to perform unsupervised learning are clustering and dimensionality reduction.
+\end{definition}
+
+\begin{definition}[Clustering]
+   Given a set of datapoints, the goal is to group them into clusters such that similar points are in the same cluster and that dissimilar points are in different clusters. Points are typically represented either in (high-dimensional) Euclidean space or with distances specified by a metric or kernel. A related field of clustering is anomaly/outlier detection -- identification of points that don't fit well in any of the clusters.
+\end{definition}
+
+Examples of clusterings tasks include:
+\begin{itemize}
+    \item Documents based on the words they contain
+    \item Images based on image features
+    \item DNA sequences based on mutation distance
+    \item Products based on which customers bought them
+    \item Customers based on their purchase history
+    \item Web surfers based on their queries/sites they visit.
+\end{itemize}
+
+There are several standard approaches to clustering:
+\begin{itemize}
+    \item \textbf{Hierarchical clustering}: it consists of building a tree (bottom-up or top-down) representing distances among data points. For instance, this includes single-, average-linkage clustering. 
+    \item \textbf{Partitional approaches}: it consists in defining and optimizing a notion of cost defined over partitions: for instance, this includes spectral clustering, graph-cut based approaches.
+    \item \textbf{Model-based approaches}: these methods consist in maintaining cluster models and infer cluster membership, e.g. assign each point to the closest cluster. Examples of model-based approaches include $k$-means clustering, Gaussian mixture models, etc...
+\end{itemize}
+
+\subsection{$k$-means clustering}
+
+\subsubsection{Intuition}
+
+The idea behind $k$-means clustering is that every cluster is represented by a single point (named $\mu_j\in\mathbb{R}$) and each point is assigned to the closest center, for instance for cluster 1:
+\begin{equation*}
+    \left\{\mathbf{x}:1\arg\min_{j}\norm{\mathbf{x}-\mu_j}\right\}
+\end{equation*}
+
+This induces a Voronoi partition. See also figure \ref{k-means-clustering-illustration} for an illustration.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/k-means-clustering-illustration.png}
+    \caption{$k$-means clustering illustration}
+    \label{k-means-clustering-illustration}
+\end{figure}
+
+\subsubsection{The problem}
+
+For $k$-means clustering, we assume that the points are in Euclidean space, i.e. $\mathbf{x}\in\mathbb{R}^{d}$. We represent each cluster as a center $\mu\in\mathbb{R}^d$ and each point is assigned to the closest center. The overall goal is to pick centers to minimize the average squared distance:
+\begin{equation*}
+    \hat{R}(\mu)=\hat{R}(\mu_1, \ldots, \mu_k) = \sum_{i=1}^{n}\min_{j\in\left\{1,\ldots,k\right\}}\norm{\mathbf{x_i}-\mu_j}_2^2
+\end{equation*}
+and:
+\begin{equation*}
+    \hat{\mu}=\arg\min_{\mu}\hat{R}(\mu)
+\end{equation*}
+This is a non-convex optimization problem and is NP-hard in nature, which means that we can't solve this problem optimally in general. 
+
+\subsubsection{Lloyd's heuristic}
+Lloyd's algorithm consists in:
+\begin{itemize}
+    \item Initialize the cluster centers $\mu_0=[\mu_1^{(0)},\ldots,\mu_k^{(0)}]$  
+    \item While the function does not converge:
+    \begin{itemize}
+        \item Assign each point $\mathbf{x}_i$ to closest center, i.e.:
+        \begin{equation*}
+            z_i^{t}\leftarrow \arg\min_{j\in\left\{1,\ldots,k\right\}}4\norm{\mathbf{x}_i-\mu_j^{t-1}}.
+        \end{equation*}
+        \item We then update the center as being the mean of all the points assigned to that center, i.e.:
+        \begin{equation*}
+            \mu_j^{(t)}\leftarrow\frac{1}{n_j}\sum_{i:z_i^{(t)}=j}\mathbf{x}_i
+        \end{equation*}
+        where:
+        \begin{equation*}
+            n_j=\left|\left\{i:z_i^{(t)=j}\right\}\right|.
+        \end{equation*}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Properties of $k$-means}
+
+$k$-means is guaranteed to monotonically decrease the average squared distance in each iteration, i.e. $\hat{R}(\mu^{(t)})\geq\hat{R}(\mu^{(t+1)})$. 
+
+\begin{proof}[Proof that $k$-means monotonically decreases]
+    We know that $\hat{R}(\mu^{(t)})$ is defined by \\
+    $\hat{R}(\mu^{(t)})=\sum_{i=1}^{n}\min_{j\in\left\{1,\ldots, k\right\}}\norm{\mathbf{x}_i-\mu_j^{(t)}}_2^2$ at a given timestep $t$. Our objective is to find $\mu_{z_i}$ s.t. $\hat{R}(\mu)=\min_{z}\hat{R}(\mu, z)$ (i.e. the set of cluster center assignments such that the distance is minimized). \\
+    
+    We know that $\hat{R}(\mu,z)=\sum_{i=1}^{n}\norm[]{\mathbf{x}_i-\mu_{z_i}}_2^2$. Then, it can be shown that:
+
+
+    \begin{equation*}
+        \hat{R}(\mu^{(t)}, z^{(t)})\geq \hat{R}(\mu^{(t)}, z^{(t+1)})\geq \hat{R}(\mu^{(t+1)}, z^{(t+1)})
+    \end{equation*} 
+    Since $z^{(t+1)}=\arg\min_{\mathbf{z}}\hat{R}(\mu^{(t)}, \mathbf{z})$ we can infer that $\hat{R}(\mu^{(t)}, z^{(t)})\geq \hat{R}(\mu^{(t)}, z^{(t+1)})$ and since $\mu^{(t)}=\arg\min_{\mu}=\hat{R})(\mu, z^{(t+1)})$, which means it converges to a local optimum.
+\end{proof}
+
+The complexity per iteration of the algorithm is in $\mathcal{O}(n\cdot k\cdot d)$. 
+
+As noted in the proof, the algorithm converges towards a local optimum. A graphical representation of such an event can be seen in figure \ref{local_optimum_k_means}.
+
+\begin{figure}
+    \centering
+    \includegraphics[]{figures/local_optimum_k_means.png}    
+    \caption{Local optima of a $k$-means algorithmiteration}
+    \label{local_optimum_knn}
+\end{figure}
+
+\subsubsection{Challenges with $k$-means} 
+
+There are multiple challenges when performing $k$-means. Generally, the algorithm only converges to a local optimum, and the performance of the methodology is strongly dependent on the initialization. The number of iterations required can be exponential, even in the place. In practice however the algorithm converges very quickly. Determining the number of clusters $k$ is difficult, and cannot model clusters of arbitrary shape, although kernel Kernel-$k$-means can be used to fix this.
+
+\subsubsection{Initializing $k$-means}
+Lloyd's heuristic does not generally converge to the optimal solution. The performance heavily depends on the initialization. Several approaches towards solving the initialization problem are listed below:
+\begin{itemize}
+    \item Multiple random restarts
+    \item Farthest points heuristic, which often works well but is prone to outliers.
+    \item Seeding with $k$-means ++.
+    \item Other methods exist as well. 
+\end{itemize}
+
+\subsection{$k$-means ++}
+The idea behind $k$-means ++ is to increase the sampling probability of sampling initial points that are likely far away from the center of the cluster.
+
+The algorithm consists of the following steps:
+\begin{enumerate}
+    \item Start with a random data point as a center, where $i\sim\text{Uniform}(\left\{1,\ldots, n\right\})$ and $\mu_0=x_i$. 
+    \item Add centers 2 to $k$ randomly, proportionally to the squared distance to the closest selected center, i.e. for $j=2:k$, pick $ij$ with probability $\frac{1}{z}\cdot d(x_{ij};\mu_{1:j-1}^{(0)})$ where $d(x_{ij};\mu_{1:j-1}^{(0)})=\min_{\ell\in\left\{1,\ldots, j-1\right\}}\norm{\mathbf{x}_ij-\mu_{\ell}^{(0)}}_2^2$ and assign: $\mu_j^{(0)}=x_{ij}$ 
+\end{enumerate}
+
+We can show that the expected cost of this procedure is in $\mathcal{O(\log(k))}$ times that of optimal $k$-means solutions: $\mathbb{E}[\hat{R}(\mu^{(0)})]\leq\mathcal{O}(\log k)\min_{\mu}\hat{R}(\mu)$
+
+\subsection{Model selection in clustering}
+
+In general, model selection is very difficult in clustering. There are, however, several approaches that can be adopted. For instance:
+\begin{itemize}
+    \item heuristic quality measures
+    \item regularization (i.e. favor simple models with few parameters by penalizing complex models)
+    \item Information theoretic basis (tradeoff between robustness (stability) and informativeness), which can be derived from statistical learning theory.
+\end{itemize}
+
+A heuristic for determing $k$ in $k$ means is to use a loss function and plot this value against the number of clusters chosen. Then the optimal choice is made when there is a $k$ such that increasing $k$ leads to neglibible decreases in loss, as see in figure \ref{choice-of-k}
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/choice-of-k.png}
+    \caption{An instance of a choice of $k$, here 4.}
+    \label{choice-of-k}
+\end{figure}
+
+\subsection{Regularization}
+
+A regularization term can be added to the optimization objective such that more complex models are penalized. For $k$-means, this can be done as follows:
+
+\begin{equation*}
+    \min_{k, \mu_{i:k}}\hat{R}(\mu_{i:k})+\lambda\cdot k.
+\end{equation*}
+
+Graphically, this is introduces an elbow in the plot of the cost of the loss functions vs. the number of clusters, see figure \ref{regularization_k_means}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/regularization_k_means.png}
+    \caption{Illustration of the effect of regularization on the cost function.}
+    \label{regularization_k_means}
+\end{figure}
+
+Note that the test loss cannot be used to determine the number of clusters, as this loss typically also keeps decreasing.
+
+Challenges with $k$-means which are not a big issue in practice include:
+\begin{itemize}
+    \item Only a local optimum can be reached in general.
+    \item The number of iterations required can be exponential.
+\end{itemize}
+Challenges with $k$-means which can be fixed via kernel $k$-means, etc.
+\begin{itemize}
+    \item It is not possible to model clusters of arbitrary shape.
+\end{itemize}
+A major unsolved practical problem is the choice of number of clusters $k$, which is difficult.
+
+\section{Dimensionality reduction}
+
+The basic challenge is that, given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\in\mathbb{R}^{d}$, we want to obtain an ``embedding'', i.e. a low dimensional representation $\mathbf{z}_1, \ldots, \mathbf{z}_n\in\mathbb{R}^k$ where $k<d$. This serves multiple purpose, including:
+\begin{itemize}
+    \item visualization for $k=1,2,3$
+    \item Regularization (model selection)
+    \item Unsupervised feature discovery (i.e. determine features from data)
+\end{itemize}
+
+Typical approaches to achieve this problem achieve the following:
+
+\begin{enumerate}
+    \item Assume $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}$
+    \item Obtain a mapping $\mathbf{f}:\mathbb{R}^{d}\rightarrow\mathbb{R}^{k}$ where $k\ll d$.
+\end{enumerate}
+
+It is possible to distinguish between the following:
+\begin{itemize}
+    \item Linear dimension reduction, i.e. $\mathbf{f(x)}=\mathbf{Ax}\forall A\in\mathbb{R}^{k\times d}$
+    \item Nonlinear dimension reduction:
+    \begin{itemize}
+        \item Parametric
+        \item Non-parametric
+    \end{itemize}
+\end{itemize}
+
+A key question in the field then arises: which mappings should we prefer?
+
+\subsection{Linear dimension reduction as compression}
+
+The motivation behind linear dimension reduction is that a low-dimensional representation should allow to compress the original data (accurate reconstruction). For instance, if we set $k=1$, and given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}$, we want to represent data as points on a line $\mathbf{w}\in\mathbb{R}^d$ with coefficiens $z_1,\ldots, z_n$, i.e. we want $z_i\mathbf{w}\approx\mathbf{x}_i$, assuming $\mu=\frac{1}{n}\sum_{i}\mathbf{x}_i=0$ as shown in figure \ref{linear_dim_reduc}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/linear-dim-reduc.png}
+    \caption{Graphical representation of linear dimension reduction with $k=1$.}
+    \label{linear_dim_reduc}
+\end{figure}
+
+\subsection{Linear dimension reduction for reconstruction}
+
+Given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}$, we want $z_i\mathbf{w}\approx\mathbf{x}_i$, e.g. minimizing $\norm{z_i\mathbf{w}=\mathbf{x}_i}_2^2$. To ensure uniqueness, we can normalize $\norm{\mathbf{w}}_2=1$,  and then we optimize over $\mathbf{w}, z_1, \ldots, z_n$ jointly:
+
+\begin{equation*}
+    (\mathbf{w}*,z_{1:n}*) = \arg\min_{\norm{\mathbf{w}}_2 = 1, \mathbf{z}}\sum_{i=1}^{n}\norm{\mathbf{x}_i-z_i\cdot\mathbf{w}}_2^2 = \hat{R}(\mathbf{w}, z_{1:n})
+\end{equation*}
+
+Solving this equation for $\mathbf{z}$ given a vector $\mathbf{w}$ and we get:
+
+\begin{equation*}
+    z_i*=\mathbf{w}^T\mathbf{x}_i    
+\end{equation*}
+
+Thus we effectively solve a regression problem, interpreting $\mathbf{x}$ as features and $z$ as labels. So, we obtain:
+
+\begin{align*}
+    \mathbf{w}*&=\arg\min_{\norm{w}_2=1}\sum_{i=1}^{n}\norm{\mathbf{w}\mathbf{w}^T\mathbf{x}_i-\mathbf{x}_i}_2^2\\
+    &= \sum_{i=1}^{n}\norm{x_i}_2^2-\sum_{i=1}^{n}(\mathbf{w}^Tx_i)^2
+\end{align*}
+
+Since $\sum_{i=1}^{n}\norm{x_i}_2^2$ is constant w.r.t. $\mathbf{w}$, we have that:
+
+\begin{equation*}
+    \arg\min_{\mathbf{w}}\hat{R}(\mathbf{w})=\arg\max_{w}\sum_{i=1}^{n}\left(\mathbf{w}^Tx_i\right)^2
+\end{equation*}
+
+Solving the optimization objective for $\mathbf{w}$ yields:
+
+\begin{equation*}
+    \mathbf{w}* = \arg\max_{\norm{w}_2=1}\sum_{i=1}^{n}(\mathbf{w}^T\mathbf{x}_i)^2
+\end{equation*}
+
+where:
+\begin{equation*}
+    \sum_{i=1}^{n}(\mathbf{w}^T\mathbf{x}_i)^2 = \sum_{i=1}^{n}\mathbf{w}^T\mathbf{x}_i\mathbf{w}\mathbf{x}_i^T = \mathbf{w}^T\sum_{i=1}^{n}(\mathbf{x}_i\mathbf{x}_i^T)\mathbf{w}=n\cdot\Sigma
+\end{equation*}
+where $\Sigma$ is the empirical variance of the data assuming mean 0. So, we have that:
+
+\begin{equation}\label{lin-dim-red-w}
+    \mathbf{w}*=\arg\max_{\norm{\mathbf{w}}_2=1}\mathbf{w}^T\Sigma\mathbf{w}
+\end{equation}
+
+where $\Sigma=\frac{1}{n}\sum_{i=1}^{n}\mathbf{x}_i\mathbf{x}_i^T$ is the empirical covariance assuming the data is centered as stated above. The optimal solution for equation \ref{lin-dim-red-w} is given by the principal eigenvector of $\Sigma$, i.e. $\mathbf{w}*=\mathbf{v}_1$ where
+
+\begin{equation}\label{covariance_eq}
+    \Sigma = \sum_{i=1}^{d}\lambda_i\mathbf{v}_i\mathbf{v}_1^T\qquad\lambda_1\geq\ldots\geq\lambda_d\geq 0
+\end{equation}
+To justify this, we have:
+\begin{equation*}
+    \mathbf{w}=\sum_{i=1}^{d}\alpha_i v_i
+\end{equation*}
+
+thus, our objective, which we want to minimize in equation \ref{lin-dim-red-w} becomes:
+
+\begin{align*}
+    \mathbf{w}^T\Sigma\mathbf{w} &= (\sum_{i}\alpha_i v_i)^T(\sum_{j=1}^{d}\lambda_j v_j v_j^T)(\sum_{k}\alpha_k v_k)\\
+    &= \sum_{ijk}\alpha_i\alpha_k\lambda_j(v_i^Tv_j)(v_j^Tv_k)=\sum_{i=1}^{d}\alpha_i^2\lambda_i
+\end{align*}
+
+Since this problem is constrained ($\norm{\mathbf{w}}_2=1$), we have that $\sum_{i=1}^{d}\alpha_i^2=1$, thus, in addition to the consition $\lambda_1\geq\ldots\geq\lambda_d\geq 0$ given in equation \ref{covariance_eq}, we have $\alpha_1=1$, $\alpha_i=0\forall i>1$.
+
+\subsubsection{Extrapolating for $k>1$}
+
+Suppose we wish to project to more than one dimension. Thus, we want: 
+\begin{equation*}
+    (\mathbf{W}, \mathbf{z}_1, \ldots, \mathbf{z}_n)=\arg\min\sum_{i=1}^{n}\norm{\mathbf{W}\mathbf{z}_i-\mathbf{x}_i}_2^2 
+\end{equation*}
+where $\mathbf{W}\in\mathbb{R}^{d\times k}$ is orthogonal, $\mathbf{z}_1, \ldots, \mathbf{z}_n\in\mathbb{R}^k$.
+
+This is called the principal component analysis problem. Its solution can be obtained in closed form even for $k>1$.
+
+\subsection{Principal Component Analysis}
+
+Given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}, 1\leq k\leq d$. We further assume that the data is centered:
+\begin{equation*}
+    \Sigma = \frac{1}{n}\sum_{i=1}^{n}\mathbf{x}_i\mathbf{x}_i^T \qquad \mu = \frac{1}{n}\sum_{i}\mathbf{x}_i=0
+\end{equation*}
+
+The solution to the PCA problem is given below:
+
+\begin{equation*}
+    (\mathbf{W}, \mathbf{z}_1, \ldots, \mathbf{z}_n)=\arg\min\sum_{i=1}^{n}\norm{\mathbf{W}\mathbf{z}_i-\mathbf{x}_i}^2_2
+\end{equation*}
+where $\mathbf{W}\in\mathbb{R}^{d\times k}$ is orthogonal, $\mathbf{z}_1, \ldots, \mathbf{z}_n\in\mathbb{R}^k$ is given by $\mathbf{W}=(\mathbf{v}_1|\ldots|\mathbf{v}_k)$ and $\mathbf{z}_i=\mathbf{W}^T\mathbf{x}_i$ where:
+\begin{equation*}
+    \Sigma = \sum_{i=1}^{d}\lambda_i\mathbb{v}_i\mathbb{v}_i^T \qquad \lambda_1\geq \ldots\geq \lambda_d\geq 0
+\end{equation*}
+
+Essentially, PCA is a projection. The linear mapping $\mathbf{f}(\mathbf{x})=\mathbf{W}^T\mathbf{x}$ obtained from PCA projects vectors $\mathbf{x}\in\mathbb{R}^d$ into a $k$-dimensional subspace. \footnote{If $\mathbf{f}(\mathbf{f}(\mathbf{x}))=\mathbf{f}(\mathbf{x})$, then it holds that $\mathbf{f}$ is a projection}. This projection is chosen to minimize the reconstruction error, measured in Euclidean norm. 
+
+An illustration of PCA can be seen in figure \ref{pca_illustration}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/pca-illustration.png}
+    \caption{Illustration of PCA.}
+    \label{pca_illustration}
+\end{figure}
+
+The PCA can be obtained through singular value decomposition. Recall that it is possible to represent any $\mathbf{X}\in\mathbb{R}^{n\times d}$ as $\mathbf{X=USV}^T$ where $\mathbf{U}\in\mathbb{R}^{n\times n}$ and $\mathbf{V}\in\mathbb{R}^{d\times d}$ are orthogonal, and $\mathbf{S}\in\mathbb{R}^{n\times d}$ is diagonal (wlog in decreasing order). Its entries are called singular values. 
+
+The top $k$ principal components are exactly the first $k$ columns of $\mathbf{V}$. Note that:
+\begin{equation}
+    n\Sigma=\mathbf{X}^T\mathbf{X}=\mathbf{US}^t\mathbf{U}^T\mathbf{USV}^T=\mathbf{VS}^T\mathbf{SV}^T
+\end{equation}
+
+Choosing $k$ for PCA can be done depending on the application domain:
+\begin{itemize}
+    \item For visualization: by inspection
+    \item For feature induction: by cross-validation
+    \item Otherwise: pick k so that most of the variance is explained. 
+\end{itemize}
+
+Note that the PCA and the $k$-means problems are not very dissimilar. They both solve the following problem:
+\begin{equation*}
+    (\mathbf{W}, \mathbf{z}_1, \ldots, \mathbf{z}_n)=\arg\min\sum_{i=1}^{n}\norm{\mathbf{W}\mathbf{z}_i-\mathbf{x}_i}^2_2
+\end{equation*}
+
+Except that $\mathbf{W}$ in PCA is orthogonal, and arbitrary in $k$-means.
+Additionally, $\mathbf{z}_1, \ldots, \mathbf{z}_n)\in\mathbb{R}^{d}$ in PCA and $\mathbf{z}_1, \ldots, \mathbf{z}_n)\in E_k$ where $E_k=\left\{[1,0,\ldots, 0],\ldots, [0,\ldots, 0, 1]\right\}$ is the set of unit vectors in $\mathbf{R}^d$
+
+One can think of PCA and $k$-mans to solve a similar unsupervised learning problem with different constraints. Both aim to compress the data with maximum fidelity under constraints on model complexity, This insight gives rise to a much broader class of techniques, such as matrix factorization.
+
+\subsection{Kernel PCA}
+
+In order to reduce the dimensionality of data in higher dimensions in nonlinear forms, which can lead to significant loss of information as seen in figure \ref{failure_linear_feature_reduction}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.495\textwidth]{figures/failure_linear_feature_reduction.png}
+    \hfill
+    \includegraphics[width=.495\textwidth]{figures/failure_linear_feature_reduction_2.png}
+    \caption{Linear feature reduction cannot reduce the dimensionality of this data very well.}
+    \label{failure_linear_feature_reduction}
+\end{figure}
+
+Therefore we can use kernels. This way we can solve non-linear problems by reducing them to linear ones in high-dimensional, implicitely represented spaces. A similar approach for supervised learning can be taken.
+
+The Ansatz we make is the following:
+$\mathbf{w}=\sum_{i=1}^{n}\alpha_i\mathbf{x}_i$. For PCA, $w*$ is leading eigenvector of $\mathbf{X}^T\mathbf{X}$. We then have that $\mathbf{X}^T\mathbf{X}\mathbf{w}=\lambda\mathbf{w}$, therefore $\mathbf{w}=\frac{1}{\lambda}\sum_{i}$. If we define $\beta = \mathbf{X}\mathbf{w}$, we then have that $\mathbf{w}=\frac{1}{\lambda}\sum_{i}\beta_i x_i$ and $\alpha_i=\frac{\beta_i}{\lambda}$. 
+
+The objective we want to minimize is the following:
+\begin{align*}
+    \mathbf{w}^T\mathbf{X}^T\mathbf{X}\mathbf{w}&=\sum_{i=1}^{n}(\mathbb{W}^Tx_i)^2\\
+    &=\sum_{i=1}^{n}((\sum_{j=1}^{n}\alpha_jx_j)^Tx_i)^2\\
+    &=\sum_{i=1}^{n}(\sum_{j}\alpha_j(\mathbf{x}_j^T \mathbf{x}_i))^2\\
+    &=\sum_{i=1}^{n}(\sum_{j}\alpha_j k(\mathbf{x}_j, \mathbf{x_i}))^2\\
+    &=\sum_{i=1}^{n}(\alpha^T k_i)^2\\
+    &=\alpha^T K^T K\alpha
+\end{align*}
+
+The constraints we want to put in place are the following: 
+\begin{align*}
+    \norm{w}_2&=\mathbf{w}^T\mathbf{w}\\
+    &=(\sum_{i=1}^{n}\alpha_i\mathbf{x}_i)^T(\sum_{j=1}^{n}\alpha_j\mathbf{x}_j)\\
+    &=\sum_{ij}\alpha_i\alpha_j\mathbf{x}_i^T \mathbf{x}_j\\
+    &=\sum_{ij}\alpha_i\alpha_jk(\mathbf{x}_i,\mathbf{x}_j)\\
+    &=\alpha^T\mathbf{K}\alpha\stackrel{!}{=}1
+\end{align*}
+
+Thus, kernel PCA requires solving $\max_{\alpha}\alpha^T\mathbf{K}^T\mathbf{K}\alpha$ such that $\alpha^TK\alpha=1$. 
+
+Applying feature maps using:
+\begin{equation*}
+    \mathbf{w}=\sum_{j=1}^{n}\alpha_j\phi(\mathbf{x}_j)
+\end{equation*}
+
+and observing $\norm{\mathbf{w}}_2^2=\alpha^T\mathbf{K}\alpha$, we have that:
+\begin{align*}
+    \arg\max_{\norm{\mathbf{w}}_2^2=1}\sum_{i=1}^{n}(\mathbf{w}^T\phi(\mathbf{x}_i))^2&=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\sum_{i=1}^{n}(\sum_{j=1}^{n}\alpha_j\phi(\mathbf{x}_j)^T\phi(\mathbf{x_i}))^2\\
+    &=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\sum_{i=1}^{n}(\sum_{j=1}^{n}\alpha_jk(\mathbf{x}_j, \mathbf{x}_i))^2\\
+    &=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\sum_{i=1}^{n}(\alpha^T\mathbf{K}_i)^2\\
+    &=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\sum_{i=1}^{n}(\alpha^T\mathbf{K}_i)^2\\
+    &=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\alpha^T\mathbf{K}^T\mathbf{K}\alpha.
+\end{align*}
+
+\subsubsection{Kernel PCA for $k=1$}
+
+The Kernel-PCA problem ($k=1$) requires solving:
+\begin{equation*}
+    \alpha*=\arg\max_{\alpha^T\mathbf{K}\alpha=1}\alpha^T\mathbf{K}^T\mathbf{K}\alpha.
+\end{equation*}
+
+The optimal solution is obtained in closed form from the eigendecomposition of $\mathbf{K}$:
+\begin{equation*}
+    \alpha* = \frac{1}{\sqrt{\lambda_1}}\mathbf{v}_1
+\end{equation*}
+
+This scaling is useful because:
+\begin{align*}
+    \alpha^T\mathbf{K}\alpha &= \frac{1}{\sqrt{\lambda_1}}v_1^T\mathbf{K}\frac{1}{\sqrt{\lambda_1}}v_1\\
+    &=\frac{1}{\lambda_1}\cdot v_1^T\mathbf{K}v_1\\
+    &=\frac{1}{\lambda_1}v_1^T(\lambda_1v_1)\\
+    &=v_1^Tv_1=1
+\end{align*}
+\begin{equation*}
+    \mathbf{K}=\sum_{i=1}^{n}\lambda_i\mathbf{v}_i\mathbf{v}_i^T\qquad\lambda_1\geq\ldots\geq\lambda_d\geq0
+\end{equation*}
+Given this, a new projected point $\mathbf{x}$ is projected as $\mathbf{z}\in\mathbb{R}^{k}$ such that:
+\begin{equation*}
+    \mathbf{z}_i=\mathbf{w}^{(i)T}\mathbf{x}=(\sum_{j=1}^{n}\alpha_j^{(i)}\mathbf{x}_j)^T\mathbf{x}=\sum_{j=1}^{n}\alpha_j^{(i)}\mathbf{x}_j^T\mathbf{x}=\sum_{j=1}^{n}\alpha_j^{(i)}k(\mathbf{x}_j, x)
+\end{equation*}
+
+\subsubsection{Kernel PCA for any $0<k<d$}
+
+For any $1\leq k<d$, the kernel principal components are given by $\alpha^{(1)},\ldots, \alpha^{(k)}\in\mathbb{R}^n$ where:
+\begin{equation*}
+    \alpha^{(i)}=\frac{1}{\sqrt{\lambda_i}}\mathbf{v}_i
+\end{equation*}
+is obtained from:
+\begin{equation}
+    \mathbf{K}=\sum_{i=1}^{n}\lambda_i\mathbf{v}_i\mathbf{v}_i^T\qquad\lambda_1\geq\ldots\geq\lambda_d\geq 0.
+\end{equation}
+Given this, a new point $\mathbf{x}$ is projected as $\mathbf{z}\in\mathbb{R}^k$:
+\begin{equation*}
+    z_i=\sum_{j=1}^{n}\alpha_j^{(i)}k(\mathbf{x}, \mathbf{x}_j)
+\end{equation*}
+
+Applying $k$-means on kernel principal components is sometimes called kernel-$k$-means or spectral clustering. The illustration of the advantage of kernelizing PCA is shown in figure \ref{kernelized_pca} and \ref{kernerlized_pca_2}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/kernelized_pca.png}
+    \caption{Kernelized PCA illustration}
+    \label{kernelized_pca}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/kernerlized_pca_2}
+    \caption{Another kernelized PCA illustration}
+    \label{kernerlized_pca_2}
+\end{figure}
+
+Kernel-PCA corresponds to applying PCA in the feature space induced by the kernel $k$. It can be used to discover non-linear feature maps in closed form. This can be used as inputs, e.g. to SVMs given multi layer SVMs. The kernel could also be centered, i.e.:
+\begin{equation*}
+    \mathbf{K}'=\mathbf{K}-\mathbf{KE}-\mathbf{EK}+\mathbf{EKE}
+\end{equation*}
+and $\mathbf{E}=\frac{1}{n}[1,\ldots, 1][1,\ldots, 1]^T$
+
+It should be noted that kernelized PCA requires data specified as kernel. The complexity grows with the number of datapoints and cannot be easily explicitely embed high-dimensional data unless we have an appropriate kernel, which may not always be the case. Alternatives include:
+\begin{itemize}
+    \item Autoencoders
+    \item Locally linear embedding
+    \item Multi-dimensional scaling
+    \item t-SNE
+\end{itemize}
+
+\subsection{Neural network autoencoders}
+
+The key idea behind autoencoders is to try to learn the identity function:
+\begin{equation*}
+    \mathbf{x}\approx f(\mathbf{x};\theta)
+\end{equation*}
+The function $f$ can be decomposed by an encoder and a decoder, $f_1$ and $f_2$ respectively:
+\begin{equation*}
+    f(\mathbf{x};\theta) = f_2(f_1(\mathbf{x};\theta_1);\theta_2)
+\end{equation*}
+
+Neural networks can be used to learn the parameters $theta$, as shown in figure \ref{autoencoder_network}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/autoencoder_network.png}
+    \caption{An autoencoder network}
+    \label{autoencoder_network}
+\end{figure}
+
+Neural network autoencoders are ANNs where there is one output unit for each of the $d$ input units. The number $k$ of hidden units is uually smaller than the number of inputs. The goal is to optimize the weights such that the output agrees with the input.
+
+\subsubsection{Training autoencoders}
+
+The goal is to optimize the weights such that the output agrees with the input. This entails, for instance, minimizing the squared loss:
+
+\begin{equation*}
+    \min_{\mathbf{W}}\sum_{i=1}^{n}\norm{\mathbf{x_i}-\mathbf{f}(\mathbf{x}_i;\mathbf{W})}_2^2=\min_{\mathbf{W}}\sum_{i=1}^{n}(\sum_{j=1}^{d}(\mathbf{x}_{i,j}-\mathbf{f}(\mathbf{x}_i;\mathbf{W}))^2)
+\end{equation*}
+
+The aim is to find a local minimum via SGD (backpropagation). The initialization of such networks matters and is challenging
 
 \end{document}
