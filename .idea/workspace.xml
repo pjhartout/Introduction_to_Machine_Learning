@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/projects/project_2/tmp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/export_dataset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/preprocess_dataset.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,11 +28,34 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunManager" selected="Python.preprocess_dataset">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="Introduction_to_Machine_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.preprocess_dataset" />
       <item itemvalue="Python.subtask1and2" />
@@ -54,7 +76,7 @@
       <workItem from="1586506670576" duration="24000" />
       <workItem from="1586506760972" duration="884000" />
       <workItem from="1586507661521" duration="17000" />
-      <workItem from="1586508380897" duration="474000" />
+      <workItem from="1586508380897" duration="740000" />
     </task>
     <servers />
   </component>
