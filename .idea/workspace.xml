@@ -2,16 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/export_dataset.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtask1and2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtask3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commande.txt" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/project_2/tmp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/export_dataset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/preprocess_dataset.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,7 +33,14 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Python.subtask3" />
+  <component name="RunManager" selected="Python.preprocess_dataset">
+    <list>
+      <item itemvalue="Python.preprocess_dataset" />
+      <item itemvalue="Python.subtask1and2" />
+      <item itemvalue="Python.subtask3" />
+      <item itemvalue="Python.subtasks_ANN" />
+    </list>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -42,6 +54,7 @@
       <workItem from="1586506670576" duration="24000" />
       <workItem from="1586506760972" duration="884000" />
       <workItem from="1586507661521" duration="17000" />
+      <workItem from="1586508380897" duration="474000" />
     </task>
     <servers />
   </component>
@@ -49,17 +62,21 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="614" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586507621365">
+    <state x="291" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586508854100">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="614" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586507621365" />
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586507676400">
+    <state x="291" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586508854100" />
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586508632310">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586507676400" />
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586508632310" />
     <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586506772295">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="464" y="188" width="992" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586506772295" />
+    <state x="623" y="259" key="search.everywhere.popup" timestamp="1586508791290">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586508791290" />
   </component>
 </project>
