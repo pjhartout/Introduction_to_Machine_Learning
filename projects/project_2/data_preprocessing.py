@@ -24,11 +24,11 @@ Following Google style guide: http://google.github.io/styleguide/pyguide.html
 import argparse
 import logging
 
-import seaborn as sns
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, BayesianRidge
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 from tqdm import tqdm
 
 TYPICAL_VALUES = {
@@ -106,7 +106,7 @@ def load_data():
     return df_train, df_train_label, df_test
 
 
-# slower version - supports patient specific mean
+# slower version - supports patient specific mean/median
 def fill_na_with_average_patient_column(df, logger):
     """Fills NaNs with the average value of each column for each patient if available,
     otherwise column-wide entry
@@ -122,11 +122,11 @@ def fill_na_with_average_patient_column(df, logger):
     for i, column in tqdm(enumerate(columns)):
         # Fill na with patient average
         df[[column]] = df.groupby(["pid"])[column].transform(
-            lambda x: x.fillna(x.mean())
+            lambda x: x.fillna(x.median())
         )
 
     # Fill na with overall column average for lack of a better option for now
-    df = df.fillna(df.mean())
+    df = df.fillna(df.median())
     if df.isnull().values.any():
         columns_with_na = df.columns[df.isna().any()].tolist()
         for column in columns_with_na:
@@ -134,7 +134,64 @@ def fill_na_with_average_patient_column(df, logger):
     return df
 
 
-def missing_datadata_imputer(df_train, logger):
+def missing_data_imputer_modelling(df_train, logger):
+    """Basically the same as missing_data_imputer() but using the sklearn API.
+
+    Args:
+        df_train:
+        logger:
+
+    Returns:
+
+    """
+    logger.info("Creating missing data dataframe")
+    pid = df_train["pid"].unique()
+    columns = df_train.columns
+    df_train_preprocessed = pd.DataFrame(columns=columns, index=pid)
+    imp_mean = IterativeImputer(
+        estimator=BayesianRidge(), # also try DecisionTreeRegressor, ExtraTreesRegressor,
+        # KNeighborsRegressor
+        missing_values=np.nan,
+        sample_posterior=True,
+        max_iter=10,
+        tol=0.001,
+        n_nearest_features=None, # Meaning all features are used
+        initial_strategy='median',
+        imputation_order='ascending',
+        skip_complete=False,
+        min_value=None,
+        max_value=None,
+        verbose=2,
+        random_state=42,
+        add_indicator=False
+    )
+    columns = df_train.columns
+    logger.info("Commencing data imputation process")
+    df_train = imp_mean.fit_transform(df_train.values)
+    df_train = pd.DataFrame(df_train, columns=columns)
+    logger.info("Take mean over patients")
+    for patient in tqdm(pid):
+        for column in df_train.columns:
+            df_train_preprocessed.at[patient, column] = df_train.loc[
+                df_train["pid"] == patient
+            ][column].mean()
+
+    return df_train_preprocessed
+
+
+def visualize_data(X):
+    plt.rcParams['figure.figsize'] = 20, 5
+    cols_to_plot = []
+    for column in range(X.shape[1]):
+        cols_to_plot.append(column)
+        if len(cols_to_plot) % 10 == 0 and len(cols_to_plot) != 0:
+            plot = sns.violinplot(data=X[:, min(cols_to_plot):column])
+            # plot.set(yscale="log")
+            plt.show()
+            cols_to_plot = []
+
+
+def missing_data_imputer(df_train, logger):
     """Imputes data and returns a dataframe with one row per patient filled with the values as
     follows:
         * If the amount of data that is there is above 8, then fit a linear regression and
@@ -211,19 +268,19 @@ def missing_datadata_imputer(df_train, logger):
     # values and use that as feature
     logger.info(
         "Imputing values for columns where there is not enough information for trends"
-        "but enough to make an average for each patient."
+        " but enough to make an average for each patient."
     )
     for patient in tqdm(pid):
         for column in columns_for_averaging:
             df_train_preprocessed.at[patient, column] = df_train.loc[
                 df_train["pid"] == patient
-            ][column].mean()
+            ][column].median()
 
     logger.info(
         "Imputing for the remaining columns where no specific patient average can be found"
     )
     # Fill na with overall column average for lack of a better option for now
-    df_train_preprocessed = df_train_preprocessed.fillna(df_train_preprocessed.mean())
+    df_train_preprocessed = df_train_preprocessed.fillna(df_train_preprocessed.median())
     # This is only when testing where there is not always data for all loaded rows.
     if df_train_preprocessed.isnull().values.any():
         columns_with_na = df_train_preprocessed.columns[
@@ -257,7 +314,10 @@ def main(logger):
     #     df_train, logger
     # )
 
-    df_train_preprocessed = missing_datadata_imputer(df_train, logger)
+    if FLAGS.data_imputer == "manual":
+        df_train_preprocessed = missing_data_imputer(df_train, logger)
+    else:
+        df_train_preprocessed = missing_data_imputer_modelling(df_train, logger)
 
     # Cast training labels for these tasks
     df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
@@ -273,7 +333,11 @@ def main(logger):
         ["pid"] + MEDICAL_TESTS + VITAL_SIGNS + SEPSIS
     ]
     logger.info("Preprocessing test set")
-    df_test_preprocessed = missing_datadata_imputer(df_test, logger)
+    if FLAGS.data_imputer == "manual":
+        df_test_preprocessed = missing_data_imputer(df_test, logger)
+    else:
+        df_test_preprocessed = missing_data_imputer_modelling(df_test, logger)
+
 
     logger.info("Export preprocessed train and test set")
     # Export pandas dataframe to csv.
@@ -344,6 +408,14 @@ if __name__ == "__main__":
         required=True,
         help="path to the CSV file containing the training \
                                 label data",
+    )
+
+    parser.add_argument(
+        "--data_imputer",
+        "-imputer",
+        type=str,
+        required=False,
+        help="Data imputer.",
     )
 
     parser.add_argument(
