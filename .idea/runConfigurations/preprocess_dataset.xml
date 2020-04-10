@@ -5,9 +5,10 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="DISPLAY" value="1" />
     </envs>
     <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/iml/bin/python" />
-    <option name="WORKING_DIRECTORY" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projects/project_2" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -22,7 +23,7 @@
         <ENTRY IS_ENABLED="true" PARSER="runconfig" />
       </ENTRIES>
     </EXTENSION>
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Introduction_to_Machine_Learning/projects/project_2/data_preprocessing.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/project_2/data_preprocessing.py" />
     <option name="PARAMETERS" value="--train_features $PROJECT_DIR$/projects/project_2/data/train_features.csv                              --test_features $PROJECT_DIR$/projects/project_2/data/test_features.csv                              --train_labels $PROJECT_DIR$/projects/project_2/data/train_labels.csv                              --preprocess_train $PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_trend.csv                              --preprocess_test $PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_trend.csv                              --preprocess_train_label $PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_trend.csv" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />

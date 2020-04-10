@@ -2,8 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200410-222709_LABEL_Heartrate/events.out.tfevents.1586550429.pop-os.9467.14" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/project_2/script_status_subtask1and2.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/project_2/visualization.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/preprocess_dataset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/preprocess_dataset.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_trend.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_trend.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_trend.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_trend.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_trend.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_trend.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data_preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.zip" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/predictions.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200409-121217/events.out.tfevents.1586427137.LAPTOP-UBHTBOMQ.16980.14" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/subtask1and2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/subtask1and2.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,20 +36,29 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JupyterTrust" id="5e368dc4-3ff3-4e9b-8ba0-c9e7b0f81797" />
   <component name="ProjectId" id="1aLEr21vSpMZHluaGXTdFmwM5pV" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="last_opened_file_path" value="$USER_HOME$/.cache/JetBrains/PyCharm2020.1/snapshots/Introduction_to_Machine_Learning.pstat" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="PyScientificConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.preprocess_dataset">
+  <component name="PyCoverageOptionsProvider">
+    <option name="myUseBundledCoveragePy" value="true" />
+  </component>
+  <component name="RunManager" selected="Python.subtasks_ANN">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Introduction_to_Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -76,29 +101,89 @@
       <workItem from="1586506670576" duration="24000" />
       <workItem from="1586506760972" duration="884000" />
       <workItem from="1586507661521" duration="17000" />
-      <workItem from="1586508380897" duration="740000" />
+      <workItem from="1586508380897" duration="11751000" />
+      <workItem from="1586521975239" duration="3958000" />
+      <workItem from="1586525958883" duration="8851000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="291" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586508854100">
+    <state x="610" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586545978332">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="291" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586508854100" />
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586508632310">
+    <state x="610" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586545978332" />
+    <state x="61" y="300" width="1787" height="514" key="#xdebugger.XInspectDialog" timestamp="1586518173720">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586508632310" />
-    <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586506772295">
+    <state x="61" y="300" width="1787" height="514" key="#xdebugger.XInspectDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586518173720" />
+    <state x="1009" y="237" width="344" height="632" key="EnvironmentVariablesDialog" timestamp="1586524958431">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="464" y="188" width="992" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586506772295" />
-    <state x="623" y="259" key="search.everywhere.popup" timestamp="1586508791290">
+    <state x="1009" y="237" width="344" height="632" key="EnvironmentVariablesDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586524958431" />
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586518964810">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="623" y="259" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586508791290" />
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586518964810" />
+    <state width="1878" height="331" key="GridCell.Tab.0.bottom" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state width="1878" height="331" key="GridCell.Tab.0.center" timestamp="1586550026709">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026709" />
+    <state width="1878" height="331" key="GridCell.Tab.0.left" timestamp="1586550026709">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026709" />
+    <state width="1878" height="331" key="GridCell.Tab.0.right" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state width="1878" height="331" key="GridCell.Tab.1.bottom" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state width="1878" height="331" key="GridCell.Tab.1.center" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state width="1878" height="331" key="GridCell.Tab.1.left" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state width="1878" height="331" key="GridCell.Tab.1.right" timestamp="1586550026710">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1878" height="331" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586550026710" />
+    <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586525981041">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="464" y="188" width="992" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586525981041" />
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1586516491254">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586516491254" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/projects/project_2/subtasks_ANN.py</url>
+          <line>335</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$preprocess_dataset.coverage" NAME="preprocess_dataset Coverage Results" MODIFIED="1586545981900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$subtasks_ANN.coverage" NAME="subtasks_ANN Coverage Results" MODIFIED="1586551206141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
   </component>
 </project>
