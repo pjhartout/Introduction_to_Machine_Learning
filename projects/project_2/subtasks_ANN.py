@@ -99,22 +99,19 @@ def data_formatting(df_train, df_train_label, logger):
     """
 
     # Cast to arrays
-    X_train = df_train.drop(
-        columns=IDENTIFIERS
-    ).values
+    X_train = df_train.drop(columns=IDENTIFIERS).values
 
     # Create list with different label for each medical test
     logger.info("Creating a list of labels for each medical test")
     y_train_medical_tests = []
     for test in MEDICAL_TESTS:
         y_train_medical_tests.append(df_train_label[test].astype(int).values)
-    
+
     # Create list with different label for sepsis
     logger.info("Creating a list of labels for each medical test")
     y_train_sepsis = []
     for sepsis in SEPSIS:
         y_train_sepsis.append(df_train_label[sepsis].astype(int).values)
-
 
     # Create list with different label for each vital sign
     logger.info("Creating a list of labels for each vital sign")
@@ -131,7 +128,6 @@ def data_formatting(df_train, df_train_label, logger):
         scaler = MinMaxScaler()
 
     X_train = scaler.fit_transform(X_train)
-
 
     return X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs
 
@@ -161,11 +157,10 @@ def oversampling_strategies(X_train, y_train, strategy):
     if strategy == "random":
         sampling_method = RandomUnderSampler(random_state=0, replacement=True)
 
-    X_train_resampled, y_train_resampled = sampling_method.fit_sample(
-        X_train, y_train
-    )
+    X_train_resampled, y_train_resampled = sampling_method.fit_sample(X_train, y_train)
 
     return X_train_resampled, y_train_resampled
+
 
 def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     """Converts a number of np.ndarrays to tensors placed on the device specified.
@@ -224,7 +219,7 @@ class Feedforward(torch.nn.Module):
             output (torch.Tensor): (n_samples,n_features) tensor containing
                 the predicted output for each sample.
         """
-        assert (self.subtask in [1, 2, 3])
+        assert self.subtask in [1, 2, 3]
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.relu(hidden_bn)
@@ -259,7 +254,6 @@ class Data(Dataset):
         return self.len
 
 
-
 def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
 
@@ -274,30 +268,39 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         ann_models (list): list of trained feedforward neural networks
         scores (list): list of the testing scores of the trained feedforward neural networks
     """
-    assert (subtask in [1,2,3])
-    logger.info("Using {} to train the neural network for substask {}.".format(device, subtask))
+    assert subtask in [1, 2, 3]
+    logger.info(
+        "Using {} to train the neural network for substask {}.".format(device, subtask)
+    )
     ann_models = []
     scores = []
-    topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
+    topred = (
+        MEDICAL_TESTS if subtask == 1 else (SEPSIS if subtask == 2 else VITAL_SIGNS)
+    )
     for i, sign in enumerate(topred):
         logger.info(f"Starting neural network training for {sign}")
         X_train, X_test, y_train, y_test = train_test_split(
             x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
         )
         if subtask in [1, 2]:
-            logger.info("Performing {} strategy for oversampling for {}".format(
-                FLAGS.sampling_strategy, sign))
-            X_train, y_train = oversampling_strategies(X_train, y_train, FLAGS.sampling_strategy)
+            logger.info(
+                "Performing {} strategy for oversampling for {}".format(
+                    FLAGS.sampling_strategy, sign
+                )
+            )
+            X_train, y_train = oversampling_strategies(
+                X_train, y_train, FLAGS.sampling_strategy
+            )
         logger.info("Converting arrays to tensors")
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
         model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
-        if subtask==3:
+        if subtask == 3:
             criterion = torch.nn.MSELoss()
         else:
             criterion = torch.nn.BCELoss()
-        #optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+        # optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
         batch_size = 2048  # Ideally we want any multiple of 12 here
@@ -308,14 +311,16 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         model.float()
 
         logger.info("Removing data from previous run if there was any.")
-        dirpath = os.path.join(os.getcwd(), 'runs')
+        dirpath = os.path.join(os.getcwd(), "runs")
         fileList = os.listdir(dirpath)
         for fileName in fileList:
             shutil.rmtree(dirpath + "/" + fileName)
 
         logger.info("Commencing neural network training.")
         now = time.strftime("%Y%m%d-%H%M%S")
-        writer = SummaryWriter(log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}")
+        writer = SummaryWriter(
+            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}"
+        )
         for epoch in tqdm(list(range(FLAGS.epochs))):
             LOSS = []
             for x, y in trainloader:
@@ -333,7 +338,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
 
             if subtask in [1, 2]:
                 # can change decision boundary (0.5 is equivalent to rounding)
-                db = np.vectorize(lambda x : (0 if x<0.5 else 1))
+                db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
                 y_test_pred_bin = db(y_test_pred)
                 y_train_pred_bin = db(y_train_pred)
                 train_acc = accuracy_score(y_train_pred_bin, y_train)
@@ -352,12 +357,15 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
 
         writer.close()
 
-        logger.info(f"Value of the test sample is {y_test} and value for the predicted "
-                    f"sample is {y_test_pred}")
+        logger.info(
+            f"Value of the test sample is {y_test} and value for the predicted "
+            f"sample is {y_test_pred}"
+        )
         logger.info(f"Finished test for {sign}")
         ann_models.append(model)
         scores.append(LOSS)
     return ann_models, scores
+
 
 def get_predictions(X_test, test_pids, models, subtask, device):
     """Function to obtain predictions for every model, as a confidence level for subtask 1 and 2
@@ -378,7 +386,9 @@ def get_predictions(X_test, test_pids, models, subtask, device):
     """
     df_pred = pd.DataFrame(index=test_pids)
 
-    topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
+    topred = (
+        MEDICAL_TESTS if subtask == 1 else (SEPSIS if subtask == 2 else VITAL_SIGNS)
+    )
     for i, test in enumerate(topred):
         # Switch network to eval mode to make sure all dropout layers are there, etc..
         y_pred = (
@@ -391,6 +401,7 @@ def get_predictions(X_test, test_pids, models, subtask, device):
         df_pred = df_pred.merge(df, left_index=True, right_index=True)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
+
 
 def main(logger):
     """Primary function reading, preprocessing and modelling the data
@@ -420,9 +431,7 @@ def main(logger):
     )
 
     logger.info("Beggining ANN training for sepsis.")
-    sepsis_models, scores = get_ann_models(
-        X_train, y_train_sepsis, 2, logger, device
-    )
+    sepsis_models, scores = get_ann_models(X_train, y_train_sepsis, 2, logger, device)
 
     logger.info("Beggining ANN training for vital signs.")
     vital_signs_models, scores = get_ann_models(
@@ -441,21 +450,22 @@ def main(logger):
     )
 
     logger.info("Get predictions for sepsis.")
-    sepsis_predictions = get_predictions(
-        X_test, test_pids, sepsis_models, 2, device
-    )
+    sepsis_predictions = get_predictions(X_test, test_pids, sepsis_models, 2, device)
 
     logger.info("Get predictions for vital signs.")
     vital_signs_predictions = get_predictions(
         X_test, test_pids, vital_signs_models, 3, device
     )
     df_predictions = pd.DataFrame(test_pids, columns=["pid"])
-    df_predictions = df_predictions.merge(medical_tests_predictions, 
-        left_on="pid", right_on="pid")
-    df_predictions = df_predictions.merge(sepsis_predictions,
-        left_on="pid", right_on="pid")
-    df_predictions = df_predictions.merge(vital_signs_predictions,
-        left_on="pid", right_on="pid")
+    df_predictions = df_predictions.merge(
+        medical_tests_predictions, left_on="pid", right_on="pid"
+    )
+    df_predictions = df_predictions.merge(
+        sepsis_predictions, left_on="pid", right_on="pid"
+    )
+    df_predictions = df_predictions.merge(
+        vital_signs_predictions, left_on="pid", right_on="pid"
+    )
     logger.info("Export predictions DataFrame to a zip file")
     # # Export pandas dataframe to zip archive.
     # df_predictions.to_csv(
@@ -463,12 +473,18 @@ def main(logger):
     #                     archive_name='predictions.csv')
     # )
     # Alternative way to export to CSV that works.
-    df_predictions.to_csv('predictions.csv', index=None, sep=",", header=True, encoding='utf-8-sig',
-                          float_format='%.2f')
+    df_predictions.to_csv(
+        "predictions.csv",
+        index=None,
+        sep=",",
+        header=True,
+        encoding="utf-8-sig",
+        float_format="%.2f",
+    )
 
-    with zipfile.ZipFile('predictions.zip', 'w') as zf:
-        zf.write('predictions.csv')
-    os.remove('predictions.csv')
+    with zipfile.ZipFile("predictions.zip", "w") as zf:
+        zf.write("predictions.csv")
+    os.remove("predictions.csv")
 
 
 if __name__ == "__main__":
@@ -547,9 +563,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(
-        level=logging.DEBUG, filename="log_subtasks_ANN.log"
-    )
+    logging.basicConfig(level=logging.DEBUG, filename="log_subtasks_ANN.log")
 
     logger = logging.getLogger("IML-P2-T123-ANN")
 

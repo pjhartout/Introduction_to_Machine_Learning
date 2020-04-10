@@ -97,7 +97,7 @@ def load_data():
 
     """
     if FLAGS.nb_of_patients is not None:
-        rows_to_load = (FLAGS.nb_of_patients * 12)
+        rows_to_load = FLAGS.nb_of_patients * 12
     else:
         rows_to_load = None
     df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
@@ -160,34 +160,39 @@ def missing_datadata_imputer(df_train, logger):
     processed_df_columns = [x for x in df_train.columns if x not in IDENTIFIERS]
     df_train_preprocessed = pd.DataFrame(columns=processed_df_columns, index=pid)
     for patient in tqdm(pid):
-        df_na = df_na.append(df_train.loc[df_train['pid'] == patient].isna().sum(),
-                             ignore_index=True)
+        df_na = df_na.append(
+            df_train.loc[df_train["pid"] == patient].isna().sum(), ignore_index=True
+        )
 
     logger.info("Getting quantile information")
     column_quantiles = {}
     columns = df_na.columns.tolist()
     columns = [x for x in columns if x not in IDENTIFIERS]
     for column in tqdm(columns):
-        column_quantiles[column] = df_na[column].quantile(.25)
+        column_quantiles[column] = df_na[column].quantile(0.25)
 
     columns_for_regression = [k for k, v in column_quantiles.items() if float(v) <= 8]
     columns_for_regression.remove("Age")
-    columns_for_averaging = np.setdiff1d(np.array(df_train.columns),
-                                         np.array(columns_for_regression)).tolist()
-    columns_for_regression_formatted = [sub + "_trend" for sub in columns_for_regression]
+    columns_for_averaging = np.setdiff1d(
+        np.array(df_train.columns), np.array(columns_for_regression)
+    ).tolist()
+    columns_for_regression_formatted = [
+        sub + "_trend" for sub in columns_for_regression
+    ]
     columns_for_averaging = [x for x in columns_for_averaging if x not in IDENTIFIERS]
-    df_train_preprocessed = df_train_preprocessed.reindex(df_train_preprocessed.columns.tolist() +
-                                                          columns_for_regression_formatted, axis=1)
+    df_train_preprocessed = df_train_preprocessed.reindex(
+        df_train_preprocessed.columns.tolist() + columns_for_regression_formatted,
+        axis=1,
+    )
 
     logger.info("Commencing data imputation process")
     logger.info(f"Add trends for: {columns_for_regression}")
     for patient in tqdm(pid):
         for column in columns_for_regression:
-            if df_train.loc[df_train['pid'] == patient][column].isna().sum() <= 8:
-                series = df_train.loc[df_train['pid'] == patient][column]
+            if df_train.loc[df_train["pid"] == patient][column].isna().sum() <= 8:
+                series = df_train.loc[df_train["pid"] == patient][column]
                 # Fill missing values between two non nans with their average
-                series = (series.ffill() + series.bfill
-                ()) / 2
+                series = (series.ffill() + series.bfill()) / 2
                 # Drop the rest of the value
                 series = series.dropna()
                 X = [i for i in range(0, len(series))]
@@ -198,24 +203,32 @@ def missing_datadata_imputer(df_train, logger):
                 df_train_preprocessed.at[patient, column + "_trend"] = model.coef_
 
     # fill rest of values with 0 for trends col umns
-    df_train_preprocessed[columns_for_regression_formatted] = df_train_preprocessed[columns_for_regression_formatted]\
-        .fillna(value=0)
+    df_train_preprocessed[columns_for_regression_formatted] = df_train_preprocessed[
+        columns_for_regression_formatted
+    ].fillna(value=0)
 
     # Where it is not reasonable to fit a line, we can still take the average of all available
     # values and use that as feature
-    logger.info("Imputing values for columns where there is not enough information for trends"
-                "but enough to make an average for each patient.")
+    logger.info(
+        "Imputing values for columns where there is not enough information for trends"
+        "but enough to make an average for each patient."
+    )
     for patient in tqdm(pid):
         for column in columns_for_averaging:
-            df_train_preprocessed.at[patient, column] = df_train.loc[df_train['pid'] ==
-                                                                     patient][column].mean()
+            df_train_preprocessed.at[patient, column] = df_train.loc[
+                df_train["pid"] == patient
+            ][column].mean()
 
-    logger.info("Imputing for the remaining columns where no specific patient average can be found")
+    logger.info(
+        "Imputing for the remaining columns where no specific patient average can be found"
+    )
     # Fill na with overall column average for lack of a better option for now
     df_train_preprocessed = df_train_preprocessed.fillna(df_train_preprocessed.mean())
     # This is only when testing where there is not always data for all loaded rows.
     if df_train_preprocessed.isnull().values.any():
-        columns_with_na = df_train_preprocessed.columns[df_train_preprocessed.isna().any()].tolist()
+        columns_with_na = df_train_preprocessed.columns[
+            df_train_preprocessed.isna().any()
+        ].tolist()
         for column in columns_with_na:
             df_train_preprocessed[column] = TYPICAL_VALUES[column]
 
@@ -244,9 +257,7 @@ def main(logger):
     #     df_train, logger
     # )
 
-    df_train_preprocessed = missing_datadata_imputer(
-        df_train, logger
-    )
+    df_train_preprocessed = missing_datadata_imputer(df_train, logger)
 
     # Cast training labels for these tasks
     df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
@@ -255,14 +266,12 @@ def main(logger):
 
     # Merging pids to make sure they map correctly and we did not mess up our preprocessing.
     df_train_preprocessed_merged = pd.merge(
-        df_train_preprocessed,
-        df_train_label,
-        how="left",
-        left_on="pid",
-        right_on="pid",
+        df_train_preprocessed, df_train_label, how="left", left_on="pid", right_on="pid"
     )
 
-    df_train_label_preprocessed = df_train_preprocessed_merged[["pid"] + MEDICAL_TESTS + VITAL_SIGNS+ SEPSIS]
+    df_train_label_preprocessed = df_train_preprocessed_merged[
+        ["pid"] + MEDICAL_TESTS + VITAL_SIGNS + SEPSIS
+    ]
     logger.info("Preprocessing test set")
     df_test_preprocessed = missing_datadata_imputer(df_test, logger)
 
@@ -274,9 +283,7 @@ def main(logger):
     df_train_preprocessed.to_csv(
         FLAGS.preprocess_train, index=False, float_format="%.3f"
     )
-    df_test_preprocessed.to_csv(
-        FLAGS.preprocess_test, index=False, float_format="%.3f"
-    )
+    df_test_preprocessed.to_csv(FLAGS.preprocess_test, index=False, float_format="%.3f")
 
 
 if __name__ == "__main__":
@@ -350,9 +357,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(
-        level=logging.DEBUG, filename="script_status_subtask1and2.log"
-    )
+    logging.basicConfig(level=logging.DEBUG, filename="script_status_subtask1and2.log")
 
     logger = logging.getLogger("Data preprocessing")
 

@@ -65,6 +65,7 @@ MEDICAL_TESTS = [
 VITAL_SIGNS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 SEPSIS = ["LABEL_Sepsis"]
 
+
 def sigmoid_f(x):
     """To get predictions as confidence level, the model predicts for all 12 sets of measures for
     each patient a distance to the hyperplane ; it is then transformed into a confidence level using
@@ -79,6 +80,7 @@ def sigmoid_f(x):
 
     """
     return 1 / (1 + np.exp(-x))
+
 
 def load_data():
     """Loads the preprocessed data to three different dataframes.
@@ -111,22 +113,19 @@ def data_formatting(df_train, df_train_label, logger):
     """
 
     # Cast to arrays
-    X_train = df_train.drop(
-        columns=IDENTIFIERS
-    ).values
+    X_train = df_train.drop(columns=IDENTIFIERS).values
 
     # Create list with different label for each medical test
     logger.info("Creating a list of labels for each medical test")
     y_train_medical_tests = []
     for test in MEDICAL_TESTS:
         y_train_medical_tests.append(df_train_label[test].astype(int).values)
-    
+
     # Create list with different label for sepsis
     logger.info("Creating a list of labels for each medical test")
     y_train_sepsis = []
     for sepsis in SEPSIS:
         y_train_sepsis.append(df_train_label[sepsis].astype(int).values)
-
 
     # Create list with different label for each vital sign
     logger.info("Creating a list of labels for each vital sign")
@@ -143,7 +142,6 @@ def data_formatting(df_train, df_train_label, logger):
         scaler = MinMaxScaler()
 
     X_train = scaler.fit_transform(X_train)
-
 
     return X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs
 
@@ -173,11 +171,10 @@ def oversampling_strategies(X_train, y_train, strategy):
     if strategy == "random":
         sampling_method = RandomUnderSampler(random_state=0, replacement=True)
 
-    X_train_resampled, y_train_resampled = sampling_method.fit_sample(
-        X_train, y_train
-    )
+    X_train_resampled, y_train_resampled = sampling_method.fit_sample(X_train, y_train)
 
     return X_train_resampled, y_train_resampled
+
 
 def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strategy):
     """Resamples the data required for each medical tests.
@@ -202,9 +199,7 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strate
     for i in range(number_of_tests):
         X_train_resampled_set_med[i], y_train_resampled_set_med[
             i
-        ] = oversampling_strategies(
-            X_train, y_train_set_med[i], sampling_strategy
-        )
+        ] = oversampling_strategies(X_train, y_train_set_med[i], sampling_strategy)
         logger.info(
             "Performing oversampling for {} of {} medical tests ({}).".format(
                 i, number_of_tests, MEDICAL_TESTS[i]
@@ -212,8 +207,9 @@ def get_sampling_medical_tests(logger, X_train, y_train_set_med, sampling_strate
         )
     return X_train_resampled_set_med, y_train_resampled_set_med
 
+
 def get_sampling_sepsis(logger, X_train, y_train_sepsis, sampling_strategy):
-        """Resamples the data required for sepsis
+    """Resamples the data required for sepsis
 
     Args:
         logger (Logger): logger
@@ -226,12 +222,17 @@ def get_sampling_sepsis(logger, X_train, y_train_sepsis, sampling_strategy):
         y_train_resampled_set_med (np.ndarray): contains the resampled labels for sepsis
     """
 
-        logger.info("Performing oversampling for sepsis")
-        X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(X_train, y_train_sepsis[0], sampling_strategy)
-        return ([X_train_resampled_sepsis],[y_train_resampled_sepsis])
+    logger.info("Performing oversampling for sepsis")
+    X_train_resampled_sepsis, y_train_resampled_sepsis = oversampling_strategies(
+        X_train, y_train_sepsis[0], sampling_strategy
+    )
+    return ([X_train_resampled_sepsis], [y_train_resampled_sepsis])
+
 
 @ignore_warnings(category=ConvergenceWarning)
-def get_models(X_train_resampled_set, y_train_resampled_set, logger, param_grid, subtask):
+def get_models(
+    X_train_resampled_set, y_train_resampled_set, logger, param_grid, subtask
+):
     """
 
     Args:
@@ -249,12 +250,14 @@ def get_models(X_train_resampled_set, y_train_resampled_set, logger, param_grid,
     """
     svm_models = []
     scores = []
-    topred = (MEDICAL_TESTS if subtask==1 else (SEPSIS if subtask==2 else VITAL_SIGNS))
-    if subtask==1 or subtask==3:
+    topred = (
+        MEDICAL_TESTS if subtask == 1 else (SEPSIS if subtask == 2 else VITAL_SIGNS)
+    )
+    if subtask == 1 or subtask == 3:
         for i, test in enumerate(topred):
             logger.info(f"Starting iteration for test {test}")
             cores = multiprocessing.cpu_count() - 2
-            if subtask==1:
+            if subtask == 1:
                 gs_svm = GridSearchCV(
                     estimator=SVC(),
                     param_grid=param_grid,
@@ -263,7 +266,7 @@ def get_models(X_train_resampled_set, y_train_resampled_set, logger, param_grid,
                     cv=FLAGS.k_fold,
                     verbose=0,
                 )
-            elif subtask==3:
+            elif subtask == 3:
                 gs_svm = GridSearchCV(
                     estimator=SVR(),
                     param_grid=param_grid,
@@ -271,25 +274,26 @@ def get_models(X_train_resampled_set, y_train_resampled_set, logger, param_grid,
                     scoring="r2",
                     cv=FLAGS.k_fold,
                     verbose=0,
-                ) 
+                )
             gs_svm.fit(X_train_resampled_set[i], y_train_resampled_set[i])
             svm_models.append(gs_svm.best_estimator_)
             scores.append(gs_svm.best_score_)
-    elif subtask==2:
+    elif subtask == 2:
         cores = multiprocessing.cpu_count() - 2
         gs_svm = GridSearchCV(
-                estimator=SVC(),
-                param_grid=param_grid,
-                n_jobs=cores,
-                scoring="roc_auc",
-                cv=FLAGS.k_fold,
-                verbose=0,
-            )
+            estimator=SVC(),
+            param_grid=param_grid,
+            n_jobs=cores,
+            scoring="roc_auc",
+            cv=FLAGS.k_fold,
+            verbose=0,
+        )
         gs_svm.fit(X_train_resampled_set[0], y_train_resampled_set[0])
         svm_models.append(gs_svm.best_estimator_)
         scores.append(gs_svm.best_score_)
 
     return svm_models, scores
+
 
 def get_all_predictions(X_test, test_pids, models):
     """Function to obtain predictions for every model, as a confidence level : the closer to 1
@@ -321,10 +325,11 @@ def get_all_predictions(X_test, test_pids, models):
     df_pred = pd.concat([df_pred, df], axis=1)
     for i, sign in enumerate(VITAL_SIGNS):
         # decision_function returns the distance to the hyperplane
-        y_conf = models[len(MEDICAL_TESTS)+i].predict(X_test)
+        y_conf = models[len(MEDICAL_TESTS) + i].predict(X_test)
         df = pd.DataFrame({sign: y_pred}, index=test_pids)
         df_pred = pd.concat([df_pred, df], axis=1)
     return df_pred
+
 
 def main(logger):
     """Primary function reading, preprocessing and modelling the data
@@ -340,11 +345,10 @@ def main(logger):
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
 
-    
     X_train, y_train_medical_tests, y_train_sepsis, y_train_vital_signs = data_formatting(
         df_train, df_train_label, logger
     )
-    
+
     # Compute resampled data for all medical tests
     logger.info("Beginning sampling strategy for medical tests")
     X_train_resampled_set_med, y_train_resampled_set_med = get_sampling_medical_tests(
@@ -354,7 +358,7 @@ def main(logger):
     X_train_resampled_sepsis, y_train_resampled_sepsis = get_sampling_sepsis(
         logger, X_train, y_train_sepsis, FLAGS.sampling_strategy
     )
-    
+
     logger.info("Beginning modelling process.")
 
     # Hyperparameter grid specification
@@ -371,35 +375,37 @@ def main(logger):
         "verbose": [2],
         "decision_function_shape": ["ovo"],  # only binary variables are set
         "random_state": [42],
-        "max_iter": [2000]
+        "max_iter": [2000],
     }
 
     param_grid_SVR = {
-            "kernel": ["poly", "rbf", "sigmoid"],
-            "degree": np.arange(1, 4, 1),
-            "gamma": np.linspace(0.1, 10, num=3),
-            "coef0": [0],
-            "tol": [0.001],
-            "C": np.linspace(0.1, 10, num=3),
-            "epsilon": [0.1],
-            "shrinking": [True],
-            "cache_size": [1000],
-            "verbose": [2],
-            "max_iter": [1000],
-        }
+        "kernel": ["poly", "rbf", "sigmoid"],
+        "degree": np.arange(1, 4, 1),
+        "gamma": np.linspace(0.1, 10, num=3),
+        "coef0": [0],
+        "tol": [0.001],
+        "C": np.linspace(0.1, 10, num=3),
+        "epsilon": [0.1],
+        "shrinking": [True],
+        "cache_size": [1000],
+        "verbose": [2],
+        "max_iter": [1000],
+    }
 
     # CV GridSearch with different regularization parameters
-    
+
     logger.info("Perform gridsearch for non-linear SVM on medical tests.")
     gridsearch_nl_svm_medical_tests_models, scores_nl_svm_medical_tests_models = get_models(
         X_train_resampled_set_med,
         y_train_resampled_set_med,
         logger,
         param_grid_non_linear,
-        subtask=1
+        subtask=1,
     )
     X_test = df_test.drop(columns=IDENTIFIERS).values
-    logger.info(f"Nonlinear SVM results medical tests {scores_nl_svm_medical_tests_models}")
+    logger.info(
+        f"Nonlinear SVM results medical tests {scores_nl_svm_medical_tests_models}"
+    )
     best_model_medical_tests = gridsearch_nl_svm_medical_tests_models
 
     logger.info("Perform gridsearch for non-linear SVM on SEPSIS.")
@@ -408,7 +414,7 @@ def main(logger):
         y_train_resampled_sepsis,
         logger,
         param_grid_non_linear,
-        subtask=2
+        subtask=2,
     )
     logger.info(f"Nonlinear SVM results sepsis {scores_nl_svm_sepsis_models}")
 
@@ -416,11 +422,11 @@ def main(logger):
 
     logger.info("Perform gridsearch for non-linear SVR on VITAL SIGNS.")
     gridsearch_nl_svr_vital_signs_models, scores_nl_svr_vital_signs_models = get_models(
-        [X_train]*len(VITAL_SIGNS),
+        [X_train] * len(VITAL_SIGNS),
         y_train_vital_signs,
         logger,
         param_grid_SVR,
-        subtask=3
+        subtask=3,
     )
     logger.info(f"Nonlinear SVM results vital signs {scores_nl_svr_vital_signs_models}")
     best_model_vital_signs = gridsearch_nl_svr_vital_signs_models
@@ -430,16 +436,16 @@ def main(logger):
     # get the unique test ids of patients
     test_pids = np.unique(df_test[["pid"]].values)
     logger.info("Fetch predictions.")
-    predictions = get_all_predictions(
-        X_test, test_pids, all_models
-    )
+    predictions = get_all_predictions(X_test, test_pids, all_models)
     predictions.index.names = ["pid"]
 
     logger.info("Export predictions DataFrame to a zip file")
     predictions.to_csv(
-         FLAGS.predictions, index=False, float_format="%.3f", compression=dict(method='zip',
-                         archive_name='predictions.csv')
-     )
+        FLAGS.predictions,
+        index=False,
+        float_format="%.3f",
+        compression=dict(method="zip", archive_name="predictions.csv"),
+    )
 
 
 if __name__ == "__main__":
@@ -522,9 +528,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(
-        level=logging.DEBUG, filename="script_status_SVM.log"
-    )
+    logging.basicConfig(level=logging.DEBUG, filename="script_status_SVM.log")
 
     logger = logging.getLogger("IML-P2-SVM")
 
@@ -545,4 +549,3 @@ if __name__ == "__main__":
     logger.addHandler(stream_handler)
 
     main(logger)
-
