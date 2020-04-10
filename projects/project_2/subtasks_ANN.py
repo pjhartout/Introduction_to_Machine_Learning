@@ -29,7 +29,6 @@ Following Google style guide: http://google.github.io/styleguide/pyguide.html
 __author__ = "Josephine Yates; Philip Hartout"
 __email__ = "jyates@student.ethz.ch; phartout@student.ethz.ch"
 
-import multiprocessing
 import argparse
 import logging
 import os
@@ -37,16 +36,19 @@ import shutil
 import sys
 import zipfile
 import time
+from collections import Counter
 
 import torch
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 from imblearn.over_sampling import ADASYN, SMOTE
 from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-from sklearn.svm import SVR
 from sklearn.metrics import f1_score, mean_squared_error, accuracy_score
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
@@ -282,7 +284,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train, X_test, y_train, y_test = train_test_split(
             x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
         )
-        if subtask in [1, 2]:
+        if subtask in [1, 2] and FLAGS.sampling_strategy is not None:
             logger.info(
                 "Performing {} strategy for oversampling for {}".format(
                     FLAGS.sampling_strategy, sign
@@ -299,7 +301,17 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         if subtask == 3:
             criterion = torch.nn.MSELoss()
         else:
-            criterion = torch.nn.BCELoss()
+            if FLAGS.sampling_strategy is not None:
+                criterion = torch.nn.BCELoss()
+            else:
+                # Devising this method to make sure the scaling makes sense no matter the variable
+                pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
+                criterion = torch.nn.BCEWithLogitsLoss(
+                    pos_weight=torch.tensor(pos_weight).to(device)
+                )
+                logger.info(f"Using positive class coefficient of {pos_weight} for {sign} instead "
+                            f"of resampling to account for class imbalance.")
+                
         # optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
@@ -319,7 +331,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         logger.info("Commencing neural network training.")
         now = time.strftime("%Y%m%d-%H%M%S")
         writer = SummaryWriter(
-            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}"
+            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_{sign}"
         )
         for epoch in tqdm(list(range(FLAGS.epochs))):
             LOSS = []
@@ -393,14 +405,15 @@ def get_predictions(X_test, test_pids, models, subtask, device):
         # Switch network to eval mode to make sure all dropout layers are there, etc..
         y_pred = (
             models[i](torch.from_numpy(X_test).to(device).float())
-            .cpu()
-            .detach()
-            .numpy()
+                .cpu()
+                .detach()
+                .numpy()
         )
         df = pd.DataFrame(y_pred, index=test_pids, columns=[topred[i]])
         df_pred = df_pred.merge(df, left_index=True, right_index=True)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
+
 
 
 def main(logger):
@@ -554,9 +567,9 @@ if __name__ == "__main__":
         "--sampling_strategy",
         "-samp",
         type=str,
-        required=True,
+        required=False,
         help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
-        "any of adasyn, smote, clustercentroids or random.",
+             "any of adasyn, smote, clustercentroids or random.",
         choices=["adasyn", "smote", "clustercentroids", "random"],
     )
 
