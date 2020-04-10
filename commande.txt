@@ -1,1 +1,0 @@
-python subtasks_ANN.py -train_l "data\preprocessed_train_label.csv" -train_f "data\preprocessed_train.csv" -test "data\preprocessed_test.csv" -pred "data\predictions_ANN.zip" -scale "standard" -nb_pat 10
