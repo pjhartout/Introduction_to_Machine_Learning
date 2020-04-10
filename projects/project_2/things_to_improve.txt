@@ -1,0 +1,11 @@
+List of things to improve:
+
+Preprocessing:
+ * Try EM algorithm to impute data
+ * Try using median instead of means
+ * Try removing columns if very little information added (might confuse certain models?)
+
+Modelling:
+ * Try to figure out why zeros are overwhelmingly in the output
+ * Try balanced weights
+ * Try trees (thundergbm?)
