@@ -49,7 +49,7 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.metrics import f1_score, mean_squared_error, accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -126,6 +126,8 @@ def data_formatting(df_train, df_train_label, logger):
 
     if FLAGS.scaler == "standard":
         scaler = StandardScaler(with_mean=True, with_std=True)
+    elif FLAGS.scaler == "robust":
+        scaler = RobustScaler()
     else:
         scaler = MinMaxScaler()
 
@@ -224,13 +226,13 @@ class Feedforward(torch.nn.Module):
         assert self.subtask in [1, 2, 3]
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
-        relu = self.relu(hidden_bn)
+        relu = self.sigmoid(hidden_bn)
         hidden_2 = self.dropout(self.fc2(relu))
         hidden_2_bn = self.bn(hidden_2)
-        relu_2 = self.relu(hidden_2_bn)
+        relu_2 = self.sigmoid(hidden_2_bn)
         hidden_3 = self.dropout(self.fc3(relu))
         hidden_3_bn = self.bn(hidden_3)
-        relu_3 = self.relu(hidden_3_bn)
+        relu_3 = self.sigmoid(hidden_3_bn)
         output = self.fc4(relu_3)
         if self.subtask == 1 or self.subtask == 2:
             output = self.sigmoid(output)
@@ -297,7 +299,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
+        model = Feedforward(X_train_tensor.shape[1], 50, subtask, 0.5)
         if subtask == 3:
             criterion = torch.nn.MSELoss()
         else:
@@ -556,7 +558,7 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="Scaler to be used to transform the data.",
-        choices=["minmax", "standard"],
+        choices=["minmax", "standard", "robust"],
     )
 
     parser.add_argument(
