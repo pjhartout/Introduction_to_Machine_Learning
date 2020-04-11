@@ -149,7 +149,7 @@ def missing_data_imputer_modelling(df_train, logger):
     columns = df_train.columns
     df_train_preprocessed = pd.DataFrame(columns=columns, index=pid)
     imp_mean = IterativeImputer(
-        estimator=BayesianRidge(), # also try DecisionTreeRegressor, ExtraTreesRegressor,
+        estimator=BayesianRidge(), # also try , ExtraTreesRegressor,
         # KNeighborsRegressor
         missing_values=np.nan,
         sample_posterior=True,
@@ -157,7 +157,7 @@ def missing_data_imputer_modelling(df_train, logger):
         tol=0.001,
         n_nearest_features=None, # Meaning all features are used
         initial_strategy='median',
-        imputation_order='ascending',
+        imputation_order='descending',
         skip_complete=False,
         min_value=None,
         max_value=None,
