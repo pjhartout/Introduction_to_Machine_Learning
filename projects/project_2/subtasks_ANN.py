@@ -297,7 +297,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
+        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.3)
         if subtask == 3:
             criterion = torch.nn.MSELoss()
         else:

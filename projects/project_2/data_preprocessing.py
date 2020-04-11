@@ -27,6 +27,9 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression, BayesianRidge
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from tqdm import tqdm
@@ -86,7 +89,9 @@ MEDICAL_TESTS = [
 ]
 VITAL_SIGNS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 SEPSIS = ["LABEL_Sepsis"]
-
+ESTIMATOR = {"bayesian": BayesianRidge(), "decisiontree": DecisionTreeRegressor(max_features="sqrt", random_state=0), 
+                "extratree": ExtraTreesRegressor(n_estimators=10, random_state=0), 
+                "knn": KNeighborsRegressor(n_neighbors=10, weights="distance")}
 
 def load_data():
     """Loads data to three different dataframes.
@@ -100,9 +105,9 @@ def load_data():
         rows_to_load = FLAGS.nb_of_patients * 12
     else:
         rows_to_load = None
-    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load)
+    df_train = pd.read_csv(FLAGS.train_features, nrows=rows_to_load, float_precision="%.3f")
     df_train_label = pd.read_csv(FLAGS.train_labels, nrows=rows_to_load)
-    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load)
+    df_test = pd.read_csv(FLAGS.test_features, nrows=rows_to_load, float_precision="%.3f")
     return df_train, df_train_label, df_test
 
 
@@ -134,25 +139,30 @@ def fill_na_with_average_patient_column(df, logger):
     return df
 
 
-def missing_data_imputer_modelling(df_train, logger):
+def missing_data_imputer_modelling(df_train, imputation_type, logger):
     """Basically the same as missing_data_imputer() but using the sklearn API.
 
     Args:
-        df_train:
-        logger:
+        df_train (pandas.core.frame.DataFrame): dataframe with training data
+        imputation_type (string): the type of imputation to perform, choice in \
+            ["bayesian","decisiontree","extratree","knn"]
+        logger (Logger): logger
 
-    Returns:
+    Returns: df_train_preprocessed (pandas.core.frame.DataFrame): dataframe with imputed data
 
     """
     logger.info("Creating missing data dataframe")
+    assert(imputation_type in ["bayesian","decisiontree","extratree","knn"]), \
+        "imputation type must be in [bayesian, decisiontree ,extratree, knn]"
     pid = df_train["pid"].unique()
     columns = df_train.columns
     df_train_preprocessed = pd.DataFrame(columns=columns, index=pid)
+    estimator = ESTIMATOR[imputation_type]
+    samp_post = (True if imputation_type=="bayesian" else False)
     imp_mean = IterativeImputer(
-        estimator=BayesianRidge(), # also try DecisionTreeRegressor, ExtraTreesRegressor,
-        # KNeighborsRegressor
+        estimator=estimator,
         missing_values=np.nan,
-        sample_posterior=True,
+        sample_posterior=samp_post,
         max_iter=10,
         tol=0.001,
         n_nearest_features=None, # Meaning all features are used
@@ -307,7 +317,7 @@ def main(logger):
     logger.info("Loading data")
     df_train, df_train_label, df_test = load_data()
     logger.info("Finished Loading data")
-
+    logger.info("Imputing technique used is {}".format(FLAGS.data_imputer))
     logger.info("Preprocessing training set")
     # Would be useful to distribute/multithread this part
     # df_train_preprocessed = fill_na_with_average_patient_column(
@@ -317,7 +327,7 @@ def main(logger):
     if FLAGS.data_imputer == "manual":
         df_train_preprocessed = missing_data_imputer(df_train, logger)
     else:
-        df_train_preprocessed = missing_data_imputer_modelling(df_train, logger)
+        df_train_preprocessed = missing_data_imputer_modelling(df_train, FLAGS.data_imputer, logger)
 
     # Cast training labels for these tasks
     df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
@@ -336,7 +346,7 @@ def main(logger):
     if FLAGS.data_imputer == "manual":
         df_test_preprocessed = missing_data_imputer(df_test, logger)
     else:
-        df_test_preprocessed = missing_data_imputer_modelling(df_test, logger)
+        df_test_preprocessed = missing_data_imputer_modelling(df_test, FLAGS.data_imputer, logger)
 
 
     logger.info("Export preprocessed train and test set")
@@ -414,7 +424,8 @@ if __name__ == "__main__":
         "--data_imputer",
         "-imputer",
         type=str,
-        required=False,
+        required=True,
+        choices=["manual","bayesian","decisiontree","extratree","knn"],
         help="Data imputer.",
     )
 

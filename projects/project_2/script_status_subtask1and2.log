@@ -88,3 +88,49 @@ INFO:Data preprocessing:Creating missing data dataframe
 INFO:Data preprocessing:Commencing data imputation process
 INFO:Data preprocessing:Take mean over patients
 INFO:Data preprocessing:Export preprocessed train and test set
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Imputing technique used is knn
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Take mean over patients
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Imputing technique used is knn
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Imputing technique used is knn
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Imputing technique used is knn
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Loading data
+INFO:Data preprocessing:Finished Loading data
+INFO:Data preprocessing:Imputing technique used is knn
+INFO:Data preprocessing:Preprocessing training set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Take mean over patients
+INFO:Data preprocessing:Preprocessing test set
+INFO:Data preprocessing:Creating missing data dataframe
+INFO:Data preprocessing:Commencing data imputation process
+INFO:Data preprocessing:Take mean over patients
+INFO:Data preprocessing:Export preprocessed train and test set
