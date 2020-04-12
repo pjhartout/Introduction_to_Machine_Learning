@@ -54,6 +54,11 @@ from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import label_ranking_average_precision_score as LRAPS
 from sklearn.metrics import label_ranking_loss as LRL
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+from sklearn.svm import SVC
+from sklearn.metrics import recall_score, precision_score
+import sys
 
 
 IDENTIFIERS = ["pid"]
@@ -404,11 +409,7 @@ def get_prediction_medical(X_test, test_pids, model, device):
     return df_pred
 
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
-from sklearn.svm import SVC
-from sklearn.metrics import recall_score, precision_score
-import sys
+
 
 
 def get_model_sepsis(x_input, y_input, logger):
