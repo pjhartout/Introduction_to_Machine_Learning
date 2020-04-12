@@ -192,23 +192,24 @@ class Feedforward(torch.nn.Module):
     modified in the function where the network is trained.
     """
 
-    def __init__(self, input_size, hidden_size, subtask, p=0.2):
+    def __init__(self, input_size, hidden_size, output_size, n_layers, subtask, p=0.2):
         super(Feedforward, self).__init__()
         self.subtask = subtask
+        self.n_layers = n_layers
         self.input_size = input_size
         self.hidden_size = hidden_size
+        self.output_size = output_size
         self.dropout = torch.nn.Dropout(p=p)
         self.bn = torch.nn.BatchNorm1d(hidden_size)
         self.relu = torch.nn.ReLU()
         self.sigmoid = torch.nn.Sigmoid()
         self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
         torch.nn.init.xavier_normal_(self.fc1.weight)
-        self.fc2 = torch.nn.Linear(self.hidden_size, hidden_size)
-        torch.nn.init.xavier_normal_(self.fc2.weight)
-        self.fc3 = torch.nn.Linear(self.hidden_size, hidden_size)
-        torch.nn.init.xavier_normal_(self.fc3.weight)
-        self.fc4 = torch.nn.Linear(self.hidden_size, 1)
-        torch.nn.init.xavier_normal_(self.fc4.weight)
+        self.fclist = [torch.nn.Linear(self.hidden_size,self.hidden_size) for i in range(n_layers-1)]
+        for i in range(n_layers-1):
+            torch.nn.init.xavier_normal_(self.fclist[i].weight)
+        self.fcout = torch.nn.Linear(self.hidden_size, self.output_size)
+        torch.nn.init.xavier_normal_(self.fcout.weight)
 
     def forward(self, x):
         """Function where the forward pass is defined. The backward pass is deternmined by the
@@ -227,13 +228,11 @@ class Feedforward(torch.nn.Module):
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.sigmoid(hidden_bn)
-        hidden_2 = self.dropout(self.fc2(relu))
-        hidden_2_bn = self.bn(hidden_2)
-        relu_2 = self.sigmoid(hidden_2_bn)
-        hidden_3 = self.dropout(self.fc3(relu))
-        hidden_3_bn = self.bn(hidden_3)
-        relu_3 = self.sigmoid(hidden_3_bn)
-        output = self.fc4(relu_3)
+        for i in range(self.n_layers-1):
+            hidden = self.dropout(self.fclist[i](relu))
+            hidden_bn = self.bn(hidden)
+            relu = self.sigmoid(hidden_bn)
+        output = self.fcout(relu)
         if self.subtask == 1 or self.subtask == 2:
             output = self.sigmoid(output)
         else:
@@ -257,6 +256,104 @@ class Data(Dataset):
     def __len__(self):
         return self.len
 
+from sklearn.metrics import label_ranking_average_precision_score as LRAPS
+from sklearn.metrics import label_ranking_loss as LRL
+def get_model_medical_tests(x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device):
+    assert  optim in ["SGD","Adam"], "optim must be SGD or Adam"
+    logger.info(
+        "Using {} to train the neural network for substask 1.".format(device)
+    )
+    labels = []
+    for j in range(len(y_input[0])):
+        labels.append([y_input[i][j] for i in range(len(y_input))])
+    labels = np.array(labels)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+            x_input, labels, test_size=0.10, random_state=42, shuffle=True
+        )
+
+    logger.info("Converting arrays to tensors")
+    X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
+            X_train, X_test, y_train, y_test, device
+        )
+    
+    model = Feedforward(X_train_tensor.shape[1], hidden_size, output_size=10, 
+                            n_layers=n_layers, subtask=1, p=dropout)
+
+    # pos weight allows to account for the imbalance in the data
+    pos_weight = np.array([(len(y_input[i])-sum(y_input[i]))/sum(y_input[i]) for i in range(len(y_input))])
+    pos_weight = torch.from_numpy(pos_weight).to(device).float()
+    criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+
+    if optim == "SGD":
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    elif optim == "Adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    dataset = Data(X_train_tensor, y_train_tensor)
+    batch_size = 2048  # Ideally we want any multiple of 12 here
+    trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
+
+    if torch.cuda.is_available():
+        model.cuda()
+    model.float()
+
+    logger.info("Removing data from previous run if there was any.")
+    dirpath = os.path.join(os.getcwd(), "runs")
+    fileList = os.listdir(dirpath)
+    for fileName in fileList:
+        shutil.rmtree(dirpath + "/" + fileName)
+
+    logger.info("Commencing neural network training.")
+    now = time.strftime("%Y%m%d-%H%M%S")
+    writer = SummaryWriter(
+        log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_allmedtests"
+    )
+    for epoch in tqdm(list(range(FLAGS.epochs))):
+        LOSS = []
+        for x, y in trainloader:
+            yhat = model(x)
+            loss = criterion(yhat.float(), y.float())
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            LOSS.append(loss)
+        X_test_tensor = X_test_tensor.to(device)
+        y_test_pred = model(X_test_tensor).cpu().detach().numpy()
+        y_train_pred = model(X_train_tensor).cpu().detach().numpy()
+        loss_average = sum(LOSS) / len(LOSS)
+        writer.add_scalar("Training_loss", loss_average, epoch)
+        #db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
+        #y_test_pred_bin = db(y_test_pred)
+        #y_train_pred_bin = db(y_train_pred)
+        y_test_pred_bin = y_test_pred
+        y_train_pred_bin = y_train_pred
+        LRAPS_train = LRAPS(y_train, y_train_pred_bin)
+        LRAPS_test = LRAPS(y_test, y_test_pred_bin)
+        LRL_train = LRL(y_train, y_train_pred_bin)
+        LRL_test = LRL(y_test, y_test_pred_bin)
+        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch,LRAPS_train))
+        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch,LRAPS_test))
+        print("LRL (best 0) of epoch {} for train : {}".format(epoch,LRL_train))
+        print("LRL (best 0) of epoch {} for test : {}".format(epoch,LRL_test))
+        writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
+        writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
+        writer.add_scalar("Training_LRL", LRL_train, epoch)
+        writer.add_scalar("Testing_LRL", LRL_test, epoch)
+
+    writer.close()
+
+    logger.info(
+        f"Value of the test sample is {y_test} and value for the predicted "
+        f"sample is {y_test_pred}"
+    )
+    logger.info(f"Finished test for medical tests.")
+    return model, LOSS
+
+def get_prediction_medical(X_test, test_pids, model, device):
+    y_pred = (model(torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy())
+    df_pred = pd.DataFrame(y_pred, index=test_pids, columns=MEDICAL_TESTS)
+    df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
+    return df_pred
 
 def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
@@ -299,18 +396,12 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
         )
-<<<<<<< HEAD
-        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.3)
-||||||| 9a95418
-        model = Feedforward(X_train_tensor.shape[1], 150, subtask, 0.5)
-=======
-        model = Feedforward(X_train_tensor.shape[1], 50, subtask, 0.5)
->>>>>>> 6a0edf1f895a145c2f92ee8fb893c3924fecab5c
+        model = Feedforward(X_train_tensor.shape[1], 50, 3, subtask, 0.5)
         if subtask == 3:
             criterion = torch.nn.MSELoss()
         else:
             if FLAGS.sampling_strategy is not None:
-                criterion = torch.nn.BCELoss()
+                criterion = torch.nn.BCEWithLogitsLoss()
             else:
                 # Devising this method to make sure the scaling makes sense no matter the variable
                 pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
@@ -443,69 +534,66 @@ def main(logger):
     )
 
     logger.info("Beginning modelling process.")
-
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # get models and scores for substasks 1, 2 and 3
-    logger.info("Beggining ANN training for medical tests.")
-    medical_tests_models, scores = get_ann_models(
-        X_train, y_train_medical_tests, 1, logger, device
-    )
+    if FLAGS.task == "med":
+        logger.info("Beginning multilabel ANN for medical tests.")
+        med_model, med_score = get_model_medical_tests(X_train, y_train_medical_tests, 
+                                                        100, 3, 0.3, "Adam", logger, device)
+    else:
+        # get models and scores for substasks 1, 2 and 3
+        logger.info("Beggining ANN training for medical tests.")
+        medical_tests_models, scores = get_ann_models(
+            X_train, y_train_medical_tests, 1, logger, device
+        )
 
-    logger.info("Beggining ANN training for sepsis.")
-    sepsis_models, scores = get_ann_models(X_train, y_train_sepsis, 2, logger, device)
+        logger.info("Beggining ANN training for sepsis.")
+        sepsis_models, scores = get_ann_models(X_train, y_train_sepsis, 2, logger, device)
 
-    logger.info("Beggining ANN training for vital signs.")
-    vital_signs_models, scores = get_ann_models(
-        X_train, y_train_vital_signs, 3, logger, device
-    )
+        logger.info("Beggining ANN training for vital signs.")
+        vital_signs_models, scores = get_ann_models(
+            X_train, y_train_vital_signs, 3, logger, device
+        )
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test["pid"].values)
     logger.info("Fetch predictions.")
     X_test = df_test.drop(columns=IDENTIFIERS).values
+    if FLAGS.task == "med":
+        logger.info("Get predictions for multilabel medical tests.")
+        df_predictions = get_prediction_medical(X_test, test_pids, med_model, device)
 
-    # get the predictions for all subtasks
-    logger.info("Get predictions for medical tests.")
-    medical_tests_predictions = get_predictions(
-        X_test, test_pids, medical_tests_models, 1, device
-    )
+    else:
+        # get the predictions for all subtasks
+        logger.info("Get predictions for medical tests.")
+        medical_tests_predictions = get_predictions(
+            X_test, test_pids, medical_tests_models, 1, device
+        )
 
-    logger.info("Get predictions for sepsis.")
-    sepsis_predictions = get_predictions(X_test, test_pids, sepsis_models, 2, device)
+        logger.info("Get predictions for sepsis.")
+        sepsis_predictions = get_predictions(X_test, test_pids, sepsis_models, 2, device)
 
-    logger.info("Get predictions for vital signs.")
-    vital_signs_predictions = get_predictions(
-        X_test, test_pids, vital_signs_models, 3, device
-    )
-    df_predictions = pd.DataFrame(test_pids, columns=["pid"])
-    df_predictions = df_predictions.merge(
-        medical_tests_predictions, left_on="pid", right_on="pid"
-    )
-    df_predictions = df_predictions.merge(
-        sepsis_predictions, left_on="pid", right_on="pid"
-    )
-    df_predictions = df_predictions.merge(
-        vital_signs_predictions, left_on="pid", right_on="pid"
-    )
+        logger.info("Get predictions for vital signs.")
+        vital_signs_predictions = get_predictions(
+            X_test, test_pids, vital_signs_models, 3, device
+        )
+        df_predictions = pd.DataFrame(test_pids, columns=["pid"])
+        df_predictions = df_predictions.merge(
+            medical_tests_predictions, left_on="pid", right_on="pid"
+        )
+        df_predictions = df_predictions.merge(
+            sepsis_predictions, left_on="pid", right_on="pid"
+        )
+        df_predictions = df_predictions.merge(
+            vital_signs_predictions, left_on="pid", right_on="pid"
+        )
     logger.info("Export predictions DataFrame to a zip file")
-    # # Export pandas dataframe to zip archive.
-    # df_predictions.to_csv(
-    #     FLAGS.predictions, index=False, float_format="%.3f", compression=dict(method='zip',
-    #                     archive_name='predictions.csv')
-    # )
-    # Alternative way to export to CSV that works.
+    print(df_predictions)
     df_predictions.to_csv(
-        "predictions.csv",
-        index=None,
-        sep=",",
-        header=True,
-        encoding="utf-8-sig",
-        float_format="%.2f",
+        FLAGS.predictions,
+        index=False,
+        float_format="%.3f",
+        compression=dict(method="zip", archive_name="predictions.csv"),
     )
-
-    with zipfile.ZipFile("predictions.zip", "w") as zf:
-        zf.write("predictions.csv")
-    os.remove("predictions.csv")
 
 
 if __name__ == "__main__":
@@ -569,6 +657,11 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--epochs", "-ep", type=int, required=False, help="", default=100
+    )
+
+    parser.add_argument(
+        "--task", "-t", type=str, required=False, choices=["med", None], 
+        help="if want to perform only multilabel med classification", default=None
     )
 
     parser.add_argument(

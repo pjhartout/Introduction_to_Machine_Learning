@@ -160,15 +160,7 @@ def missing_data_imputer_modelling(df_train, imputation_type, logger):
     estimator = ESTIMATOR[imputation_type]
     samp_post = (True if imputation_type=="bayesian" else False)
     imp_mean = IterativeImputer(
-<<<<<<< HEAD
         estimator=estimator,
-||||||| 9a95418
-        estimator=BayesianRidge(), # also try DecisionTreeRegressor, ExtraTreesRegressor,
-        # KNeighborsRegressor
-=======
-        estimator=BayesianRidge(), # also try , ExtraTreesRegressor,
-        # KNeighborsRegressor
->>>>>>> 6a0edf1f895a145c2f92ee8fb893c3924fecab5c
         missing_values=np.nan,
         sample_posterior=samp_post,
         max_iter=10,
