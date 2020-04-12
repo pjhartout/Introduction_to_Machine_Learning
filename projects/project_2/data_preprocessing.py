@@ -158,6 +158,7 @@ def add_presence_absence_features(df_train, logger):
     Returns:
 
     """
+    logger.info("Add features about MNAR features")
     mnar_columns = [
         sub + "_presence" for sub in MEDICAL_TESTS_FEATURES_MNAR
     ]
@@ -168,7 +169,9 @@ def add_presence_absence_features(df_train, logger):
                 df_train["pid"] == patient
                 ][column].any())
             df_train.at[patient, column] = presence
+    logger.info("Done adding features about MNAR features")
     return df_train
+
 
 
 def missing_data_imputer_modelling(df_train, imputation_type, logger):
@@ -461,7 +464,7 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
 
     # clear logger.
-    logging.basicConfig(level=logging.DEBUG, filename="script_status_subtask1and2.log")
+    logging.basicConfig(level=logging.DEBUG, filename="data_preprocessing.log")
 
     logger = logging.getLogger("Data preprocessing")
 
