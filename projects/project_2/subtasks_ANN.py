@@ -459,6 +459,100 @@ def get_predictions_sepsis(X_test, test_pids, model):
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
+def get_model_vital_signs(x_input, y_input, subtask, logger, device):
+    assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
+    logger.info("Using {} to train the neural network for substask 3.".format(device))
+    labels = []
+    for j in range(len(y_input[0])):
+        labels.append([y_input[i][j] for i in range(len(y_input))])
+    labels = np.array(labels)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        x_input, labels, test_size=0.10, random_state=42, shuffle=True
+    )
+
+    logger.info("Converting arrays to tensors")
+    X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
+        X_train, X_test, y_train, y_test, device
+    )
+
+    model = Feedforward(
+        X_train_tensor.shape[1],
+        hidden_size,
+        output_size=10,
+        n_layers=n_layers,
+        subtask=1,
+        p=dropout,
+    )
+
+    # pos weight allows to account for the imbalance in the data
+    pos_weight = np.array([(len(y_input[i]) - sum(y_input[i])) / sum(y_input[i]) for i in range(len(y_input))])
+    pos_weight = torch.from_numpy(pos_weight).to(device).float()
+    criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+
+    if optim == "SGD":
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    elif optim == "Adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    dataset = Data(X_train_tensor, y_train_tensor)
+    batch_size = 2048  # Ideally we want powers of 2
+    trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
+
+    if torch.cuda.is_available():
+        model.cuda()
+    model.float()
+
+    logger.info("Removing data from previous run if there was any.")
+    dirpath = os.path.join(os.getcwd(), "runs")
+    fileList = os.listdir(dirpath)
+    for fileName in fileList:
+        shutil.rmtree(dirpath + "/" + fileName)
+
+    logger.info("Commencing neural network training.")
+    now = time.strftime("%Y%m%d-%H%M%S")
+    writer = SummaryWriter(
+        log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_allmedtests"
+    )
+    for epoch in tqdm(list(range(FLAGS.epochs))):
+        LOSS = []
+        for x, y in trainloader:
+            yhat = model(x)
+            loss = criterion(yhat.float(), y.float())
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            LOSS.append(loss)
+        X_test_tensor = X_test_tensor.to(device)
+        y_test_pred = model(X_test_tensor).cpu().detach().numpy()
+        y_train_pred = model(X_train_tensor).cpu().detach().numpy()
+        loss_average = sum(LOSS) / len(LOSS)
+        writer.add_scalar("Training_loss", loss_average, epoch)
+        # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
+        # y_test_pred_bin = db(y_test_pred)
+        # y_train_pred_bin = db(y_train_pred)
+        y_test_pred_bin = y_test_pred
+        y_train_pred_bin = y_train_pred
+        LRAPS_train = LRAPS(y_train, y_train_pred_bin)
+        LRAPS_test = LRAPS(y_test, y_test_pred_bin)
+        LRL_train = LRL(y_train, y_train_pred_bin)
+        LRL_test = LRL(y_test, y_test_pred_bin)
+        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
+        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
+        print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
+        print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
+        writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
+        writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
+        writer.add_scalar("Training_LRL", LRL_train, epoch)
+        writer.add_scalar("Testing_LRL", LRL_test, epoch)
+
+    writer.close()
+
+    logger.info(
+        f"Value of the test sample is {y_test} and value for the predicted "
+        f"sample is {y_test_pred}"
+    )
+    logger.info(f"Finished test for medical tests.")
+    return model, LOSS
 
 def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
