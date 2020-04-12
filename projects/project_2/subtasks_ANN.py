@@ -52,6 +52,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from sklearn.metrics import label_ranking_average_precision_score as LRAPS
+from sklearn.metrics import label_ranking_loss as LRL
+
 
 IDENTIFIERS = ["pid"]
 MEDICAL_TESTS = [
@@ -205,8 +208,11 @@ class Feedforward(torch.nn.Module):
         self.sigmoid = torch.nn.Sigmoid()
         self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
         torch.nn.init.xavier_normal_(self.fc1.weight)
-        self.fclist = [torch.nn.Linear(self.hidden_size,self.hidden_size) for i in range(n_layers-1)]
-        for i in range(n_layers-1):
+        self.fclist = [
+            torch.nn.Linear(self.hidden_size, self.hidden_size)
+            for i in range(n_layers - 1)
+        ]
+        for i in range(n_layers - 1):
             torch.nn.init.xavier_normal_(self.fclist[i].weight)
         self.fcout = torch.nn.Linear(self.hidden_size, self.output_size)
         torch.nn.init.xavier_normal_(self.fcout.weight)
@@ -228,7 +234,7 @@ class Feedforward(torch.nn.Module):
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.sigmoid(hidden_bn)
-        for i in range(self.n_layers-1):
+        for i in range(self.n_layers - 1):
             hidden = self.dropout(self.fclist[i](relu))
             hidden_bn = self.bn(hidden)
             relu = self.sigmoid(hidden_bn)
@@ -256,32 +262,41 @@ class Data(Dataset):
     def __len__(self):
         return self.len
 
-from sklearn.metrics import label_ranking_average_precision_score as LRAPS
-from sklearn.metrics import label_ranking_loss as LRL
-def get_model_medical_tests(x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device):
-    assert  optim in ["SGD","Adam"], "optim must be SGD or Adam"
-    logger.info(
-        "Using {} to train the neural network for substask 1.".format(device)
-    )
+def get_model_medical_tests(
+        x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device
+):
+    assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
+    logger.info("Using {} to train the neural network for substask 1.".format(device))
     labels = []
     for j in range(len(y_input[0])):
         labels.append([y_input[i][j] for i in range(len(y_input))])
     labels = np.array(labels)
 
     X_train, X_test, y_train, y_test = train_test_split(
-            x_input, labels, test_size=0.10, random_state=42, shuffle=True
-        )
+        x_input, labels, test_size=0.10, random_state=42, shuffle=True
+    )
 
     logger.info("Converting arrays to tensors")
     X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
-            X_train, X_test, y_train, y_test, device
-        )
-    
-    model = Feedforward(X_train_tensor.shape[1], hidden_size, output_size=10, 
-                            n_layers=n_layers, subtask=1, p=dropout)
+        X_train, X_test, y_train, y_test, device
+    )
+
+    model = Feedforward(
+        X_train_tensor.shape[1],
+        hidden_size,
+        output_size=10,
+        n_layers=n_layers,
+        subtask=1,
+        p=dropout,
+    )
 
     # pos weight allows to account for the imbalance in the data
-    pos_weight = np.array([(len(y_input[i])-sum(y_input[i]))/sum(y_input[i]) for i in range(len(y_input))])
+    pos_weight = np.array(
+        [
+            (len(y_input[i]) - sum(y_input[i])) / sum(y_input[i])
+            for i in range(len(y_input))
+        ]
+    )
     pos_weight = torch.from_numpy(pos_weight).to(device).float()
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
@@ -322,19 +337,19 @@ def get_model_medical_tests(x_input, y_input, hidden_size, n_layers, dropout, op
         y_train_pred = model(X_train_tensor).cpu().detach().numpy()
         loss_average = sum(LOSS) / len(LOSS)
         writer.add_scalar("Training_loss", loss_average, epoch)
-        #db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
-        #y_test_pred_bin = db(y_test_pred)
-        #y_train_pred_bin = db(y_train_pred)
+        # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
+        # y_test_pred_bin = db(y_test_pred)
+        # y_train_pred_bin = db(y_train_pred)
         y_test_pred_bin = y_test_pred
         y_train_pred_bin = y_train_pred
         LRAPS_train = LRAPS(y_train, y_train_pred_bin)
         LRAPS_test = LRAPS(y_test, y_test_pred_bin)
         LRL_train = LRL(y_train, y_train_pred_bin)
         LRL_test = LRL(y_test, y_test_pred_bin)
-        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch,LRAPS_train))
-        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch,LRAPS_test))
-        print("LRL (best 0) of epoch {} for train : {}".format(epoch,LRL_train))
-        print("LRL (best 0) of epoch {} for test : {}".format(epoch,LRL_test))
+        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
+        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
+        print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
+        print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
         writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
         writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
         writer.add_scalar("Training_LRL", LRL_train, epoch)
@@ -348,6 +363,7 @@ def get_model_medical_tests(x_input, y_input, hidden_size, n_layers, dropout, op
     )
     logger.info(f"Finished test for medical tests.")
     return model, LOSS
+
 
 def sigmoid_f(x):
     """To get predictions as confidence level, the model predicts for all 12 sets of measures for
@@ -364,27 +380,33 @@ def sigmoid_f(x):
     """
     return 1 / (1 + np.exp(-x))
 
+
 def get_prediction_medical(X_test, test_pids, model, device):
-    y_pred = (model(torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy())
+    y_pred = model(torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy()
     df_pred = pd.DataFrame(y_pred, index=test_pids, columns=MEDICAL_TESTS)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
+
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.svm import SVC
 from sklearn.metrics import recall_score, precision_score
 import sys
+
+
 def get_model_sepsis(x_input, y_input, logger):
     y_train = y_input[0]
     X_train = x_input
     if FLAGS.sampling_strategy is not None:
-        X_train, y_train = oversampling_strategies(X_train, y_train, FLAGS.sampling_strategy)
+        X_train, y_train = oversampling_strategies(
+            X_train, y_train, FLAGS.sampling_strategy
+        )
 
     X_train, X_test, y_train, y_test = train_test_split(
-            X_train, y_train, test_size=0.10, random_state=42, shuffle=True
-        )
-    models, scores = [],[]
+        X_train, y_train, test_size=0.10, random_state=42, shuffle=True
+    )
+    models, scores = [], []
     """
     for i,C in enumerate(np.linspace(0.1, 20, num=30)):
         lrs.append(LogisticRegression(C=C, 
@@ -393,27 +415,33 @@ def get_model_sepsis(x_input, y_input, logger):
         y_pred = lrs[i].predict_proba(X_test)[:,1]
         scores.append(roc_auc_score(y_test, y_pred))
     """
-    for i,C in enumerate(np.linspace(0.00001, 0.0005, num=10)):
+    for i, C in enumerate(np.linspace(0.00001, 0.0005, num=10)):
         logger.info("Starting SVC for C={}".format(C))
-        models.append(SVC(C=C, kernel="poly", class_weight="balanced").fit(X_train, y_train))
+        models.append(
+            SVC(C=C, kernel="poly", class_weight="balanced").fit(X_train, y_train)
+        )
         y_pred = models[i].decision_function(X_test)
         y_pred = [sigmoid_f(y_pred[i]) for i in range(len(y_pred))]
         scores.append(roc_auc_score(y_test, y_pred))
         recall = recall_score(y_test, np.around(y_pred))
         precision = precision_score(y_test, np.around(y_test))
-        logger.info("The ROC AUC score is {}, the precision is {} and the recall is " 
-                    "{} for iteration {}".format(scores[i],precision, recall,i))
+        logger.info(
+            "The ROC AUC score is {}, the precision is {} and the recall is "
+            "{} for iteration {}".format(scores[i], precision, recall, i)
+        )
     best = np.argmax(scores)
     model, score = models[best], scores[best]
     return model, score
 
+
 def get_predictions_sepsis(X_test, test_pids, model):
     y_pred = model.decision_function(X_test)
     y_pred = [sigmoid_f(y_pred[i]) for i in range(len(y_pred))]
-    #y_pred = model.predict_proba(X_test)[:,1]
+    # y_pred = model.predict_proba(X_test)[:,1]
     df_pred = pd.DataFrame(y_pred, index=test_pids, columns=SEPSIS)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
+
 
 def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
@@ -468,9 +496,11 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
                 criterion = torch.nn.BCEWithLogitsLoss(
                     pos_weight=torch.tensor(pos_weight).to(device)
                 )
-                logger.info(f"Using positive class coefficient of {pos_weight} for {sign} instead "
-                            f"of resampling to account for class imbalance.")
-                
+                logger.info(
+                    f"Using positive class coefficient of {pos_weight} for {sign} instead "
+                    f"of resampling to account for class imbalance."
+                )
+
         # optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
@@ -574,7 +604,6 @@ def get_predictions(X_test, test_pids, models, subtask, device):
     return df_pred
 
 
-
 def main(logger):
     """Primary function reading, preprocessing and modelling the data
 
@@ -597,8 +626,9 @@ def main(logger):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     if FLAGS.task == "med":
         logger.info("Beginning multilabel ANN for medical tests.")
-        med_model, med_score = get_model_medical_tests(X_train, y_train_medical_tests, 
-                                                        100, 3, 0.3, "Adam", logger, device)
+        med_model, med_score = get_model_medical_tests(
+            X_train, y_train_medical_tests, 100, 3, 0.3, "Adam", logger, device
+        )
     elif FLAGS.task == "sepsis":
         logger.info("Beginning modelling for sepsis.")
         sepsis_model, sepsis_score = get_model_sepsis(X_train, y_train_sepsis, logger)
@@ -611,7 +641,9 @@ def main(logger):
         )
 
         logger.info("Beggining ANN training for sepsis.")
-        sepsis_models, scores = get_ann_models(X_train, y_train_sepsis, 2, logger, device)
+        sepsis_models, scores = get_ann_models(
+            X_train, y_train_sepsis, 2, logger, device
+        )
 
         logger.info("Beggining ANN training for vital signs.")
         vital_signs_models, scores = get_ann_models(
@@ -638,7 +670,9 @@ def main(logger):
         )
 
         logger.info("Get predictions for sepsis.")
-        sepsis_predictions = get_predictions(X_test, test_pids, sepsis_models, 2, device)
+        sepsis_predictions = get_predictions(
+            X_test, test_pids, sepsis_models, 2, device
+        )
 
         logger.info("Get predictions for vital signs.")
         vital_signs_predictions = get_predictions(
@@ -728,8 +762,13 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--task", "-t", type=str, required=False, choices=["med", "sepsis"], 
-        help="if want to perform only multilabel med classification", default=None
+        "--task",
+        "-t",
+        type=str,
+        required=False,
+        choices=["med", "sepsis"],
+        help="if want to perform only multilabel med classification",
+        default=None,
     )
 
     parser.add_argument(
