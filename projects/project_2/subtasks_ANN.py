@@ -262,9 +262,25 @@ class Data(Dataset):
     def __len__(self):
         return self.len
 
+
 def get_model_medical_tests(
         x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device
 ):
+    """
+
+    Args:
+        x_input:
+        y_input:
+        hidden_size:
+        n_layers:
+        dropout:
+        optim:
+        logger:
+        device:
+
+    Returns:
+
+    """
     assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
     logger.info("Using {} to train the neural network for substask 1.".format(device))
     labels = []
@@ -305,7 +321,7 @@ def get_model_medical_tests(
     elif optim == "Adam":
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
     dataset = Data(X_train_tensor, y_train_tensor)
-    batch_size = 2048  # Ideally we want any multiple of 12 here
+    batch_size = 2048  # Ideally we want powers of 2
     trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
 
     if torch.cuda.is_available():
@@ -504,7 +520,7 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         # optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         dataset = Data(X_train_tensor, y_train_tensor)
-        batch_size = 2048  # Ideally we want any multiple of 12 here
+        batch_size = 2048  # Ideally we want powers of 2 here
         trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
 
         if torch.cuda.is_available():
