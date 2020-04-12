@@ -349,9 +349,69 @@ def get_model_medical_tests(x_input, y_input, hidden_size, n_layers, dropout, op
     logger.info(f"Finished test for medical tests.")
     return model, LOSS
 
+def sigmoid_f(x):
+    """To get predictions as confidence level, the model predicts for all 12 sets of measures for
+    each patient a distance to the hyperplane ; it is then transformed into a confidence level using
+    the sigmoid function ; the confidence level reported is the mean of all confidence levels for a
+    single patient
+
+    Args:
+        x (float): input of the sigmoid function
+
+    Returns:
+       float: result of the sigmoid computation.
+
+    """
+    return 1 / (1 + np.exp(-x))
+
 def get_prediction_medical(X_test, test_pids, model, device):
     y_pred = (model(torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy())
     df_pred = pd.DataFrame(y_pred, index=test_pids, columns=MEDICAL_TESTS)
+    df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
+    return df_pred
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+from sklearn.svm import SVC
+from sklearn.metrics import recall_score, precision_score
+import sys
+def get_model_sepsis(x_input, y_input, logger):
+    y_train = y_input[0]
+    X_train = x_input
+    if FLAGS.sampling_strategy is not None:
+        X_train, y_train = oversampling_strategies(X_train, y_train, FLAGS.sampling_strategy)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+            X_train, y_train, test_size=0.10, random_state=42, shuffle=True
+        )
+    models, scores = [],[]
+    """
+    for i,C in enumerate(np.linspace(0.1, 20, num=30)):
+        lrs.append(LogisticRegression(C=C, 
+                    penalty='l1', class_weight="balanced", 
+                    solver="liblinear", random_state=0).fit(X_train,y_train))
+        y_pred = lrs[i].predict_proba(X_test)[:,1]
+        scores.append(roc_auc_score(y_test, y_pred))
+    """
+    for i,C in enumerate(np.linspace(0.00001, 0.0005, num=10)):
+        logger.info("Starting SVC for C={}".format(C))
+        models.append(SVC(C=C, kernel="poly", class_weight="balanced").fit(X_train, y_train))
+        y_pred = models[i].decision_function(X_test)
+        y_pred = [sigmoid_f(y_pred[i]) for i in range(len(y_pred))]
+        scores.append(roc_auc_score(y_test, y_pred))
+        recall = recall_score(y_test, np.around(y_pred))
+        precision = precision_score(y_test, np.around(y_test))
+        logger.info("The ROC AUC score is {}, the precision is {} and the recall is " 
+                    "{} for iteration {}".format(scores[i],precision, recall,i))
+    best = np.argmax(scores)
+    model, score = models[best], scores[best]
+    return model, score
+
+def get_predictions_sepsis(X_test, test_pids, model):
+    y_pred = model.decision_function(X_test)
+    y_pred = [sigmoid_f(y_pred[i]) for i in range(len(y_pred))]
+    #y_pred = model.predict_proba(X_test)[:,1]
+    df_pred = pd.DataFrame(y_pred, index=test_pids, columns=SEPSIS)
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
@@ -539,6 +599,10 @@ def main(logger):
         logger.info("Beginning multilabel ANN for medical tests.")
         med_model, med_score = get_model_medical_tests(X_train, y_train_medical_tests, 
                                                         100, 3, 0.3, "Adam", logger, device)
+    elif FLAGS.task == "sepsis":
+        logger.info("Beginning modelling for sepsis.")
+        sepsis_model, sepsis_score = get_model_sepsis(X_train, y_train_sepsis, logger)
+
     else:
         # get models and scores for substasks 1, 2 and 3
         logger.info("Beggining ANN training for medical tests.")
@@ -561,6 +625,10 @@ def main(logger):
     if FLAGS.task == "med":
         logger.info("Get predictions for multilabel medical tests.")
         df_predictions = get_prediction_medical(X_test, test_pids, med_model, device)
+
+    elif FLAGS.task == "sepsis":
+        logger.info("Get predictions for sepsis.")
+        df_predictions = get_predictions_sepsis(X_test, test_pids, sepsis_model)
 
     else:
         # get the predictions for all subtasks
@@ -660,7 +728,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--task", "-t", type=str, required=False, choices=["med", None], 
+        "--task", "-t", type=str, required=False, choices=["med", "sepsis"], 
         help="if want to perform only multilabel med classification", default=None
     )
 
