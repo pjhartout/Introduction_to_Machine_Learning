@@ -93,6 +93,15 @@ ESTIMATOR = {"bayesian": BayesianRidge(), "decisiontree": DecisionTreeRegressor(
                 "extratree": ExtraTreesRegressor(n_estimators=10, random_state=0), 
                 "knn": KNeighborsRegressor(n_neighbors=10, weights="distance")}
 
+# Features which are quite often missing and which absence/presence could say more than
+# their value (missing not at random missing data)
+MEDICAL_TESTS_FEATURES_MNAR = ["EtCO2", "PTT", "BUN", "Lactate", "Hgb", "HCO3", "BaseExcess",
+                          "Fibrinogen", "Phosphate", "WBC", "Creatinine", "PaCO2", "AST",
+                          "FiO2", "Platelets", "SaO2", "Glucose", "Magnesium", "Potassium",
+                          "Calcium", "Alkalinephos", "Bilirubin_direct", "Chloride", "Hct",
+                          "Bilirubin_total", "TroponinI", "pH"]
+
+
 def load_data():
     """Loads data to three different dataframes.
 
@@ -139,6 +148,29 @@ def fill_na_with_average_patient_column(df, logger):
     return df
 
 
+def add_presence_absence_features(df_train, logger):
+    """Imputes additional features based on features missing not at random (MNAR features).
+
+    Args:
+        df_train:
+        logger:
+
+    Returns:
+
+    """
+    mnar_columns = [
+        sub + "_presence" for sub in MEDICAL_TESTS_FEATURES_MNAR
+    ]
+    pid = df_train["pid"].unique()
+    for patient in tqdm(pid):
+        for column in MEDICAL_TESTS_FEATURES_MNAR:
+            presence = int(df_train.loc[
+                df_train["pid"] == patient
+                ][column].any())
+            df_train.at[patient, column] = presence
+    return df_train
+
+
 def missing_data_imputer_modelling(df_train, imputation_type, logger):
     """Basically the same as missing_data_imputer() but using the sklearn API.
 
@@ -179,7 +211,7 @@ def missing_data_imputer_modelling(df_train, imputation_type, logger):
     logger.info("Commencing data imputation process")
     df_train = imp_mean.fit_transform(df_train.values)
     df_train = pd.DataFrame(df_train, columns=columns)
-    logger.info("Take mean over patients")
+    logger.info("Take mean for each patient")
     for patient in tqdm(pid):
         for column in df_train.columns:
             df_train_preprocessed.at[patient, column] = df_train.loc[
@@ -187,18 +219,6 @@ def missing_data_imputer_modelling(df_train, imputation_type, logger):
             ][column].mean()
 
     return df_train_preprocessed
-
-
-def visualize_data(X):
-    plt.rcParams['figure.figsize'] = 20, 5
-    cols_to_plot = []
-    for column in range(X.shape[1]):
-        cols_to_plot.append(column)
-        if len(cols_to_plot) % 10 == 0 and len(cols_to_plot) != 0:
-            plot = sns.violinplot(data=X[:, min(cols_to_plot):column])
-            # plot.set(yscale="log")
-            plt.show()
-            cols_to_plot = []
 
 
 def missing_data_imputer(df_train, logger):
@@ -323,6 +343,7 @@ def main(logger):
     # df_train_preprocessed = fill_na_with_average_patient_column(
     #     df_train, logger
     # )
+    df_train = add_presence_absence_features(df_train, logger)
 
     if FLAGS.data_imputer == "manual":
         df_train_preprocessed = missing_data_imputer(df_train, logger)
