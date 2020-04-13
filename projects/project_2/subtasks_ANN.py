@@ -294,7 +294,7 @@ def get_model_medical_tests(
     )
 
     logger.info("Applying feature selection")
-    ## Apply label for each task
+    ## Apply label for each tas
     # if FLAGS.feature_selection == "SelectKBest":
     #     feature_selector = SelectKBest(score_func=f_classif, k=5)
     #     X_train, y_train = feature_selector.fit_transform(X_train, y_train)
