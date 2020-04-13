@@ -46,6 +46,8 @@ from imblearn.over_sampling import ADASYN, SMOTE
 from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 import pandas as pd
 import numpy as np
+# from scipy.stats import chi2
+from sklearn.feature_selection import SelectKBest, f_regression, chi2, f_classif
 from tqdm import tqdm
 from sklearn.metrics import f1_score, mean_squared_error, accuracy_score
 from sklearn.model_selection import train_test_split
@@ -195,6 +197,7 @@ def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     )
 
 
+
 class Feedforward(torch.nn.Module):
     """ Definition of the feedfoward neural network. It currently has three layers which can be
     modified in the function where the network is trained.
@@ -213,24 +216,18 @@ class Feedforward(torch.nn.Module):
         self.sigmoid = torch.nn.Sigmoid()
         self.fc1 = torch.nn.Linear(self.input_size, self.hidden_size)
         torch.nn.init.xavier_normal_(self.fc1.weight)
-        self.fclist = [
-            torch.nn.Linear(self.hidden_size, self.hidden_size)
-            for i in range(n_layers - 1)
-        ]
-        for i in range(n_layers - 1):
-            torch.nn.init.xavier_normal_(self.fclist[i].weight)
+        self.fc2 = torch.nn.Linear(self.hidden_size, self.hidden_size)
+        torch.nn.init.xavier_normal_(self.fc2.weight)
         self.fcout = torch.nn.Linear(self.hidden_size, self.output_size)
         torch.nn.init.xavier_normal_(self.fcout.weight)
 
     def forward(self, x):
         """Function where the forward pass is defined. The backward pass is deternmined by the
             autograd function built into PyTorch.
-
         Args:
             x (torch.Tensor): Tensor (n_samples,n_features) tensor containing training input
                 features
             subtask (int): subtask performed (choice: 1,2,3)
-
         Returns:
             output (torch.Tensor): (n_samples,n_features) tensor containing
                 the predicted output for each sample.
@@ -239,10 +236,9 @@ class Feedforward(torch.nn.Module):
         hidden = self.fc1(x)
         hidden_bn = self.bn(hidden)
         relu = self.sigmoid(hidden_bn)
-        for i in range(self.n_layers - 1):
-            hidden = self.dropout(self.fclist[i](relu))
-            hidden_bn = self.bn(hidden)
-            relu = self.sigmoid(hidden_bn)
+        hidden = self.dropout(self.fc2(relu))
+        hidden_bn = self.bn(hidden)
+        relu = self.sigmoid(hidden_bn)
         output = self.fcout(relu)
         if self.subtask == 1 or self.subtask == 2:
             output = self.sigmoid(output)
@@ -296,6 +292,13 @@ def get_model_medical_tests(
     X_train, X_test, y_train, y_test = train_test_split(
         x_input, labels, test_size=0.10, random_state=42, shuffle=True
     )
+
+    logger.info("Applying feature selection")
+    ## Apply label for each task
+    # if FLAGS.feature_selection == "SelectKBest":
+    #     feature_selector = SelectKBest(score_func=f_classif, k=5)
+    #     X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+    #     X_test = feature_selector.transform(X_test)
 
     logger.info("Converting arrays to tensors")
     X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
@@ -367,10 +370,10 @@ def get_model_medical_tests(
         LRAPS_test = LRAPS(y_test, y_test_pred_bin)
         LRL_train = LRL(y_train, y_train_pred_bin)
         LRL_test = LRL(y_test, y_test_pred_bin)
-        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
-        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
-        print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
-        print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
+        # print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
+        # print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
+        # print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
+        # print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
         writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
         writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
         writer.add_scalar("Training_LRL", LRL_train, epoch)
@@ -409,9 +412,6 @@ def get_prediction_medical(X_test, test_pids, model, device):
     return df_pred
 
 
-
-
-
 def get_model_sepsis(x_input, y_input, logger):
     y_train = y_input[0]
     X_train = x_input
@@ -423,7 +423,13 @@ def get_model_sepsis(x_input, y_input, logger):
     X_train, X_test, y_train, y_test = train_test_split(
         X_train, y_train, test_size=0.10, random_state=42, shuffle=True
     )
+
     models, scores = [], []
+    logger.info("Applying feature selection")
+    if FLAGS.feature_selection == "SelectKBest":
+        feature_selector = SelectKBest(score_func=f_classif(), k=5)
+        X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+        X_test = feature_selector.transform(X_test)
     """
     for i,C in enumerate(np.linspace(0.1, 20, num=30)):
         lrs.append(LogisticRegression(C=C, 
@@ -459,6 +465,7 @@ def get_predictions_sepsis(X_test, test_pids, model):
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
+
 def get_model_vital_signs(x_input, y_input, subtask, logger, device):
     assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
     logger.info("Using {} to train the neural network for substask 3.".format(device))
@@ -470,6 +477,13 @@ def get_model_vital_signs(x_input, y_input, subtask, logger, device):
     X_train, X_test, y_train, y_test = train_test_split(
         x_input, labels, test_size=0.10, random_state=42, shuffle=True
     )
+
+    logger.info("Applying feature selection")
+    if FLAGS.feature_selection == "SelectKBest":
+        feature_selector = SelectKBest(score_func=f_regression, k=5)
+        X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+        X_test = feature_selector.transform(X_test)
+
 
     logger.info("Converting arrays to tensors")
     X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
@@ -554,6 +568,7 @@ def get_model_vital_signs(x_input, y_input, subtask, logger, device):
     logger.info(f"Finished test for medical tests.")
     return model, LOSS
 
+
 def get_ann_models(x_input, y_input, subtask, logger, device):
     """Main function to train the neural networks for the data.
 
@@ -591,6 +606,15 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
             X_train, y_train = oversampling_strategies(
                 X_train, y_train, FLAGS.sampling_strategy
             )
+        logger.info("Applying feature selection")
+        if FLAGS.feature_selection == "SelectKBest" and subtask in [1, 2]:
+            feature_selector = SelectKBest(score_func=f_classif, k=5)
+            X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+            X_test = feature_selector.transform(X_test)
+        elif FLAGS.feature_selection == "SelectKBest" and subtask in [3]:
+            feature_selector = SelectKBest(score_func=f_regression, k=5)
+            X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+            X_test = feature_selector.transform(X_test)
         logger.info("Converting arrays to tensors")
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
             X_train, X_test, y_train, y_test, device
@@ -802,11 +826,17 @@ def main(logger):
     logger.info("Export predictions DataFrame to a zip file")
     print(df_predictions)
     df_predictions.to_csv(
-        FLAGS.predictions,
-        index=False,
-        float_format="%.3f",
-        compression=dict(method="zip", archive_name="predictions.csv"),
+        "predictions.csv",
+        index=None,
+        sep=",",
+        header=True,
+        encoding="utf-8-sig",
+        float_format="%.2f",
     )
+
+    with zipfile.ZipFile("predictions.zip", "w") as zf:
+        zf.write("predictions.csv")
+    os.remove("predictions.csv")
 
 
 if __name__ == "__main__":
@@ -890,6 +920,15 @@ if __name__ == "__main__":
         help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
              "any of adasyn, smote, clustercentroids or random.",
         choices=["adasyn", "smote", "clustercentroids", "random"],
+    )
+
+    parser.add_argument(
+        "--feature_selection",
+        "-select",
+        type=str,
+        required=False,
+        help="Specify feature selections strategy",
+        choices=["SelectKBest"],
     )
 
     FLAGS = parser.parse_args()
