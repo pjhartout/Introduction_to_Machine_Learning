@@ -311,7 +311,7 @@ def get_model_medical_tests(
             input_size=X_train_tensor.shape[1],
             hidden_size=150,
             output_size=1,
-            subtask=3,
+            subtask=1,
             p=0.2,
         )
 
@@ -410,7 +410,7 @@ def sigmoid_f(x):
 def get_prediction_medical_tests(X_test, test_pids, models, device, columns):
     df_pred = pd.DataFrame(index=test_pids, columns=MEDICAL_TESTS)
 
-    for i, sign in enumerate(MEDICAL_TESTS):
+    for i, test in enumerate(MEDICAL_TESTS):
         col_for_medical_test = columns[i]
         X_test_vital_sign = X_test[:, col_for_medical_test]
         model_for_test = models[i]
@@ -420,7 +420,7 @@ def get_prediction_medical_tests(X_test, test_pids, models, device, columns):
             .detach()
             .numpy()
         )
-        df_pred.append(y_pred)
+        df_pred[test] = y_pred
 
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
@@ -459,7 +459,7 @@ def get_model_sepsis(x_input, y_input, logger):
         y_pred = lrs[i].predict_proba(X_test)[:,1]
         scores.append(roc_auc_score(y_test, y_pred))
     """
-    for i, C in enumerate(np.linspace(0.00001, 0.0005, num=10)):
+    for i, C in enumerate(np.linspace(0.00001, 0.0005, num=5)):
         logger.info("Starting SVC for C={}".format(C))
         models.append(
             SVC(C=C, kernel="poly", class_weight="balanced").fit(X_train, y_train)
@@ -478,7 +478,8 @@ def get_model_sepsis(x_input, y_input, logger):
     return model, score, columns
 
 
-def get_predictions_sepsis(X_test, test_pids, model):
+def get_predictions_sepsis(X_test, test_pids, model, columns):
+    X_test = X_test[:, columns]
     y_pred = model.decision_function(X_test)
     y_pred = [sigmoid_f(y_pred[i]) for i in range(len(y_pred))]
     # y_pred = model.predict_proba(X_test)[:,1]
@@ -586,14 +587,14 @@ def get_prediction_vital_signs(X_test, test_pids, models, device, columns):
     for i, sign in enumerate(VITAL_SIGNS):
         col_for_vital_sign = columns[i]
         X_test_vital_sign = X_test[:, col_for_vital_sign]
-        model_for_sign = model[i]
+        model_for_sign = models[i]
         y_pred = (
             model_for_sign(torch.from_numpy(X_test_vital_sign).to(device).float())
             .cpu()
             .detach()
             .numpy()
         )
-        df_pred.append
+        df_pred[sign] = y_pred
 
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
@@ -789,86 +790,46 @@ def main(logger):
 
     logger.info("Beginning modelling process.")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    if FLAGS.task == "med":
+    if FLAGS.task == "med"  or FLAGS.task is None:
         logger.info("Beginning multilabel ANN for medical tests.")
         med_model, med_score, columns_medical_tests = get_model_medical_tests(
             X_train, y_train_medical_tests, 100, 3, 0.3, "Adam", logger, device
         )
-    elif FLAGS.task == "sepsis":
+    if FLAGS.task == "sepsis" or FLAGS.task is None:
         logger.info("Beginning modelling for sepsis.")
         sepsis_model, sepsis_score, columns_sepsis = get_model_sepsis(
             X_train, y_train_sepsis, logger
         )
 
-    elif FLAGS.task == "vitalsigns":
-        logger.info("Beginning modelling for sepsis")
+    if FLAGS.task == "vitalsigns"  or FLAGS.task is None:
+        logger.info("Beginning modelling for vital signs")
         vital_sign_models, vital_sign_scores, columns_vital_sign = get_model_vital_signs(
             X_train, y_train_vital_signs, logger, device
         )
-        logger.info("DONE")
-    else:
-        # get models and scores for substasks 1, 2 and 3
-        logger.info("Beggining ANN training for medical tests.")
-        medical_tests_models, scores = get_ann_models(
-            X_train, y_train_medical_tests, 1, logger, device
-        )
-
-        logger.info("Beggining ANN training for sepsis.")
-        sepsis_models, scores = get_ann_models(
-            X_train, y_train_sepsis, 2, logger, device
-        )
-
-        logger.info("Beggining ANN training for vital signs.")
-        vital_signs_models, scores = get_ann_models(
-            X_train, y_train_vital_signs, 3, logger, device
-        )
+    logger.info("Modelling finished")
 
     # get the unique test ids of patients
     test_pids = np.unique(df_test["pid"].values)
     logger.info("Fetch predictions.")
     X_test = df_test.drop(columns=IDENTIFIERS).values
-    if FLAGS.task == "med":
+    if FLAGS.task == "med" or FLAGS.task is None:
         logger.info("Get predictions for multilabel medical tests.")
-        df_predictions = get_prediction_medical_tests(
-            X_test, test_pids, medical_tests_models, device, columns_medical_tests
+        df_predictions_medical_tests = get_prediction_medical_tests(
+            X_test, test_pids, med_model, device, columns_medical_tests
         )
 
-    elif FLAGS.task == "sepsis":
+    if FLAGS.task == "sepsis"  or FLAGS.task is None:
         logger.info("Get predictions for sepsis.")
-        df_predictions = get_predictions_sepsis(X_test, test_pids, sepsis_model)
+        df_predictions_sepsis = get_predictions_sepsis(X_test, test_pids, sepsis_model, columns_sepsis)
 
-    elif FLAGS.task == "vitalsigns":
+    if FLAGS.task == "vitalsigns" or FLAGS.task is None:
         logger.info("Get predictions for vital signs.")
-        df_predictions = get_prediction_vital_signs(
-            X_test, test_pids, vital_signs_models, columns_vital_sign, device
+        df_predictions_vital_signs = get_prediction_vital_signs(
+            X_test, test_pids, vital_sign_models, device, columns_vital_sign
         )
 
-    else:
-        # get the predictions for all subtasks
-        logger.info("Get predictions for medical tests.")
-        medical_tests_predictions = get_predictions(
-            X_test, test_pids, medical_tests_models, 1, device
-        )
-
-        logger.info("Get predictions for sepsis.")
-        sepsis_predictions = get_predictions(
-            X_test, test_pids, sepsis_models, 2, device
-        )
-
-        logger.info("Get predictions for vital signs.")
-        vital_signs_predictions = get_predictions(
-            X_test, test_pids, vital_signs_models, 3, device
-        )
-        df_predictions = pd.DataFrame(test_pids, columns=["pid"])
-        df_predictions = df_predictions.merge(
-            medical_tests_predictions, left_on="pid", right_on="pid"
-        )
-        df_predictions = df_predictions.merge(
-            sepsis_predictions, left_on="pid", right_on="pid"
-        )
-        df_predictions = df_predictions.merge(
-            vital_signs_predictions, left_on="pid", right_on="pid"
-        )
+    df_predictions = pd.merge(df_predictions_medical_tests, df_predictions_sepsis, on="pid")
+    df_predictions = pd.merge(df_predictions, df_predictions_vital_signs, on="pid")
     logger.info("Export predictions DataFrame to a zip file")
     print(df_predictions)
     df_predictions.to_csv(
