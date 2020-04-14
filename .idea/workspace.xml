@@ -2,9 +2,89 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/projects/project_2/on_recommence_a_zero_la_tete_a_toto.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-183709_LABEL_Heartrate/events.out.tfevents.1586882229.pop-os.20826.13" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data_preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/script_status_subtask1and2.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/script_status_subtask1and2.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_presence_features.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_presence_features.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/data_preprocessing.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data_preprocessing.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.zip" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/predictions.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-130608_LABEL_Heartrate/events.out.tfevents.1586862368.pop-os.29286.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-144812_LABEL_Fibrinogen/events.out.tfevents.1586868492.pop-os.32712.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145051_LABEL_AST/events.out.tfevents.1586868651.pop-os.483.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145116_LABEL_BaseExcess/events.out.tfevents.1586868676.pop-os.901.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145147_LABEL_AST/events.out.tfevents.1586868707.pop-os.901.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145216_LABEL_Bilirubin_total/events.out.tfevents.1586868736.pop-os.901.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145316_LABEL_Bilirubin_direct/events.out.tfevents.1586868796.pop-os.901.8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145331_LABEL_EtCO2/events.out.tfevents.1586868811.pop-os.901.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145415_LABEL_RRate/events.out.tfevents.1586868855.pop-os.901.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145430_LABEL_ABPm/events.out.tfevents.1586868870.pop-os.901.11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145458_LABEL_Heartrate/events.out.tfevents.1586868898.pop-os.901.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145925_LABEL_Lactate/events.out.tfevents.1586869165.pop-os.1378.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145957_LABEL_SaO2/events.out.tfevents.1586869197.pop-os.1378.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-150144_LABEL_SpO2/events.out.tfevents.1586869304.pop-os.1378.12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-150200_LABEL_Heartrate/events.out.tfevents.1586869320.pop-os.1378.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151159_LABEL_AST/events.out.tfevents.1586869919.pop-os.2934.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151215_LABEL_Alkalinephos/events.out.tfevents.1586869935.pop-os.2934.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151230_LABEL_Bilirubin_total/events.out.tfevents.1586869950.pop-os.2934.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151241_LABEL_BaseExcess/events.out.tfevents.1586869961.pop-os.3069.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151624_LABEL_Heartrate/events.out.tfevents.1586870184.pop-os.3069.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151839_LABEL_BaseExcess/events.out.tfevents.1586870319.pop-os.3418.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151855_LABEL_Fibrinogen/events.out.tfevents.1586870335.pop-os.3418.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151954_LABEL_Lactate/events.out.tfevents.1586870394.pop-os.3418.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152029_LABEL_RRate/events.out.tfevents.1586870429.pop-os.3621.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152100_LABEL_SpO2/events.out.tfevents.1586870460.pop-os.3621.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152115_LABEL_Heartrate/events.out.tfevents.1586870475.pop-os.3621.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152203_LABEL_RRate/events.out.tfevents.1586870523.pop-os.3910.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152229_LABEL_RRate/events.out.tfevents.1586870549.pop-os.4010.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152245_LABEL_ABPm/events.out.tfevents.1586870565.pop-os.4010.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152338_LABEL_RRate/events.out.tfevents.1586870618.pop-os.4149.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152428_LABEL_SpO2/events.out.tfevents.1586870668.pop-os.4208.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152537_LABEL_RRate/events.out.tfevents.1586870737.pop-os.4304.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152640_LABEL_Heartrate/events.out.tfevents.1586870800.pop-os.4364.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152730_LABEL_RRate/events.out.tfevents.1586870850.pop-os.4702.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152814_LABEL_Heartrate/events.out.tfevents.1586870894.pop-os.4702.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152847_LABEL_RRate/events.out.tfevents.1586870927.pop-os.4893.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152927_LABEL_RRate/events.out.tfevents.1586870967.pop-os.4972.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153119_LABEL_RRate/events.out.tfevents.1586871079.pop-os.6138.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153313_LABEL_BaseExcess/events.out.tfevents.1586871193.pop-os.6489.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153651_LABEL_Heartrate/events.out.tfevents.1586871411.pop-os.6489.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153815_LABEL_BaseExcess/events.out.tfevents.1586871495.pop-os.6842.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153832_LABEL_Fibrinogen/events.out.tfevents.1586871512.pop-os.6842.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153947_LABEL_Lactate/events.out.tfevents.1586871587.pop-os.6842.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154026_LABEL_SaO2/events.out.tfevents.1586871626.pop-os.6842.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154204_LABEL_RRate/events.out.tfevents.1586871724.pop-os.6842.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154308_LABEL_Heartrate/events.out.tfevents.1586871788.pop-os.6842.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154540_LABEL_BaseExcess/events.out.tfevents.1586871940.pop-os.7775.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154600_LABEL_RRate/events.out.tfevents.1586871960.pop-os.7831.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155204_LABEL_RRate/events.out.tfevents.1586872324.pop-os.8346.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155314_LABEL_Heartrate/events.out.tfevents.1586872394.pop-os.8346.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155523_LABEL_BaseExcess/events.out.tfevents.1586872523.pop-os.8550.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-124806_LABEL_Heartrate/events.out.tfevents.1586861286.pop-os.27601.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-125156_LABEL_Heartrate/events.out.tfevents.1586861516.pop-os.28708.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-125446_LABEL_Heartrate/events.out.tfevents.1586861686.pop-os.28860.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160204_LABEL_EtCO2/events.out.tfevents.1586872924.pop-os.8602.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160438_LABEL_SpO2/events.out.tfevents.1586873078.pop-os.8602.12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160518_LABEL_Heartrate/events.out.tfevents.1586873118.pop-os.8602.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164628_LABEL_Fibrinogen/events.out.tfevents.1586875588.pop-os.13117.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164703_LABEL_AST/events.out.tfevents.1586875623.pop-os.13117.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164716_LABEL_BaseExcess/events.out.tfevents.1586875636.pop-os.13252.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-165525_LABEL_Heartrate/events.out.tfevents.1586876125.pop-os.13252.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-171648_LABEL_BaseExcess/events.out.tfevents.1586877408.pop-os.14771.0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171824_LABEL_EtCO2/events.out.tfevents.1586877504.pop-os.14824.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171932_LABEL_SpO2/events.out.tfevents.1586877572.pop-os.14824.12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171944_LABEL_Heartrate/events.out.tfevents.1586877584.pop-os.14824.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-172415_LABEL_Heartrate/events.out.tfevents.1586877855.pop-os.15797.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-163816_LABEL_EtCO2/events.out.tfevents.1586875096.pop-os.12122.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-163851_LABEL_Heartrate/events.out.tfevents.1586875131.pop-os.12122.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-164042_LABEL_Heartrate/events.out.tfevents.1586875242.pop-os.12337.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-164352_LABEL_Heartrate/events.out.tfevents.1586875432.pop-os.12756.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_example.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +116,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/.cache/JetBrains/PyCharm2020.1/snapshots/Introduction_to_Machine_Learning.pstat" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="PyScientificConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="PyCoverageOptionsProvider">
     <option name="myUseBundledCoveragePy" value="true" />
   </component>
-  <component name="RunManager" selected="Python.preprocess_dataset">
+  <component name="RunManager" selected="Python.subtasks_ANN">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Introduction_to_Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -66,10 +146,43 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="boosted_trees_subtask_1" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="Introduction_to_Machine_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/iml/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projects/project_2" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.py" />
+      <option name="PARAMETERS" value="--train_features $PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_trend.csv                              --test_features $PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_trend.csv                              --train_labels $PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_trend.csv" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Python.boosted_trees_subtask_1" />
+      <item itemvalue="Python.subtask3" />
       <item itemvalue="Python.preprocess_dataset" />
       <item itemvalue="Python.subtask1and2" />
-      <item itemvalue="Python.subtask3" />
       <item itemvalue="Python.subtasks_ANN" />
     </list>
   </component>
@@ -90,6 +203,14 @@
       <workItem from="1586521975239" duration="3958000" />
       <workItem from="1586525958883" duration="8851000" />
       <workItem from="1586686970899" duration="2869000" />
+      <workItem from="1586695392428" duration="2236000" />
+      <workItem from="1586697639711" duration="1254000" />
+      <workItem from="1586797179686" duration="1794000" />
+      <workItem from="1586801673489" duration="223000" />
+      <workItem from="1586801912305" duration="3615000" />
+      <workItem from="1586846558174" duration="31224000" />
+      <workItem from="1586888510754" duration="5927000" />
+      <workItem from="1586894974165" duration="3855000" />
     </task>
     <servers />
   </component>
@@ -100,80 +221,102 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="610" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586689162570">
+    <state x="363" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586881963957">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="610" y="145" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586689162570" />
+    <state x="363" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586881963957" />
     <state x="61" y="300" width="1787" height="514" key="#xdebugger.XInspectDialog" timestamp="1586518173720">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="61" y="300" width="1787" height="514" key="#xdebugger.XInspectDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586518173720" />
+    <state x="482" y="113" width="946" height="888" key="CommitChangelistDialog2" timestamp="1586858675608">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="482" y="113" width="946" height="888" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1586858675608" />
     <state x="1009" y="237" width="344" height="632" key="EnvironmentVariablesDialog" timestamp="1586524958431">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="1009" y="237" width="344" height="632" key="EnvironmentVariablesDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586524958431" />
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586518964810">
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl" timestamp="1586697548133">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586518964810" />
-    <state width="1878" height="331" key="GridCell.Tab.0.bottom" timestamp="1586689176059">
+    <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586697548133" />
+    <state width="1876" height="276" key="GridCell.Tab.0.bottom" timestamp="1586888398516">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176059" />
-    <state width="1878" height="331" key="GridCell.Tab.0.center" timestamp="1586689176059">
+    <state width="1876" height="276" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
+    <state width="1876" height="276" key="GridCell.Tab.0.center" timestamp="1586888398516">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176059" />
-    <state width="1878" height="331" key="GridCell.Tab.0.left" timestamp="1586689176059">
+    <state width="1876" height="276" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
+    <state width="1876" height="276" key="GridCell.Tab.0.left" timestamp="1586888398516">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176059" />
-    <state width="1878" height="331" key="GridCell.Tab.0.right" timestamp="1586689176059">
+    <state width="1876" height="276" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
+    <state width="1876" height="276" key="GridCell.Tab.0.right" timestamp="1586888398516">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176059" />
-    <state width="1878" height="331" key="GridCell.Tab.1.bottom" timestamp="1586689176060">
+    <state width="1876" height="276" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
+    <state width="1876" height="225" key="GridCell.Tab.1.bottom" timestamp="1586888398512">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176060" />
-    <state width="1878" height="331" key="GridCell.Tab.1.center" timestamp="1586689176060">
+    <state width="1876" height="225" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
+    <state width="1876" height="225" key="GridCell.Tab.1.center" timestamp="1586888398512">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176060" />
-    <state width="1878" height="331" key="GridCell.Tab.1.left" timestamp="1586689176059">
+    <state width="1876" height="225" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
+    <state width="1876" height="225" key="GridCell.Tab.1.left" timestamp="1586888398512">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176059" />
-    <state width="1878" height="331" key="GridCell.Tab.1.right" timestamp="1586689176060">
+    <state width="1876" height="225" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
+    <state width="1876" height="225" key="GridCell.Tab.1.right" timestamp="1586888398512">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1878" height="331" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586689176060" />
-    <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586525981041">
+    <state width="1876" height="225" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
+    <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586698159683">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="464" y="188" width="992" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586525981041" />
-    <state x="274" y="469" width="402" height="175" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586688424513">
+    <state x="464" y="188" width="992" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586698159683" />
+    <state x="274" y="469" width="414" height="175" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586849712004">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="274" y="469" width="402" height="175" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586688424513" />
-    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1586516491254">
+    <state x="274" y="469" width="414" height="175" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586849712004" />
+    <state x="504" y="275" width="902" height="564" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1586858393839">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586516491254" />
+    <state x="504" y="275" width="902" height="564" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.27.1920.1053@0.27.1920.1053" timestamp="1586858393839" />
+    <state x="669" y="273" width="627" height="602" key="find.popup" timestamp="1586894139637">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="669" y="273" width="627" height="602" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586894139637" />
+    <state width="600" height="428" key="javadoc.popup" timestamp="1586698461899">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="600" height="428" key="javadoc.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586698461899" />
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1586852441945">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586852441945" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/projects/project_2/subtasks_ANN.py</url>
-          <line>492</line>
-          <option name="timeStamp" value="9" />
+          <line>222</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/projects/project_2/subtasks_ANN.py</url>
+          <line>601</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$preprocess_dataset.coverage" NAME="preprocess_dataset Coverage Results" MODIFIED="1586689850191" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
-    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$subtasks_ANN.coverage" NAME="subtasks_ANN Coverage Results" MODIFIED="1586687614163" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$preprocess_dataset.coverage" NAME="preprocess_dataset Coverage Results" MODIFIED="1586879374091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$subtasks_ANN.coverage" NAME="subtasks_ANN Coverage Results" MODIFIED="1586881969228" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$boosted_trees_subtask_1.coverage" NAME="boosted_trees_subtask_1 Coverage Results" MODIFIED="1586696408342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
   </component>
 </project>

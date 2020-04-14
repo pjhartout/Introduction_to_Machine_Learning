@@ -23,7 +23,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" />
-    <option name="PARAMETERS" value="--train_features $PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_trend.csv                              --test_features $PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_trend.csv                              --train_labels $PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_trend.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtasks_ann.zip --scaler standard --epochs 200" />
+    <option name="PARAMETERS" value="--train_features $PROJECT_DIR$/projects/project_2/data/train_features_preprocessed_with_presence_features.csv                              --test_features $PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_presence_features.csv                              --train_labels $PROJECT_DIR$/projects/project_2/data/train_label_preprocessed_with_presence_features.csv --predictions ~/Documents/GitHub/Introduction_to_Machine_Learning/projects/project_2/data/predictions_subtasks_ann.zip --scaler standard --epochs 100 --feature_selection SelectKBest" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
