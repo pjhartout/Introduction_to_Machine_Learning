@@ -296,7 +296,7 @@ def get_model_medical_tests(
 
         logger.info("Applying feature selection")
         if FLAGS.feature_selection == "SelectKBest":
-            feature_selector = SelectKBest(score_func=f_classif, k=10)
+            feature_selector = SelectKBest(score_func=f_classif, k=3)
             X_train = feature_selector.fit_transform(X_train, y_train)
             X_test = feature_selector.transform(X_test)
             columns = feature_selector.get_support(indices=True)
@@ -391,20 +391,20 @@ def get_model_medical_tests(
     return models, losses, columns_sepsis
 
 
-def sigmoid_f(x):
-    """To get predictions as confidence level, the model predicts for all 12 sets of measures for
-    each patient a distance to the hyperplane ; it is then transformed into a confidence level using
-    the sigmoid function ; the confidence level reported is the mean of all confidence levels for a
-    single patient
+    def sigmoid_f(x):
+        """To get predictions as confidence level, the model predicts for all 12 sets of measures for
+        each patient a distance to the hyperplane ; it is then transformed into a confidence level using
+        the sigmoid function ; the confidence level reported is the mean of all confidence levels for a
+        single patient
 
-    Args:
-        x (float): input of the sigmoid function
+        Args:
+            x (float): input of the sigmoid function
 
-    Returns:
-       float: result of the sigmoid computation.
+        Returns:
+           float: result of the sigmoid computation.
 
-    """
-    return 1 / (1 + np.exp(-x))
+        """
+        return 1 / (1 + np.exp(-x))
 
 
 def get_prediction_medical_tests(X_test, test_pids, models, device, columns):
@@ -440,14 +440,14 @@ def get_model_sepsis(x_input, y_input, logger):
 
     logger.info("Applying feature selection")
     if FLAGS.feature_selection == "SelectKBest":
-        feature_selector = SelectKBest(score_func=f_classif, k=10)
+        feature_selector = SelectKBest(score_func=f_classif, k=3)
         X_train = feature_selector.fit_transform(X_train, y_train)
         X_test = feature_selector.transform(X_test)
 
     models, scores = [], []
     logger.info("Applying feature selection")
     if FLAGS.feature_selection == "SelectKBest":
-        feature_selector = SelectKBest(score_func=f_classif, k=5)
+        feature_selector = SelectKBest(score_func=f_classif, k=3)
         X_train = feature_selector.fit_transform(X_train, y_train)
         X_test = feature_selector.transform(X_test)
         columns = feature_selector.get_support(indices=True)
@@ -504,7 +504,7 @@ def get_model_vital_signs(x_input, y_input, logger, device):
 
         logger.info("Applying feature selection")
         if FLAGS.feature_selection == "SelectKBest":
-            feature_selector = SelectKBest(score_func=f_regression, k=10)
+            feature_selector = SelectKBest(score_func=f_regression, k=3)
             X_train = feature_selector.fit_transform(X_train, y_train)
             X_test = feature_selector.transform(X_test)
             columns = feature_selector.get_support(indices=True)
@@ -706,7 +706,7 @@ def main(logger):
         float_format="%.2f",
     )
 
-    with zipfile.ZipFile("predictions.zip", "w") as zf:
+    with zipfile.ZipFile("predictions.zip", "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.write("predictions.csv")
     os.remove("predictions.csv")
 
