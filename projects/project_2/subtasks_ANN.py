@@ -46,6 +46,7 @@ from imblearn.over_sampling import ADASYN, SMOTE
 from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
 import pandas as pd
 import numpy as np
+
 # from scipy.stats import chi2
 from sklearn.feature_selection import SelectKBest, f_regression, chi2, f_classif
 from tqdm import tqdm
@@ -197,7 +198,6 @@ def convert_to_cuda_tensor(X_train, X_test, y_train, y_test, device):
     )
 
 
-
 class Feedforward(torch.nn.Module):
     """ Definition of the feedfoward neural network. It currently has three layers which can be
     modified in the function where the network is trained.
@@ -264,7 +264,7 @@ class Data(Dataset):
 
 
 def get_model_medical_tests(
-        x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device
+    x_input, y_input, hidden_size, n_layers, dropout, optim, logger, device
 ):
     """
 
@@ -307,13 +307,12 @@ def get_model_medical_tests(
             X_train, X_test, y_train, y_test, device
         )
 
-
         model = Feedforward(
-            input_size = X_train_tensor.shape[1],
+            input_size=X_train_tensor.shape[1],
             hidden_size=150,
             output_size=1,
             subtask=3,
-            p = 0.2,
+            p=0.2,
         )
 
         # # pos weight allows to account for the imbalance in the data
@@ -323,7 +322,11 @@ def get_model_medical_tests(
         #         for i in range(len(y_input))
         #     ]
         # )
-        pos_weight = torch.from_numpy(np.array((len(label) - sum(label)) / sum(label))).to(device).float()
+        pos_weight = (
+            torch.from_numpy(np.array((len(label) - sum(label)) / sum(label)))
+            .to(device)
+            .float()
+        )
         criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
         if optim == "SGD":
@@ -404,9 +407,21 @@ def sigmoid_f(x):
     return 1 / (1 + np.exp(-x))
 
 
-def get_prediction_medical(X_test, test_pids, model, device):
-    y_pred = model(torch.from_numpy(X_test).to(device).float()).cpu().detach().numpy()
-    df_pred = pd.DataFrame(y_pred, index=test_pids, columns=MEDICAL_TESTS)
+def get_prediction_medical_tests(X_test, test_pids, models, device, columns):
+    df_pred = pd.DataFrame(index=test_pids, columns=MEDICAL_TESTS)
+
+    for i, sign in enumerate(MEDICAL_TESTS):
+        col_for_medical_test = columns[i]
+        X_test_vital_sign = X_test[:, col_for_medical_test]
+        model_for_test = models[i]
+        y_pred = (
+            model_for_test(torch.from_numpy(X_test_vital_sign).to(device).float())
+            .cpu()
+            .detach()
+            .numpy()
+        )
+        df_pred.append(y_pred)
+
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
 
@@ -499,11 +514,7 @@ def get_model_vital_signs(x_input, y_input, logger, device):
         )
 
         model = Feedforward(
-            X_train_tensor.shape[1],
-            hidden_size=150,
-            output_size=1,
-            subtask=3,
-            p=0.2,
+            X_train_tensor.shape[1], hidden_size=150, output_size=1, subtask=3, p=0.2
         )
 
         # pos weight allows to account for the imbalance in the data
@@ -568,14 +579,20 @@ def get_model_vital_signs(x_input, y_input, logger, device):
     logger.info(f"Finished test for medical tests.")
     return models, losses, columns_vital_signs
 
-def get_prediction_vital_signs(X_test, test_pids, model, columns, device):
+
+def get_prediction_vital_signs(X_test, test_pids, models, device, columns):
     df_pred = pd.DataFrame(index=test_pids, columns=VITAL_SIGNS)
 
     for i, sign in enumerate(VITAL_SIGNS):
         col_for_vital_sign = columns[i]
-        X_test_vital_sign = X_test[:,col_for_vital_sign]
+        X_test_vital_sign = X_test[:, col_for_vital_sign]
         model_for_sign = model[i]
-        y_pred = model_for_sign(torch.from_numpy(X_test_vital_sign).to(device).float()).cpu().detach().numpy()
+        y_pred = (
+            model_for_sign(torch.from_numpy(X_test_vital_sign).to(device).float())
+            .cpu()
+            .detach()
+            .numpy()
+        )
         df_pred.append
 
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
@@ -742,9 +759,9 @@ def get_predictions(X_test, test_pids, models, subtask, device):
         # Switch network to eval mode to make sure all dropout layers are there, etc..
         y_pred = (
             models[i](torch.from_numpy(X_test).to(device).float())
-                .cpu()
-                .detach()
-                .numpy()
+            .cpu()
+            .detach()
+            .numpy()
         )
         df = pd.DataFrame(y_pred, index=test_pids, columns=[topred[i]])
         df_pred = df_pred.merge(df, left_index=True, right_index=True)
@@ -779,7 +796,9 @@ def main(logger):
         )
     elif FLAGS.task == "sepsis":
         logger.info("Beginning modelling for sepsis.")
-        sepsis_model, sepsis_score, columns_sepsis = get_model_sepsis(X_train, y_train_sepsis, logger)
+        sepsis_model, sepsis_score, columns_sepsis = get_model_sepsis(
+            X_train, y_train_sepsis, logger
+        )
 
     elif FLAGS.task == "vitalsigns":
         logger.info("Beginning modelling for sepsis")
@@ -810,7 +829,9 @@ def main(logger):
     X_test = df_test.drop(columns=IDENTIFIERS).values
     if FLAGS.task == "med":
         logger.info("Get predictions for multilabel medical tests.")
-        df_predictions = get_prediction_medical(X_test, test_pids, med_model, columns, device)
+        df_predictions = get_prediction_medical_tests(
+            X_test, test_pids, medical_tests_models, device, columns_medical_tests
+        )
 
     elif FLAGS.task == "sepsis":
         logger.info("Get predictions for sepsis.")
@@ -818,8 +839,9 @@ def main(logger):
 
     elif FLAGS.task == "vitalsigns":
         logger.info("Get predictions for vital signs.")
-        df_predictions = get_prediction_vital_signs(X_test, test_pids, model, columns_vital_sign,
-                                                    device)
+        df_predictions = get_prediction_vital_signs(
+            X_test, test_pids, vital_signs_models, columns_vital_sign, device
+        )
 
     else:
         # get the predictions for all subtasks
@@ -942,7 +964,7 @@ if __name__ == "__main__":
         type=str,
         required=False,
         help="Sampling strategy to adopt to overcome the imbalanced dataset problem"
-             "any of adasyn, smote, clustercentroids or random.",
+        "any of adasyn, smote, clustercentroids or random.",
         choices=["adasyn", "smote", "clustercentroids", "random"],
     )
 
