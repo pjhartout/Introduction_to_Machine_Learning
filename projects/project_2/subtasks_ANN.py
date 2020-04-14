@@ -521,7 +521,7 @@ def get_model_vital_signs(x_input, y_input, logger, device):
         # pos weight allows to account for the imbalance in the data
         pos_weight = np.array((len(label) - sum(label)) / sum(label))
         pos_weight = torch.from_numpy(pos_weight).to(device).float()
-        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+        criterion = torch.nn.MSELoss()
 
         if optim == "SGD":
             optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
