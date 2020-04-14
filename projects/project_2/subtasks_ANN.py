@@ -49,7 +49,7 @@ import numpy as np
 # from scipy.stats import chi2
 from sklearn.feature_selection import SelectKBest, f_regression, chi2, f_classif
 from tqdm import tqdm
-from sklearn.metrics import f1_score, mean_squared_error, accuracy_score
+from sklearn.metrics import f1_score, mean_squared_error, accuracy_score, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from torch.utils.data import Dataset, DataLoader
@@ -203,10 +203,9 @@ class Feedforward(torch.nn.Module):
     modified in the function where the network is trained.
     """
 
-    def __init__(self, input_size, hidden_size, output_size, n_layers, subtask, p=0.2):
+    def __init__(self, input_size, hidden_size, output_size, subtask, p=0.2):
         super(Feedforward, self).__init__()
         self.subtask = subtask
-        self.n_layers = n_layers
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
@@ -284,109 +283,109 @@ def get_model_medical_tests(
     """
     assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
     logger.info("Using {} to train the neural network for substask 1.".format(device))
-    labels = []
-    for j in range(len(y_input[0])):
-        labels.append([y_input[i][j] for i in range(len(y_input))])
-    labels = np.array(labels)
+    models = []
+    losses = []
+    columns_sepsis = []
+    for i, test in enumerate(MEDICAL_TESTS):
+        logger.info(f"Fitting model for {test}.")
+        label = y_input[i]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        x_input, labels, test_size=0.10, random_state=42, shuffle=True
-    )
+        X_train, X_test, y_train, y_test = train_test_split(
+            x_input, label, test_size=0.10, random_state=42, shuffle=True
+        )
 
-    logger.info("Applying feature selection")
-    ## Apply label for each tas
-    # if FLAGS.feature_selection == "SelectKBest":
-    #     feature_selector = SelectKBest(score_func=f_classif, k=5)
-    #     X_train, y_train = feature_selector.fit_transform(X_train, y_train)
-    #     X_test = feature_selector.transform(X_test)
+        logger.info("Applying feature selection")
+        if FLAGS.feature_selection == "SelectKBest":
+            feature_selector = SelectKBest(score_func=f_classif, k=10)
+            X_train = feature_selector.fit_transform(X_train, y_train)
+            X_test = feature_selector.transform(X_test)
+            columns = feature_selector.get_support(indices=True)
+            columns_sepsis.append(columns)
 
-    logger.info("Converting arrays to tensors")
-    X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
-        X_train, X_test, y_train, y_test, device
-    )
+        logger.info("Converting arrays to tensors")
+        X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
+            X_train, X_test, y_train, y_test, device
+        )
 
-    model = Feedforward(
-        X_train_tensor.shape[1],
-        hidden_size,
-        output_size=10,
-        n_layers=n_layers,
-        subtask=1,
-        p=dropout,
-    )
 
-    # pos weight allows to account for the imbalance in the data
-    pos_weight = np.array(
-        [
-            (len(y_input[i]) - sum(y_input[i])) / sum(y_input[i])
-            for i in range(len(y_input))
-        ]
-    )
-    pos_weight = torch.from_numpy(pos_weight).to(device).float()
-    criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+        model = Feedforward(
+            input_size = X_train_tensor.shape[1],
+            hidden_size=150,
+            output_size=1,
+            subtask=3,
+            p = 0.2,
+        )
 
-    if optim == "SGD":
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-    elif optim == "Adam":
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    dataset = Data(X_train_tensor, y_train_tensor)
-    batch_size = 2048  # Ideally we want powers of 2
-    trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
+        # # pos weight allows to account for the imbalance in the data
+        # pos_weight = np.array(
+        #     [
+        #         (len(y_input[i]) - sum(y_input[i])) / sum(y_input[i])
+        #         for i in range(len(y_input))
+        #     ]
+        # )
+        pos_weight = torch.from_numpy(np.array((len(label) - sum(label)) / sum(label))).to(device).float()
+        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
-    if torch.cuda.is_available():
-        model.cuda()
-    model.float()
+        if optim == "SGD":
+            optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+        elif optim == "Adam":
+            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+        dataset = Data(X_train_tensor, y_train_tensor)
+        batch_size = 1024  # Ideally we want powers of 2
+        trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
 
-    logger.info("Removing data from previous run if there was any.")
-    dirpath = os.path.join(os.getcwd(), "runs")
-    fileList = os.listdir(dirpath)
-    for fileName in fileList:
-        shutil.rmtree(dirpath + "/" + fileName)
+        if torch.cuda.is_available():
+            model.cuda()
+        model.float()
 
-    logger.info("Commencing neural network training.")
-    now = time.strftime("%Y%m%d-%H%M%S")
-    writer = SummaryWriter(
-        log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_allmedtests"
-    )
-    for epoch in tqdm(list(range(FLAGS.epochs))):
-        LOSS = []
-        for x, y in trainloader:
-            yhat = model(x)
-            loss = criterion(yhat.float(), y.float())
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            LOSS.append(loss)
-        X_test_tensor = X_test_tensor.to(device)
-        y_test_pred = model(X_test_tensor).cpu().detach().numpy()
-        y_train_pred = model(X_train_tensor).cpu().detach().numpy()
-        loss_average = sum(LOSS) / len(LOSS)
-        writer.add_scalar("Training_loss", loss_average, epoch)
-        # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
-        # y_test_pred_bin = db(y_test_pred)
-        # y_train_pred_bin = db(y_train_pred)
-        y_test_pred_bin = y_test_pred
-        y_train_pred_bin = y_train_pred
-        LRAPS_train = LRAPS(y_train, y_train_pred_bin)
-        LRAPS_test = LRAPS(y_test, y_test_pred_bin)
-        LRL_train = LRL(y_train, y_train_pred_bin)
-        LRL_test = LRL(y_test, y_test_pred_bin)
-        # print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
-        # print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
-        # print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
-        # print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
-        writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
-        writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
-        writer.add_scalar("Training_LRL", LRL_train, epoch)
-        writer.add_scalar("Testing_LRL", LRL_test, epoch)
+        logger.info("Removing data from previous run if there was any.")
+        dirpath = os.path.join(os.getcwd(), "runs")
+        fileList = os.listdir(dirpath)
+        for fileName in fileList:
+            shutil.rmtree(dirpath + "/" + fileName)
 
-    writer.close()
+        logger.info(f"Commencing neural network training for {test}.")
+        now = time.strftime("%Y%m%d-%H%M%S")
+        writer = SummaryWriter(
+            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_{test}"
+        )
+        for epoch in tqdm(list(range(FLAGS.epochs))):
+            LOSS = []
+            for x, y in trainloader:
+                yhat = model(x)
+                loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                LOSS.append(loss)
+            X_test_tensor = X_test_tensor.to(device)
+            y_test_pred = model(X_test_tensor).cpu().detach().numpy()
+            y_train_pred = model(X_train_tensor).cpu().detach().numpy()
+            loss_average = sum(LOSS) / len(LOSS)
+            writer.add_scalar("Training_loss", loss_average, epoch)
+            # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
+            # y_test_pred_bin = db(y_test_pred)
+            # y_train_pred_bin = db(y_train_pred)
+            # y_test_pred_bin = y_test_pred
+            # y_train_pred_bin = y_train_pred
+            ROC_train = roc_auc_score(y_train, y_train_pred)
+            ROC_test = roc_auc_score(y_test, y_test_pred)
+            # print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
+            # print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
+            # print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
+            # print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
+            writer.add_scalar("ROC train", ROC_train, epoch)
+            writer.add_scalar("ROC test", ROC_test, epoch)
 
-    logger.info(
-        f"Value of the test sample is {y_test} and value for the predicted "
-        f"sample is {y_test_pred}"
-    )
-    logger.info(f"Finished test for medical tests.")
-    return model, LOSS
+        writer.close()
+        models.append(model)
+        losses.append(LOSS[-1])
+        logger.info(
+            f"Value of the test sample is {y_test} and value for the predicted "
+            f"sample is {y_test_pred}"
+        )
+        logger.info(f"Finished test for medical tests.")
+    return models, losses, columns_sepsis
 
 
 def sigmoid_f(x):
@@ -424,12 +423,19 @@ def get_model_sepsis(x_input, y_input, logger):
         X_train, y_train, test_size=0.10, random_state=42, shuffle=True
     )
 
+    logger.info("Applying feature selection")
+    if FLAGS.feature_selection == "SelectKBest":
+        feature_selector = SelectKBest(score_func=f_classif, k=10)
+        X_train = feature_selector.fit_transform(X_train, y_train)
+        X_test = feature_selector.transform(X_test)
+
     models, scores = [], []
     logger.info("Applying feature selection")
     if FLAGS.feature_selection == "SelectKBest":
-        feature_selector = SelectKBest(score_func=f_classif(), k=5)
-        X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+        feature_selector = SelectKBest(score_func=f_classif, k=5)
+        X_train = feature_selector.fit_transform(X_train, y_train)
         X_test = feature_selector.transform(X_test)
+        columns = feature_selector.get_support(indices=True)
     """
     for i,C in enumerate(np.linspace(0.1, 20, num=30)):
         lrs.append(LogisticRegression(C=C, 
@@ -454,7 +460,7 @@ def get_model_sepsis(x_input, y_input, logger):
         )
     best = np.argmax(scores)
     model, score = models[best], scores[best]
-    return model, score
+    return model, score, columns
 
 
 def get_predictions_sepsis(X_test, test_pids, model):
@@ -466,107 +472,114 @@ def get_predictions_sepsis(X_test, test_pids, model):
     return df_pred
 
 
-def get_model_vital_signs(x_input, y_input, subtask, logger, device):
+def get_model_vital_signs(x_input, y_input, logger, device):
+    optim = "Adam"
     assert optim in ["SGD", "Adam"], "optim must be SGD or Adam"
-    logger.info("Using {} to train the neural network for substask 3.".format(device))
-    labels = []
-    for j in range(len(y_input[0])):
-        labels.append([y_input[i][j] for i in range(len(y_input))])
-    labels = np.array(labels)
+    models = []
+    losses = []
+    columns_vital_signs = []
+    for i, sign in enumerate(VITAL_SIGNS):
+        logger.info(f"Fitting model for {sign}.")
+        label = y_input[i]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        x_input, labels, test_size=0.10, random_state=42, shuffle=True
-    )
+        X_train, X_test, y_train, y_test = train_test_split(
+            x_input, label, test_size=0.10, random_state=42, shuffle=True
+        )
 
-    logger.info("Applying feature selection")
-    if FLAGS.feature_selection == "SelectKBest":
-        feature_selector = SelectKBest(score_func=f_regression, k=5)
-        X_train, y_train = feature_selector.fit_transform(X_train, y_train)
-        X_test = feature_selector.transform(X_test)
+        logger.info("Applying feature selection")
+        if FLAGS.feature_selection == "SelectKBest":
+            feature_selector = SelectKBest(score_func=f_regression, k=5)
+            X_train = feature_selector.fit_transform(X_train, y_train)
+            X_test = feature_selector.transform(X_test)
+            columns = feature_selector.get_support(indices=True)
 
+        logger.info("Converting arrays to tensors")
+        X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
+            X_train, X_test, y_train, y_test, device
+        )
 
-    logger.info("Converting arrays to tensors")
-    X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
-        X_train, X_test, y_train, y_test, device
-    )
+        model = Feedforward(
+            X_train_tensor.shape[1],
+            hidden_size=150,
+            output_size=1,
+            subtask=3,
+            p=0.2,
+        )
 
-    model = Feedforward(
-        X_train_tensor.shape[1],
-        hidden_size,
-        output_size=10,
-        n_layers=n_layers,
-        subtask=1,
-        p=dropout,
-    )
+        # pos weight allows to account for the imbalance in the data
+        pos_weight = np.array((len(label) - sum(label)) / sum(label))
+        pos_weight = torch.from_numpy(pos_weight).to(device).float()
+        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
-    # pos weight allows to account for the imbalance in the data
-    pos_weight = np.array([(len(y_input[i]) - sum(y_input[i])) / sum(y_input[i]) for i in range(len(y_input))])
-    pos_weight = torch.from_numpy(pos_weight).to(device).float()
-    criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+        if optim == "SGD":
+            optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+        elif optim == "Adam":
+            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+        dataset = Data(X_train_tensor, y_train_tensor)
+        batch_size = 1024  # Ideally we want powers of 2
+        trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
 
-    if optim == "SGD":
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-    elif optim == "Adam":
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    dataset = Data(X_train_tensor, y_train_tensor)
-    batch_size = 2048  # Ideally we want powers of 2
-    trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
+        if torch.cuda.is_available():
+            model.cuda()
+        model.float()
 
-    if torch.cuda.is_available():
-        model.cuda()
-    model.float()
+        logger.info("Removing data from previous run if there was any.")
+        dirpath = os.path.join(os.getcwd(), "runs")
+        fileList = os.listdir(dirpath)
+        for fileName in fileList:
+            shutil.rmtree(dirpath + "/" + fileName)
 
-    logger.info("Removing data from previous run if there was any.")
-    dirpath = os.path.join(os.getcwd(), "runs")
-    fileList = os.listdir(dirpath)
-    for fileName in fileList:
-        shutil.rmtree(dirpath + "/" + fileName)
+        logger.info("Commencing neural network training.")
+        now = time.strftime("%Y%m%d-%H%M%S")
+        writer = SummaryWriter(
+            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_{sign}"
+        )
+        for epoch in tqdm(list(range(FLAGS.epochs))):
+            LOSS = []
+            for x, y in trainloader:
+                yhat = model(x)
+                loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                LOSS.append(loss)
+            X_test_tensor = X_test_tensor.to(device)
+            y_test_pred = model(X_test_tensor).cpu().detach().numpy()
+            y_train_pred = model(X_train_tensor).cpu().detach().numpy()
+            loss_average = sum(LOSS) / len(LOSS)
+            writer.add_scalar("Training_loss", loss_average, epoch)
+            # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
+            # y_test_pred_bin = db(y_test_pred)
+            # y_train_pred_bin = db(y_train_pred)
+            R2_score_train = r2_score(y_train, y_train_pred)
+            R2_score_test = r2_score(y_test, y_test_pred)
+            writer.add_scalar("Training_R2", R2_score_train, epoch)
+            writer.add_scalar("Testing_R2", R2_score_test, epoch)
 
-    logger.info("Commencing neural network training.")
-    now = time.strftime("%Y%m%d-%H%M%S")
-    writer = SummaryWriter(
-        log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_allmedtests"
-    )
-    for epoch in tqdm(list(range(FLAGS.epochs))):
-        LOSS = []
-        for x, y in trainloader:
-            yhat = model(x)
-            loss = criterion(yhat.float(), y.float())
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            LOSS.append(loss)
-        X_test_tensor = X_test_tensor.to(device)
-        y_test_pred = model(X_test_tensor).cpu().detach().numpy()
-        y_train_pred = model(X_train_tensor).cpu().detach().numpy()
-        loss_average = sum(LOSS) / len(LOSS)
-        writer.add_scalar("Training_loss", loss_average, epoch)
-        # db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
-        # y_test_pred_bin = db(y_test_pred)
-        # y_train_pred_bin = db(y_train_pred)
-        y_test_pred_bin = y_test_pred
-        y_train_pred_bin = y_train_pred
-        LRAPS_train = LRAPS(y_train, y_train_pred_bin)
-        LRAPS_test = LRAPS(y_test, y_test_pred_bin)
-        LRL_train = LRL(y_train, y_train_pred_bin)
-        LRL_test = LRL(y_test, y_test_pred_bin)
-        print("LRAPS (best 1) of epoch {} for train : {}".format(epoch, LRAPS_train))
-        print("LRAPS (best 1) of epoch {} for test : {}".format(epoch, LRAPS_test))
-        print("LRL (best 0) of epoch {} for train : {}".format(epoch, LRL_train))
-        print("LRL (best 0) of epoch {} for test : {}".format(epoch, LRL_test))
-        writer.add_scalar("Training_LRAPS", LRAPS_train, epoch)
-        writer.add_scalar("Testing_LRAPS", LRAPS_test, epoch)
-        writer.add_scalar("Training_LRL", LRL_train, epoch)
-        writer.add_scalar("Testing_LRL", LRL_test, epoch)
+        writer.close()
 
-    writer.close()
-
-    logger.info(
-        f"Value of the test sample is {y_test} and value for the predicted "
-        f"sample is {y_test_pred}"
-    )
+        logger.info(
+            f"Value of the test sample is {y_test} and value for the predicted "
+            f"sample is {y_test_pred}"
+        )
+        models.append(model)
+        losses.append(LOSS)
+        columns_vital_signs.append(columns)
     logger.info(f"Finished test for medical tests.")
-    return model, LOSS
+    return models, losses, columns_vital_signs
+
+def get_prediction_vital_signs(X_test, test_pids, model, columns, device):
+    df_pred = pd.DataFrame(index=test_pids, columns=VITAL_SIGNS)
+
+    for i, sign in enumerate(VITAL_SIGNS):
+        col_for_vital_sign = columns[i]
+        X_test_vital_sign = X_test[:,col_for_vital_sign]
+        model_for_sign = model[i]
+        y_pred = model_for_sign(torch.from_numpy(X_test_vital_sign).to(device).float()).cpu().detach().numpy()
+        df_pred.append
+
+    df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
+    return df_pred
 
 
 def get_ann_models(x_input, y_input, subtask, logger, device):
@@ -609,11 +622,11 @@ def get_ann_models(x_input, y_input, subtask, logger, device):
         logger.info("Applying feature selection")
         if FLAGS.feature_selection == "SelectKBest" and subtask in [1, 2]:
             feature_selector = SelectKBest(score_func=f_classif, k=5)
-            X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+            X_train = feature_selector.fit_transform(X_train, y_train)
             X_test = feature_selector.transform(X_test)
         elif FLAGS.feature_selection == "SelectKBest" and subtask in [3]:
             feature_selector = SelectKBest(score_func=f_regression, k=5)
-            X_train, y_train = feature_selector.fit_transform(X_train, y_train)
+            X_train = feature_selector.fit_transform(X_train, y_train)
             X_test = feature_selector.transform(X_test)
         logger.info("Converting arrays to tensors")
         X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
@@ -761,13 +774,19 @@ def main(logger):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     if FLAGS.task == "med":
         logger.info("Beginning multilabel ANN for medical tests.")
-        med_model, med_score = get_model_medical_tests(
+        med_model, med_score, columns_medical_tests = get_model_medical_tests(
             X_train, y_train_medical_tests, 100, 3, 0.3, "Adam", logger, device
         )
     elif FLAGS.task == "sepsis":
         logger.info("Beginning modelling for sepsis.")
-        sepsis_model, sepsis_score = get_model_sepsis(X_train, y_train_sepsis, logger)
+        sepsis_model, sepsis_score, columns_sepsis = get_model_sepsis(X_train, y_train_sepsis, logger)
 
+    elif FLAGS.task == "vitalsigns":
+        logger.info("Beginning modelling for sepsis")
+        vital_sign_models, vital_sign_scores, columns_vital_sign = get_model_vital_signs(
+            X_train, y_train_vital_signs, logger, device
+        )
+        logger.info("DONE")
     else:
         # get models and scores for substasks 1, 2 and 3
         logger.info("Beggining ANN training for medical tests.")
@@ -791,11 +810,16 @@ def main(logger):
     X_test = df_test.drop(columns=IDENTIFIERS).values
     if FLAGS.task == "med":
         logger.info("Get predictions for multilabel medical tests.")
-        df_predictions = get_prediction_medical(X_test, test_pids, med_model, device)
+        df_predictions = get_prediction_medical(X_test, test_pids, med_model, columns, device)
 
     elif FLAGS.task == "sepsis":
         logger.info("Get predictions for sepsis.")
         df_predictions = get_predictions_sepsis(X_test, test_pids, sepsis_model)
+
+    elif FLAGS.task == "vitalsigns":
+        logger.info("Get predictions for vital signs.")
+        df_predictions = get_prediction_vital_signs(X_test, test_pids, model, columns_vital_sign,
+                                                    device)
 
     else:
         # get the predictions for all subtasks
@@ -907,7 +931,7 @@ if __name__ == "__main__":
         "-t",
         type=str,
         required=False,
-        choices=["med", "sepsis"],
+        choices=["med", "sepsis", "vitalsigns"],
         help="if want to perform only multilabel med classification",
         default=None,
     )
