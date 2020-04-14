@@ -504,7 +504,7 @@ def get_model_vital_signs(x_input, y_input, logger, device):
 
         logger.info("Applying feature selection")
         if FLAGS.feature_selection == "SelectKBest":
-            feature_selector = SelectKBest(score_func=f_regression, k=5)
+            feature_selector = SelectKBest(score_func=f_regression, k=10)
             X_train = feature_selector.fit_transform(X_train, y_train)
             X_test = feature_selector.transform(X_test)
             columns = feature_selector.get_support(indices=True)
@@ -567,7 +567,6 @@ def get_model_vital_signs(x_input, y_input, logger, device):
             R2_score_test = r2_score(y_test, y_test_pred)
             writer.add_scalar("Training_R2", R2_score_train, epoch)
             writer.add_scalar("Testing_R2", R2_score_test, epoch)
-
         writer.close()
 
         logger.info(
@@ -598,140 +597,6 @@ def get_prediction_vital_signs(X_test, test_pids, models, device, columns):
 
     df_pred = df_pred.reset_index().rename(columns={"index": "pid"})
     return df_pred
-
-
-def get_ann_models(x_input, y_input, subtask, logger, device):
-    """Main function to train the neural networks for the data.
-
-    Args:
-        x_input (np.ndarray): (n_samples,n_features) array containing the training features
-        y_input (np.ndarray): (n_samples,) array containing the training labels
-        subtask (int): subtask to be performed (choice: 1, 2, 3)
-        logger (Logger): logger
-        device (torch.device): device on which the tensors should be placed (CPU/CUDA GPU)
-
-    Returns:
-        ann_models (list): list of trained feedforward neural networks
-        scores (list): list of the testing scores of the trained feedforward neural networks
-    """
-    assert subtask in [1, 2, 3]
-    logger.info(
-        "Using {} to train the neural network for substask {}.".format(device, subtask)
-    )
-    ann_models = []
-    scores = []
-    topred = (
-        MEDICAL_TESTS if subtask == 1 else (SEPSIS if subtask == 2 else VITAL_SIGNS)
-    )
-    for i, sign in enumerate(topred):
-        logger.info(f"Starting neural network training for {sign}")
-        X_train, X_test, y_train, y_test = train_test_split(
-            x_input, y_input[i], test_size=0.10, random_state=42, shuffle=True
-        )
-        if subtask in [1, 2] and FLAGS.sampling_strategy is not None:
-            logger.info(
-                "Performing {} strategy for oversampling for {}".format(
-                    FLAGS.sampling_strategy, sign
-                )
-            )
-            X_train, y_train = oversampling_strategies(
-                X_train, y_train, FLAGS.sampling_strategy
-            )
-        logger.info("Applying feature selection")
-        if FLAGS.feature_selection == "SelectKBest" and subtask in [1, 2]:
-            feature_selector = SelectKBest(score_func=f_classif, k=5)
-            X_train = feature_selector.fit_transform(X_train, y_train)
-            X_test = feature_selector.transform(X_test)
-        elif FLAGS.feature_selection == "SelectKBest" and subtask in [3]:
-            feature_selector = SelectKBest(score_func=f_regression, k=5)
-            X_train = feature_selector.fit_transform(X_train, y_train)
-            X_test = feature_selector.transform(X_test)
-        logger.info("Converting arrays to tensors")
-        X_train_tensor, X_test_tensor, y_train_tensor, y_test_tensor = convert_to_cuda_tensor(
-            X_train, X_test, y_train, y_test, device
-        )
-        model = Feedforward(X_train_tensor.shape[1], 50, 3, subtask, 0.5)
-        if subtask == 3:
-            criterion = torch.nn.MSELoss()
-        else:
-            if FLAGS.sampling_strategy is not None:
-                criterion = torch.nn.BCEWithLogitsLoss()
-            else:
-                # Devising this method to make sure the scaling makes sense no matter the variable
-                pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
-                criterion = torch.nn.BCEWithLogitsLoss(
-                    pos_weight=torch.tensor(pos_weight).to(device)
-                )
-                logger.info(
-                    f"Using positive class coefficient of {pos_weight} for {sign} instead "
-                    f"of resampling to account for class imbalance."
-                )
-
-        # optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-        dataset = Data(X_train_tensor, y_train_tensor)
-        batch_size = 2048  # Ideally we want powers of 2 here
-        trainloader = DataLoader(dataset=dataset, batch_size=batch_size)
-
-        if torch.cuda.is_available():
-            model.cuda()
-        model.float()
-
-        logger.info("Removing data from previous run if there was any.")
-        dirpath = os.path.join(os.getcwd(), "runs")
-        fileList = os.listdir(dirpath)
-        for fileName in fileList:
-            shutil.rmtree(dirpath + "/" + fileName)
-
-        logger.info("Commencing neural network training.")
-        now = time.strftime("%Y%m%d-%H%M%S")
-        writer = SummaryWriter(
-            log_dir=f"runs/ann_network_runs_{FLAGS.epochs}_epochs_{now}_{sign}"
-        )
-        for epoch in tqdm(list(range(FLAGS.epochs))):
-            LOSS = []
-            for x, y in trainloader:
-                yhat = model(x)
-                loss = criterion(yhat.float(), y.reshape((y.shape[0], 1)))
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                LOSS.append(loss)
-            X_test_tensor = X_test_tensor.to(device)
-            y_test_pred = model(X_test_tensor).cpu().detach().numpy()
-            y_train_pred = model(X_train_tensor).cpu().detach().numpy()
-            loss_average = sum(LOSS) / len(LOSS)
-            writer.add_scalar("Training_loss", loss_average, epoch)
-
-            if subtask in [1, 2]:
-                # can change decision boundary (0.5 is equivalent to rounding)
-                db = np.vectorize(lambda x: (0 if x < 0.5 else 1))
-                y_test_pred_bin = db(y_test_pred)
-                y_train_pred_bin = db(y_train_pred)
-                train_acc = accuracy_score(y_train_pred_bin, y_train)
-                test_acc = accuracy_score(y_test_pred_bin, y_test)
-                f1_score_train = f1_score(y_train, y_train_pred_bin)
-                f1_score_test = f1_score(y_test, y_test_pred_bin)
-                writer.add_scalar("Training_acc", train_acc, epoch)
-                writer.add_scalar("Testing_acc", test_acc, epoch)
-                writer.add_scalar("Training_f1", f1_score_train, epoch)
-                writer.add_scalar("Testing_f1", f1_score_test, epoch)
-            if subtask == 3:
-                mse_score_train = mean_squared_error(y_train, y_train_pred)
-                mse_score_test = mean_squared_error(y_test, y_test_pred)
-                writer.add_scalar("Training_mse", mse_score_train, epoch)
-                writer.add_scalar("Testing_mse", mse_score_test, epoch)
-
-        writer.close()
-
-        logger.info(
-            f"Value of the test sample is {y_test} and value for the predicted "
-            f"sample is {y_test_pred}"
-        )
-        logger.info(f"Finished test for {sign}")
-        ann_models.append(model)
-        scores.append(LOSS)
-    return ann_models, scores
 
 
 def get_predictions(X_test, test_pids, models, subtask, device):
