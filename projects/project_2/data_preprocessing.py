@@ -173,8 +173,7 @@ def add_presence_absence_features(df_train, logger):
     return df_train
 
 
-
-def missing_data_imputer_modelling(df_train, imputation_type, logger):
+def missing_data_imputer_modelling_fit_transform(df_train, imputation_type, logger):
     """Basically the same as missing_data_imputer() but using the sklearn API.
 
     Args:
@@ -211,7 +210,7 @@ def missing_data_imputer_modelling(df_train, imputation_type, logger):
         add_indicator=False
     )
     columns = df_train.columns
-    logger.info("Commencing data imputation process")
+    logger.info("Commencing data imputation process using FIT_TRANSFORM on test set")
     df_train = imp_mean.fit_transform(df_train.values)
     df_train = pd.DataFrame(df_train, columns=columns)
     logger.info("Take mean for each patient")
@@ -221,10 +220,43 @@ def missing_data_imputer_modelling(df_train, imputation_type, logger):
                 df_train["pid"] == patient
             ][column].mean()
 
-    return df_train_preprocessed
+    return df_train_preprocessed, imp_mean
 
 
-def missing_data_imputer(df_train, logger):
+def missing_data_imputer_modelling_transform(df_test, imputation_type, imputer, logger):
+    """Basically the same as missing_data_imputer() but using the sklearn API.
+
+    Args:
+        df_train (pandas.core.frame.DataFrame): dataframe with training data
+        imputation_type (string): the type of imputation to perform, choice in \
+            ["bayesian","decisiontree","extratree","knn"]
+        logger (Logger): logger
+
+    Returns: df_train_preprocessed (pandas.core.frame.DataFrame): dataframe with imputed data
+
+    """
+    logger.info("Creating missing data dataframe")
+    assert(imputation_type in ["bayesian","decisiontree","extratree","knn"]), \
+        "imputation type must be in [bayesian, decisiontree ,extratree, knn]"
+    pid = df_test["pid"].unique()
+    columns = df_test.columns
+    df_test_preprocessed = pd.DataFrame(columns=columns, index=pid)
+
+    columns = df_test.columns
+    logger.info("Commencing data imputation process using TRANSFORM on test set")
+    df_test = imputer.transform(df_test.values)
+    df_test = pd.DataFrame(df_test, columns=columns)
+    logger.info("Take mean for each patient")
+    for patient in tqdm(pid):
+        for column in df_test.columns:
+            df_test_preprocessed.at[patient, column] = df_test.loc[
+                df_test["pid"] == patient
+            ][column].mean()
+
+    return df_test_preprocessed
+
+
+def missing_data_imputer_trend(df_train, logger):
     """Imputes data and returns a dataframe with one row per patient filled with the values as
     follows:
         * If the amount of data that is there is above 8, then fit a linear regression and
@@ -349,9 +381,9 @@ def main(logger):
     df_train = add_presence_absence_features(df_train, logger)
 
     if FLAGS.data_imputer == "manual":
-        df_train_preprocessed = missing_data_imputer(df_train, logger)
+        df_train_preprocessed = missing_data_imputer_trend(df_train, logger)
     else:
-        df_train_preprocessed = missing_data_imputer_modelling(df_train, FLAGS.data_imputer, logger)
+        df_train_preprocessed, imputer = missing_data_imputer_modelling_fit_transform(df_train, FLAGS.data_imputer, logger)
 
     # Cast training labels for these tasks
     df_train_label[MEDICAL_TESTS + VITAL_SIGNS + SEPSIS] = df_train_label[
@@ -368,9 +400,10 @@ def main(logger):
     ]
     logger.info("Preprocessing test set")
     if FLAGS.data_imputer == "manual":
-        df_test_preprocessed = missing_data_imputer(df_test, logger)
+        df_test_preprocessed = missing_data_imputer_trend(df_test, logger)
     else:
-        df_test_preprocessed = missing_data_imputer_modelling(df_test, FLAGS.data_imputer, logger)
+        df_test_preprocessed = missing_data_imputer_modelling_transform(df_test, FLAGS.data_imputer,
+                                                                        imputer, logger)
 
 
     logger.info("Export preprocessed train and test set")
