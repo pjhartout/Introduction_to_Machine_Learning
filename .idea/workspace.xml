@@ -2,89 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/projects/project_2/on_recommence_a_zero_la_tete_a_toto.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-183709_LABEL_Heartrate/events.out.tfevents.1586882229.pop-os.20826.13" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/subtasks_ANN.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/boosted_trees_subtask_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_presence_features.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data/test_features_preprocessed_with_presence_features.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/data_preprocessing.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/data_preprocessing.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/log_subtasks_ANN.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.zip" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/predictions.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-130608_LABEL_Heartrate/events.out.tfevents.1586862368.pop-os.29286.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-144812_LABEL_Fibrinogen/events.out.tfevents.1586868492.pop-os.32712.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145051_LABEL_AST/events.out.tfevents.1586868651.pop-os.483.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145116_LABEL_BaseExcess/events.out.tfevents.1586868676.pop-os.901.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145147_LABEL_AST/events.out.tfevents.1586868707.pop-os.901.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145216_LABEL_Bilirubin_total/events.out.tfevents.1586868736.pop-os.901.4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145316_LABEL_Bilirubin_direct/events.out.tfevents.1586868796.pop-os.901.8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145331_LABEL_EtCO2/events.out.tfevents.1586868811.pop-os.901.9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145415_LABEL_RRate/events.out.tfevents.1586868855.pop-os.901.10" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145430_LABEL_ABPm/events.out.tfevents.1586868870.pop-os.901.11" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145458_LABEL_Heartrate/events.out.tfevents.1586868898.pop-os.901.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145925_LABEL_Lactate/events.out.tfevents.1586869165.pop-os.1378.5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-145957_LABEL_SaO2/events.out.tfevents.1586869197.pop-os.1378.7" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-150144_LABEL_SpO2/events.out.tfevents.1586869304.pop-os.1378.12" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-150200_LABEL_Heartrate/events.out.tfevents.1586869320.pop-os.1378.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151159_LABEL_AST/events.out.tfevents.1586869919.pop-os.2934.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151215_LABEL_Alkalinephos/events.out.tfevents.1586869935.pop-os.2934.3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151230_LABEL_Bilirubin_total/events.out.tfevents.1586869950.pop-os.2934.4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151241_LABEL_BaseExcess/events.out.tfevents.1586869961.pop-os.3069.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151624_LABEL_Heartrate/events.out.tfevents.1586870184.pop-os.3069.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151839_LABEL_BaseExcess/events.out.tfevents.1586870319.pop-os.3418.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151855_LABEL_Fibrinogen/events.out.tfevents.1586870335.pop-os.3418.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-151954_LABEL_Lactate/events.out.tfevents.1586870394.pop-os.3418.5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152029_LABEL_RRate/events.out.tfevents.1586870429.pop-os.3621.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152100_LABEL_SpO2/events.out.tfevents.1586870460.pop-os.3621.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152115_LABEL_Heartrate/events.out.tfevents.1586870475.pop-os.3621.3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152203_LABEL_RRate/events.out.tfevents.1586870523.pop-os.3910.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152229_LABEL_RRate/events.out.tfevents.1586870549.pop-os.4010.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152245_LABEL_ABPm/events.out.tfevents.1586870565.pop-os.4010.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152338_LABEL_RRate/events.out.tfevents.1586870618.pop-os.4149.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152428_LABEL_SpO2/events.out.tfevents.1586870668.pop-os.4208.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152537_LABEL_RRate/events.out.tfevents.1586870737.pop-os.4304.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152640_LABEL_Heartrate/events.out.tfevents.1586870800.pop-os.4364.3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152730_LABEL_RRate/events.out.tfevents.1586870850.pop-os.4702.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152814_LABEL_Heartrate/events.out.tfevents.1586870894.pop-os.4702.3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152847_LABEL_RRate/events.out.tfevents.1586870927.pop-os.4893.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-152927_LABEL_RRate/events.out.tfevents.1586870967.pop-os.4972.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153119_LABEL_RRate/events.out.tfevents.1586871079.pop-os.6138.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153313_LABEL_BaseExcess/events.out.tfevents.1586871193.pop-os.6489.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153651_LABEL_Heartrate/events.out.tfevents.1586871411.pop-os.6489.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153815_LABEL_BaseExcess/events.out.tfevents.1586871495.pop-os.6842.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153832_LABEL_Fibrinogen/events.out.tfevents.1586871512.pop-os.6842.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-153947_LABEL_Lactate/events.out.tfevents.1586871587.pop-os.6842.5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154026_LABEL_SaO2/events.out.tfevents.1586871626.pop-os.6842.7" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154204_LABEL_RRate/events.out.tfevents.1586871724.pop-os.6842.10" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154308_LABEL_Heartrate/events.out.tfevents.1586871788.pop-os.6842.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154540_LABEL_BaseExcess/events.out.tfevents.1586871940.pop-os.7775.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-154600_LABEL_RRate/events.out.tfevents.1586871960.pop-os.7831.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155204_LABEL_RRate/events.out.tfevents.1586872324.pop-os.8346.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155314_LABEL_Heartrate/events.out.tfevents.1586872394.pop-os.8346.3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-155523_LABEL_BaseExcess/events.out.tfevents.1586872523.pop-os.8550.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-124806_LABEL_Heartrate/events.out.tfevents.1586861286.pop-os.27601.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-125156_LABEL_Heartrate/events.out.tfevents.1586861516.pop-os.28708.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_10_epochs_20200414-125446_LABEL_Heartrate/events.out.tfevents.1586861686.pop-os.28860.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160204_LABEL_EtCO2/events.out.tfevents.1586872924.pop-os.8602.9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160438_LABEL_SpO2/events.out.tfevents.1586873078.pop-os.8602.12" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-160518_LABEL_Heartrate/events.out.tfevents.1586873118.pop-os.8602.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164628_LABEL_Fibrinogen/events.out.tfevents.1586875588.pop-os.13117.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164703_LABEL_AST/events.out.tfevents.1586875623.pop-os.13117.2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-164716_LABEL_BaseExcess/events.out.tfevents.1586875636.pop-os.13252.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-165525_LABEL_Heartrate/events.out.tfevents.1586876125.pop-os.13252.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200414-171648_LABEL_BaseExcess/events.out.tfevents.1586877408.pop-os.14771.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171824_LABEL_EtCO2/events.out.tfevents.1586877504.pop-os.14824.9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171932_LABEL_SpO2/events.out.tfevents.1586877572.pop-os.14824.12" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-171944_LABEL_Heartrate/events.out.tfevents.1586877584.pop-os.14824.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_50_epochs_20200414-172415_LABEL_Heartrate/events.out.tfevents.1586877855.pop-os.15797.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-163816_LABEL_EtCO2/events.out.tfevents.1586875096.pop-os.12122.9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-163851_LABEL_Heartrate/events.out.tfevents.1586875131.pop-os.12122.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-164042_LABEL_Heartrate/events.out.tfevents.1586875242.pop-os.12337.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_5_epochs_20200414-164352_LABEL_Heartrate/events.out.tfevents.1586875432.pop-os.12756.13" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/subtasks_ANN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_example.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_example.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_200_epochs_20200416-133907_LABEL_Lactate/events.out.tfevents.1587037147.pop-os.30058.39" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/runs/ann_network_runs_100_epochs_20200414-183709_LABEL_Heartrate/events.out.tfevents.1586882229.pop-os.20826.13" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
