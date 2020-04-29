@@ -15,4 +15,5 @@ dependencies:
   - cudatoolkit=10.1
   - tensorboard
   - xgboost
+  - tqdm
 
