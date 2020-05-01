@@ -62,6 +62,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer, SimpleImputer
+from collections import Counter
 
 from ipywidgets import interact, interactive, fixed, interact_manual
 import ipywidgets as widgets
@@ -320,16 +321,15 @@ clf = xgb.XGBClassifier(objective="binary:logistic", n_thread=-1)
 models = []
 losses = []
 feature_selector_medical_tests = []
+
 for i, test in enumerate(MEDICAL_TESTS):
     print(f"Fitting model for {test}.")
     X_train, X_test, y_train, y_test = train_test_split(
     X_train_scaled, y_train_medical_tests[i], test_size=0.10, random_state=42, shuffle=True
     )
-    
-    print("Resampling")
-    sampler = RandomUnderSampler(random_state=42)
-    X_train_res, y_train_res = sampler.fit_resample(X_train, y_train)
-    
+
+    scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
+
     print("Fitting coarse model")
     # Coarse parameter grid not optimized at all yet
     coarse_param_grid = {
@@ -342,7 +342,7 @@ for i, test in enumerate(MEDICAL_TESTS):
         "subsample": np.arange(0.1, 1, 0.05),
         "colsample_bytree": np.arange(0.3, 1, 0.05),
         "n_estimators": range(50, 150, 1),
-        "scale_pos_weight": [1],
+        "scale_pos_weight": [scale_pos_weight],
         "reg_lambda": [0, 1], # Ridge regularization
         "reg_alpha": [0, 1], # Lasso regularization
         "eval_metric": ["error"],
@@ -350,8 +350,8 @@ for i, test in enumerate(MEDICAL_TESTS):
     }
     coarse_search = RandomizedSearchCV(estimator=clf,
             param_distributions=coarse_param_grid, scoring="roc_auc",
-            n_jobs=-1, cv=10, n_iter=200, verbose=1)
-    coarse_search.fit(X_train_res, y_train_res)
+            n_jobs=-1, cv=10, n_iter=500, verbose=1)
+    coarse_search.fit(X_train, y_train)
     print(coarse_search.best_estimator_.predict_proba(X_test)[:,1])
     print(f"ROC score on test set {roc_auc_score(y_test, coarse_search.best_estimator_.predict_proba(X_test)[:,1])}")
     print(f"CV score {coarse_search.best_score_}")
@@ -402,6 +402,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X_train_scaled, y_train_sepsis[0], test_size=0.10, random_state=42, shuffle=True
 )
 
+scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
 
 param_grid = {
         "booster": ["dart"],
@@ -413,21 +414,18 @@ param_grid = {
         "subsample": np.arange(0.1, 1, 0.05),
         "colsample_bytree": np.arange(0.3, 1, 0.05),
         "n_estimators": range(50, 150, 1),
-        "scale_pos_weight": [1],
+        "scale_pos_weight": [scale_pos_weight],
         "reg_lambda": [0, 1], # Ridge regularization
         "reg_alpha": [0, 1], # Lasso regularization
         "eval_metric": ["error"],
         "verbosity": [1]
     }
 
-print("Resampling")
-sampler = RandomUnderSampler(random_state=42)
-X_train, y_train = sampler.fit_resample(X_train, y_train)
 
 print("Fitting model")
 coarse_search = RandomizedSearchCV(estimator=clf,
         param_distributions=param_grid, scoring="roc_auc",
-        n_jobs=-1, cv=10, n_iter=200, verbose=1)
+        n_jobs=-1, cv=10, n_iter=500, verbose=1)
 print(y_train_res)
 coarse_search.fit(X_train, y_train)
 
@@ -491,7 +489,7 @@ for i, sign in enumerate(VITAL_SIGNS):
     
     coarse_search = RandomizedSearchCV(estimator=clf,
             param_distributions=param_grid, scoring="r2",
-            n_jobs=-1, cv=10, n_iter=200, verbose=1)
+            n_jobs=-1, cv=10, n_iter=500, verbose=1)
     coarse_search.fit(X_train, y_train)
     models.append(coarse_search.best_estimator_)
     print(f"CV score {coarse_search.best_score_}")
@@ -517,7 +515,6 @@ for i, vital_sign in enumerate(VITAL_SIGNS):
     df_pred_vital_signs[vital_sign] = y_pred
 
 df_pred_vital_signs = df_pred_vital_signs.reset_index().rename(columns={"index": "pid"})
-
 
 # ## Export to ZIP file
 
