@@ -2,28 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Introduction_to_Machine_Learning.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment.yml" beforeDir="false" afterPath="$PROJECT_DIR$/environment.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.zip" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/predictions.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_ABPm.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_ABPm.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_AST.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_AST.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Alkalinephos.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Alkalinephos.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_BaseExcess.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_BaseExcess.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_direct.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_direct.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_total.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_total.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_EtCO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_EtCO2.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Fibrinogen.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Fibrinogen.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Heartrate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Heartrate.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Lactate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Lactate.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_RRate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_RRate.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SaO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SaO2.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SpO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SpO2.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_TroponinI.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_TroponinI.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_sepsis.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_sepsis.pkl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +131,7 @@
       <workItem from="1586894974165" duration="3855000" />
       <workItem from="1588189243794" duration="1879000" />
       <workItem from="1588244964324" duration="13000" />
-      <workItem from="1588338438957" duration="1341000" />
+      <workItem from="1588338438957" duration="2309000" />
     </task>
     <servers />
   </component>
