@@ -16,4 +16,6 @@ dependencies:
   - tensorboard
   - xgboost
   - tqdm
+  - ipywidgets  
+  - imbalanced-learn
 
