@@ -2,7 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel} 
 \usepackage[usenames,dvipsnames,figures]{xcolor}
-\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,textgreek,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools,tabulary}
+\usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools,tabulary,xcolor,tcolorbox}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
 \usepackage[autostyle]{csquotes}  
@@ -14,6 +14,17 @@
 
 \newtheorem{theorem}{Theorem}
 \newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily a}}}{=}}}
+
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
+
 
 \RequirePackage{amsmath,amssymb,latexsym}
 \hypersetup{
@@ -40,6 +51,9 @@
 \newcommand{\angstrom}{\mbox{\normalfont\AA}}
 \newlength{\drop}
 \newtheorem{definition}{Definition}[section]
+
+\newtcolorbox{redbox}[1]{colback=red!5!white,colframe=red!5!white}
+
 
 % Set TOC depth to only show sections.
 \setcounter{tocdepth}{1}
@@ -2369,5 +2383,235 @@ The goal is to optimize the weights such that the output agrees with the input. 
 \end{equation*}
 
 The aim is to find a local minimum via SGD (backpropagation). The initialization of such networks matters and is challenging
+
+\section{Probabilistic modelling}
+
+The reason why we want to have a statistical perspective on supervised learning is that we want to quantify uncertainty, and express prior knowledge and assumptions about the data. 
+
+\subsection{Probabilistic interpretation of LSR}
+
+We recall given $(\mathbf{x}_i, y_i)\sim P(\mathbf{X},Y)$, we wish to identify a hypothesis $h:\mathcal{X\rightarrow \mathcal{Y}}$ that minimizes the prediction error:
+\begin{equation*}
+    R(h) = \int P(\mathbf{x},y)\ell(y;h(\mathbf{x}))\text{d}\mathbf{x}\text{d}y=\mathbb{E}_{\mathbf{x},y}[\ell(y;h(\mathbf{x}))]
+\end{equation*}
+In least-squares regression, the risk is defined as:
+\begin{equation*}
+    R(h) = \mathbb{E}_{\mathbf{X},Y}[(Y-h(\mathbf{X}))^2]
+\end{equation*}
+Suppose we know $P(\mathbf{X},Y)$ (which is unrealistic), then $h$ is minimized by:
+\begin{align*}
+    \min_{h:\mathbb{R}^d\mathbb{R}}R(h)&=\min_{h}\mathbb{E}_{(\mathbf{x},y)\sim P}[(y-h(\mathbf{x}))^2]\\
+    &= \min_{h}\mathbb{E}_{\mathbf{x}}[\mathbb{E}_y[(Y-h(\mathbf{x}))^2|\mathbf{X}=\mathbf{x}]]\\
+    &= \mathbb{E}_{\mathbf{x}}[\min_{h(\mathbf{x})}\mathbb{E}_{y}[(Y-h(\mathbf{x}))^2|\mathbf{X}=\mathbf{x}]]
+\end{align*}
+Since we consider an arbitrary $h$, we choose $h(\mathbf{x})$ and $h(\mathbf{x'})$ independently for $\mathbf{x}\neq\mathbf{x}'$
+
+In the context of least squares regression, the optimal prediction is given by:
+\begin{equation*}
+    y*(\mathbf{x})\in\arg\min_{\hat{y}}\mathbb{E}_{Y}[(\hat{y}-Y)^2|\mathbf{X}=\mathbf{x}]=\arg\min_{\hat{y}}\ell(\hat{y})
+\end{equation*}
+where $\ell(\hat{y})$ can be rewritten as:
+\begin{equation*}
+    \frac{d}{d\hat{y}}\ell(\hat{y}) = \int(\hat{y}-y)^2p(y|\mathbf{x})dy
+\end{equation*}
+In order to find the minimum of that function we find its derivative and set it to 0:
+\begin{align*}
+    \frac{d}{d\hat{y}}\ell(\hat{y}) &= \int \frac{d}{d\hat{y}}(\hat{y}-y)^2p(y|\mathbf{x})dy \\
+    &= \int 2(\hat{y}-y)p(y|\mathbf{x})dy\overset{!}{=} 0\\
+    &\Rightarrow\int\hat{y}p(y|\mathbf{x})dy=\int yp(y|\mathbf{x})dy \\
+    &\Leftrightarrow \hat{y}=\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]
+\end{align*}
+
+So, assuming the data is iid according to $(\mathbf{x}_iy_i)\sim P(\mathbf{X},Y)$, the hypothesis $h*$ minimizing $R(h)=\mathbb{E}_{\mathbf{x},y}[(y-h(\mathbf{x}))^2]$ is given by the conditional mean:
+\begin{equation*}
+    h*(\mathbf{x})=\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]
+\end{equation*}
+This (in practice unattainable) hypothesis is called the Bayes optimal predictor for the squared loss. However in practice we have finite data. Thus, one strategy for estimating a predictor from training data is to estimate the conditional distribution:
+\begin{equation*}
+    \hat{P}(Y|\mathbf{X})
+\end{equation*}
+and then, for test point $\mathbf{x}$, we predict the label:
+\begin{equation*}
+    \hat{y}= \hat{\mathbb{E}}[Y|\mathbf{X}=\mathbf{x}]=\int\hat{P}(y|\mathbf{X}=\mathbf{x})ydy
+\end{equation*}
+
+\subsection{Estimating conditional distribution}
+
+From the derivation above, we hence need to estimate $\hat{P}(Y|\mathbf{X}, \theta)$ and then we optimize the parameters using parametric estimation, specifically maximum likelihood estimation.
+
+\begin{align*}
+    \theta*&=\arg\max_{\theta}\hat{P}(y_1,\ldots, y_n|\mathbf{x}_1,\ldots, \mathbf{x}_n, \theta)\\
+    &\overset{iid}{=}\arg\max_{\theta}\prod_{i=1}^n\hat{P}(y_i|\mathbf{x}_i,\theta)=\arg\max_{\theta}\log\prod_{i=1}^n\hat{P}(y_i|\mathbf{x}_i,\theta)\\
+    &=\arg\max_{\theta}\sum_{i=1}^{n}\log\hat{P}(y_i|\mathbf{x}_i,\theta)=\arg\min_{\theta}-\sum_{i=1}^{n}\log\hat{P}(y_i|\mathbf{x}_i,\theta)
+\end{align*}
+
+\subsubsection{Conditional linear Gaussian}
+
+Suppose we assume $Y=h(X)+\epsilon$, with $\epsilon\sim\mathcal{N}(0,\sigma^2)$. Additionally, we also assume $h(\mathbf{x})=\mathbf{w}^T\mathbf{x}$. Then, we have:
+\begin{equation*}
+    \hat{P}(Y=y|\mathbf{X},\mathbf{w},\sigma^2)=\mathcal{N}(y;\mathbf{w}^T\mathbf{x},\sigma^2)
+\end{equation*}
+and 
+\begin{align*}
+    \hat{\mathbf{w}}&=\arg\max_{\mathbf{w}}\hat{P}(y_{1:n}|X_{1:n},\mathbf{w},\sigma^2)\\
+    &=\arg\min_{\mathbf{w}}-\sum_{i=1}^{n}\log\hat{P}(y_i|x_i,\mathbf{w},\sigma^2)\\
+\end{align*}
+
+\subsection{Probabilistic model for regression}
+
+Consider linear regression. Let's make the statistical assumption that the noise is Gaussian, i.e. that $y_i\sim\mathcal{N}(\mathbf{w}^T\mathbf{x}_i,\sigma^2)$. Then, we can compute the conditional likelihood of the data given any candidate model $\mathbf{w}$ as:
+\begin{align*}
+    -\log\hat{p}(y|X,\mathbf{w})&=-\log\mathcal{N}(y|\mathbf{w}^Tx,\sigma^2)=-\log(\frac{1}{\sqrt{2\pi\sigma^2}})\exp(-\frac{(y-\mathbf{w}^T\mathbf{x})^2}{2\sigma^2})\\
+    &=\frac{1}{2}\log 2\pi\sigma^2+\frac{1}{2\sigma^2}(y-\mathbf{w}^T\mathbf{x})^2\\
+    \Rightarrow\hat{\mathbf{w}}&=\arg\max_{\mathbf{w}}P(y_{1:n}|\mathbf{X}_{1:n},\mathbf{w},\sigma^2)=\arg\min_{\mathbf{w}}\sum_{i=1}^{n}(\frac{1}{2}\log2\pi\sigma^2+\frac{1}{2\sigma^2}(y_i-\mathbf{w}^T\mathbf{x}_i)^2)\\
+    &=\arg\max_{\mathbf{w}}\frac{n}{2}\log 2\pi\sigma^2+\frac{1}{2\sigma^2}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2=\arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2
+\end{align*}
+
+The negative log likelihood for the conditional linear Gaussian is given by:
+\begin{equation*}
+    L(\mathbf{w})=-\log P(y_1,\ldots, y_n|\mathbf{x}_1,\ldots, \mathbf{x}_n,\mathbf{w}) = \frac{n}{2}\log(2\pi\sigma^2) + \sum_{i=1}^{n}\frac{(y_i-\mathbf{w}^T\mathbf{x}_i)^2}{2\sigma^2}
+\end{equation*}
+Thus, under the conditional linear Gaussian assumption, maximizing the likelihood is equivalent to least squares estimation, i.e.:
+\begin{equation*}
+    \arg\max_{\mathbf{w}}P(y_1, \ldots, y_n|\mathbf{x}_1, \ldots, \mathbf{x}_n, \mathbf{w})=\arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2
+\end{equation*}
+
+More generally, the MLE for data with Gaussian iid noise can be derived as follows. Suppose $\mathcal{H}=\left\{h:\mathcal{X}\rightarrow\mathbb{R}\right\}$ is a class of functions. Assuming that $P(Y=y|\mathbf{X}=\mathbf{x})=\mathcal{N}(y|h*(\mathbf{x}),\sigma^2)$ for some function $h*:\mathcal{X}\rightarrow\mathbb{R}$ and some $\sigma^2>0$ the MLE for data $D=\left\{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n,y_n)\right\}$ in $\mathcal{H}$ is given by:
+\begin{equation*}
+    \hat{h}=\arg\min_{h\in\mathcal{H}}\sum_{i=1}^{n}(y_i-h(\mathbf{x}_i))^2
+\end{equation*}
+
+The fact that the MLE is given by the least squares solution, assuming that the noise is idd Gaussian with constant variance is useful since it satisfies several nice statistical properties:
+\begin{description}
+    \item[Consistency] Parameter estimate converges to true parameters in probability
+    \item[Asymptotic efficiency] the smallest variance among all well-behaved estimators for large $n$.
+    \item[Asymptotic normality]  
+\end{description}
+However, all these properties are asymptotic. For finite $n$, we still need to be careful about overfitting.
+
+\subsection{Bias variance tradeoff}
+\begin{redbox}
+    The bias variance tradeoff is defined as:
+    \begin{equation*}
+        \text{Prediction error} = \text{Bias}^2+\text{Variance} + \text{Noise}
+    \end{equation*}
+\end{redbox}
+where:
+\begin{description}
+    \item[Bias]: Excess risk of best model considered compared to minimal achievable risk knowing $P(\textbf{X},Y)$, i.e. given infinite data. 
+    \item[Variance]: Risk incurred due to estimating model from limited data.
+    \item[Noise]: Risk incurred by optimal model (i.e. irreducible error).   
+\end{description}
+
+To investigate where bias comes from, the MLE solution depends on training data $D$:
+\begin{equation*}
+    \hat{h} = \hat{h}_D=\arg\min_{h\in\mathcal{H}}\sum_{(\mathbf{x},y)\in D}(y-h(\mathbf{x}))^2
+\end{equation*}
+
+But training data $D$ is itself random (drawn iid fro $P$). We might want to choose $H$ to have small bias (i.e., have small squared error on average, see red part of the equation below).
+\begin{equation*}
+    \mathbb{E}_{\mathbf{X}}[\mathcolor{red}{\mathbb{E}_D\hat{h}_D(\mathbf{X})-h*(\mathbf{X})}]^2
+\end{equation*}
+
+To see where variance comes from, the MLE solution depends on training data $D$:
+\begin{equation*}
+    \hat{h} = \hat{h}_D=\arg\min_{h\in\mathcal{H}}\sum_{(\mathbf{x},y)\in D}(y-h(\mathbf{x}))^2
+\end{equation*}
+This estimator is itself random, and has some variance:
+\begin{equation*}
+    \mathbb{E}_{\mathbb{X}}\text{Var}_D[\hat{h}_D(\mathbf{X})]^2 = \mathbb{E}_{\mathbb{X}}\mathbb{E}_{D}[\hat{h}_D(\mathbf{X})-\mathbb{E}_{D},\hat{h}_D,(\mathbf{X})]^2
+\end{equation*}
+
+Finally, even if we know the Bayes' optimal hypothesis h*, we'd still incur some error due to noise:
+\begin{equation*}
+    \mathbb{E}_{\mathbf{X},Y}[(Y-h*(\mathbf{X}))^2]
+\end{equation*}
+This error is irreducible, i.e., independent of the choice of the hypothesis class.
+
+In summary:
+
+\begin{align*}
+    \mathcolor{BrickRed}{\mathbb{E}_D\mathbb{E}_{\mathbf{X},Y}[(Y-\hat{h}_D(\mathbf{X}))^2]} &= \mathbb{E}_{\mathbf{X}}[\mathcolor{NavyBlue}{\mathbb{E}_D\hat{h}_D(\mathbf{X})-h*(\mathbf{X})}]^2\\
+    &+\mathcolor{ForestGreen}{\mathbb{E}_{\mathbf{X}}\mathbb{E}_D[\hat{h}_D(\mathbf{X})-\mathbb{E}_D,\hat{h}_D,(\mathbf{X})]^2}\\
+    &+\mathcolor{magenta}{\mathbb{E}_{\mathbf{X},Y}[Y-h*(\mathbf{X})]^2}
+\end{align*}    
+
+where the terms are \textcolor{BrickRed}{expected risk}, \textcolor{NavyBlue}{bias}, \textcolor{ForestGreen}{variance} and \textcolor{magenta}{noise} and ideally we wish to find an estimator that simultaneously minimizes bias and variance.
+
+\subsection{Bias and variance in regression}
+
+The MLE for linear regresison is unbiased (if $h*$ is in class $\mathcal{H}$). Furhtermore, it is the minimum variance estimator among all unbiased estimators according to the Gauss-Markov theorem. Hoever, we have already seen that the least-squares solution can overfit. Thus, it is sometimes important to trade some bias for a reduction of variance through regularization, like Ridge and Lasso.
+
+\subsection{Bias in Bayesian modelling}
+
+It is possible to introduce bias by expressing assumptions on parameters through a Bayesian prior. For example, let's assume $\mathbf{w}\sim\mathcal{N}(0,\beta^2\mathbf{I})$ which is equivalent to $w_i\sim\mathcal{N}(0,\beta^2)\forall i\in d$. Then, the posterior distribution of $\mathbf{w}$ is given using Bayes' rule by:
+\begin{align*}
+    P(\mathbf{w}|\mathbf{X}_{1:n}y_{1:n})&=\frac{P(\mathbf{w}|X_{1:n})P(y_{1:n}|w_1,\mathbf{X}_{1:n})}{P(y_{1:n}|\textbf{X}_{1:n})}\\
+    &=\frac{P(\mathbf{w})P(y_{1:n}|w_1,\mathbf{X}_{1:n})}{P(y_{1:n}|\textbf{X}_{1:n})}
+\end{align*}
+
+The second line was obtained assuming the independence of $\mathbf{w}$ of $\mathbf{x}$. With this we can determine which parameters $\mathbf{w}$ are most likely a posteriori, which is equivalent to the maximum a posteriori estimate. I.e., given
+
+\begin{equation*}
+    P(\mathbf{w}|\mathbf{x}_1,\ldots, \mathbf{x}_n,y_1, \ldots, y_n) = \frac{P(\mathbf{w})P(y_1,\ldots,y_n|\mathbf{x}_1,\ldots,\mathbf{x}_n,\mathbf{w})}{P(y_1,\ldots,y_n|\mathbf{x}_1,\ldots, \mathbf{x}_n)}
+\end{equation*}
+
+we want:
+
+\begin{equation}\label{mpebayes}
+    \arg\max_{\mathbf{w}}P(\mathbf{w}|\mathbf{X}_{1:n},y_{1:n})=\arg\min_{\mathbf{w}}-\log P(\mathbf{w})-\log P(\mathbf{Y}_{1:n}|\mathbf{X}_{1:n},\mathbf{w}) + \log P(Y_{i:n}|X_{1:n})
+\end{equation}
+
+Note: we can neglect $\log P(Y_{i:n}|X_{1:n})$ because it is independent of $\mathbf{w}$.
+
+\begin{align*}
+    -\log P(\mathbf{w}) &= -\log \prod_{i=1}^d P(w_i) = -\sum_{i=1}^{d}\log\mathcal{N}(w_i;0,\beta^2)\\
+    &=-\sum_{i=1}^{d}\log\frac{1}{\sqrt{2\pi\beta^2}}\exp(\frac{-w_i^2}{2\beta^2})=\frac{d}{2}\log 2\pi\beta^2+\frac{1}{2\beta^2}\sum_{i=1}^{d}w_i^2\\
+    &=c+\frac{1}{2\beta^2}\norm{w}_2^2
+\end{align*}
+
+Coming back to equation to equation \ref{mpebayes}, we now can derive:
+
+\begin{align*}
+    (*) &= \arg\min_{\mathbf{w}}\frac{1}{2\beta^2}\norm{w}_2^2 + \frac{1}{2\beta^2}\sum_{i=1}^{n}(y_i-\mathbf{w}^Tx_i)^2\\
+    &=\arg\min_{\mathbf{w}}\frac{\sigma^2}{\beta^2}\norm{\mathbf{w}}_2^2+\sum_{i=1}^{n}(y_i-\mathbf{w}x_i)^2
+\end{align*}
+which is equivalent to Ridge regression for $\lambda=\frac{\sigma^2}{\beta^2}$.
+
+\subsection{Ridge regression is equivalent to MAP estimation}
+
+Ridge regression can be understood as finding the MAP parameter estimate for a linear regression problem, assuming that the noise is iid Gaussian and the prior on the model parameters is Gaussian, i.e.:
+\begin{equation*}
+    \arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2+\lambda\norm{\mathbf{w}}_2^2\equiv\arg\max_{\mathbf{w}}P(\mathbf{w})\prod_{i}P(y_i|\mathbf{x}_i,\mathbf{w})
+\end{equation*}
+
+More generally, regularized estimation can often be understood as MAP inference:
+\begin{align*}
+    \arg\min_{\mathbf{w}}\sum_{i=1}^{n}\ell(\mathbf{w}\mathbf{x}_i;\mathbf{x}_i, y_i)+C(\mathbf{w})&=\arg\max_{\mathbf{w}}\prod_i P(y_i|\mathbf{x}_i,\mathbf{w})P(\mathbf{w})\\
+    &=\arg\max_{\mathbf{w}}P(\mathbf{w}|D)
+\end{align*}
+where $C(\mathbf{w})=-\log P(\mathbf{w})$ and $\ell(\mathbf{w}^T\mathbf{x}_i;\mathbf{x}_i,y_i)=-\log P(y_i|\mathbf{x}_i,\mathbf{w})$. This perspective allows changing priors ($\approx$ regularizers) and likelihoods ($\approx$ loss functions).
+
+\subsection{L1-regularization}
+The prior that corresponds to l1-regularization is the Laplace prior. Its shape can is depicted in figure \ref{laplaceprior} and is given in equation \ref{eq:laplaceprior}.
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/laplaceprior.png}
+    \caption{Laplce prior compared to the Gaussian prior.}
+    \label{laplaceprior}
+\end{figure}
+
+\begin{equation}\label{eq:laplaceprior}
+    p(x;\mu, b) = \frac{1}{2b}\exp(-\frac{|x-\mu|}{b})
+\end{equation}
+
+\subsection{Student-$t$ likelihood}
+It is possible to introduce robustness by changing the likelihood (=loss) function, for instance using the non-standardized Student's-t likelihood given by:
+\begin{equation*}
+    P(y|\mathbf{x}, \mathbf{w},\nu,\sigma^2)=\frac{\Gamma (\frac{\nu+1}{2})}{\sqrt{\pi\nu\sigma^2}\Gamma(\frac{\nu}{2})}(1+\frac{(y-\mathbf{w}^T\mathbf{x})^2}{\nu\sigma^2})^{-\frac{\nu+1}{2}}
+\end{equation*}
+
+which yields heavier tails than normal distributions.
 
 \end{document}
