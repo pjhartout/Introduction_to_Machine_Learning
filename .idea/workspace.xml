@@ -2,7 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f53bba10-1817-411a-aee0-c25e63f9d4eb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/code_project_2.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/code_project_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/code_project_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_train_philip.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/df_val_philip.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/predictions.zip" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/predictions.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_ABPm.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_ABPm.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_AST.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_AST.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Alkalinephos.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Alkalinephos.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_BaseExcess.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_BaseExcess.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_direct.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_direct.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_total.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Bilirubin_total.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_EtCO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_EtCO2.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Fibrinogen.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Fibrinogen.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Heartrate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Heartrate.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Lactate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_Lactate.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_RRate.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_RRate.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SaO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SaO2.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SpO2.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_SpO2.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_TroponinI.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_LABEL_TroponinI.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_2/xgboost_fine_sepsis.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/projects/project_2/xgboost_fine_sepsis.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_4/Code_project_4.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_4/sample.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_4/test_triplets.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/project_4/train_triplets.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,14 +59,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CancerTargetSelector" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../image_triplet_loss" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="PyCoverageOptionsProvider">
     <option name="myUseBundledCoveragePy" value="true" />
   </component>
-  <component name="RunManager" selected="Python.subtasks_ANN">
+  <component name="RunManager" selected="Python.code_project_2">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Introduction_to_Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -96,10 +121,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="code_project_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="Introduction_to_Machine_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/iml/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projects/project_2" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/project_2/code_project_2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.boosted_trees_subtask_1" />
-      <item itemvalue="Python.subtask3" />
+      <item itemvalue="Python.code_project_2" />
       <item itemvalue="Python.preprocess_dataset" />
+      <item itemvalue="Python.subtask3" />
       <item itemvalue="Python.subtask1and2" />
       <item itemvalue="Python.subtasks_ANN" />
     </list>
@@ -131,7 +179,14 @@
       <workItem from="1586894974165" duration="3855000" />
       <workItem from="1588189243794" duration="1879000" />
       <workItem from="1588244964324" duration="13000" />
-      <workItem from="1588338438957" duration="2309000" />
+      <workItem from="1588338438957" duration="3649000" />
+      <workItem from="1588367647941" duration="11839000" />
+      <workItem from="1588440641370" duration="740000" />
+      <workItem from="1588451495496" duration="711000" />
+      <workItem from="1588482720143" duration="43000" />
+      <workItem from="1588573375339" duration="853000" />
+      <workItem from="1588595036032" duration="4627000" />
+      <workItem from="1588693284939" duration="38000" />
     </task>
     <servers />
   </component>
@@ -142,9 +197,10 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="363" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586881963957">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state x="363" y="111" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588367950902">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state x="363" y="111" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1035@0.0.1920.1035" timestamp="1588367950902" />
     <state x="363" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586881963957" />
     <state x="61" y="300" width="1787" height="514" key="#xdebugger.XInspectDialog" timestamp="1586518173720">
       <screen x="0" y="27" width="1920" height="1053" />
@@ -158,42 +214,50 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="1009" y="237" width="344" height="632" key="EnvironmentVariablesDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586524958431" />
-    <state x="743" y="279" width="444" height="491" key="FileChooserDialogImpl" timestamp="1588338516530">
+    <state x="743" y="279" width="444" height="491" key="FileChooserDialogImpl" timestamp="1588693341995">
       <screen x="0" y="0" width="1920" height="1035" />
     </state>
-    <state x="743" y="279" key="FileChooserDialogImpl/0.0.1920.1035@0.0.1920.1035" timestamp="1588338516530" />
+    <state x="743" y="279" key="FileChooserDialogImpl/0.0.1920.1035@0.0.1920.1035" timestamp="1588693341995" />
     <state x="743" y="311" width="444" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586697548133" />
-    <state width="1876" height="276" key="GridCell.Tab.0.bottom" timestamp="1586888398516">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.0.bottom" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.0.bottom/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="276" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
-    <state width="1876" height="276" key="GridCell.Tab.0.center" timestamp="1586888398516">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.0.center" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.0.center/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="276" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
-    <state width="1876" height="276" key="GridCell.Tab.0.left" timestamp="1586888398516">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.0.left" timestamp="1588603551242">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.0.left/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551242" />
     <state width="1876" height="276" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
-    <state width="1876" height="276" key="GridCell.Tab.0.right" timestamp="1586888398516">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.0.right" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.0.right/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="276" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398516" />
-    <state width="1876" height="225" key="GridCell.Tab.1.bottom" timestamp="1586888398512">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.1.bottom" timestamp="1588603551244">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.1.bottom/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551244" />
     <state width="1876" height="225" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
-    <state width="1876" height="225" key="GridCell.Tab.1.center" timestamp="1586888398512">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.1.center" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.1.center/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="225" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
-    <state width="1876" height="225" key="GridCell.Tab.1.left" timestamp="1586888398512">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.1.left" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.1.left/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="225" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
-    <state width="1876" height="225" key="GridCell.Tab.1.right" timestamp="1586888398512">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1021" height="416" key="GridCell.Tab.1.right" timestamp="1588603551243">
+      <screen x="0" y="0" width="1920" height="1035" />
     </state>
+    <state width="1021" height="416" key="GridCell.Tab.1.right/0.0.1920.1035@0.0.1920.1035" timestamp="1588603551243" />
     <state width="1876" height="225" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1586888398512" />
     <state x="464" y="188" width="992" height="737" key="SettingsEditor" timestamp="1586698159683">
       <screen x="0" y="27" width="1920" height="1053" />
@@ -239,6 +303,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$subtasks_ANN.coverage" NAME="subtasks_ANN Coverage Results" MODIFIED="1586881969228" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
     <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$boosted_trees_subtask_1.coverage" NAME="boosted_trees_subtask_1 Coverage Results" MODIFIED="1586696408342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
+    <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$code_project_2.coverage" NAME="code_project_2 Coverage Results" MODIFIED="1588601714660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
     <SUITE FILE_PATH="coverage/Introduction_to_Machine_Learning$preprocess_dataset.coverage" NAME="preprocess_dataset Coverage Results" MODIFIED="1586879374091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/project_2" />
   </component>
 </project>
