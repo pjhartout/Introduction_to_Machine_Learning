@@ -3,6 +3,8 @@
 
 from __future__ import print_function
 
+from scipy.interpolate import interp1d
+
 """Implementation of the solution to project 2 from scratch
 - For clarity the df_test was renamed to df_val as the test word was used when splitting the 
     labeled data into train and test. Val stands for validation
@@ -43,7 +45,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from collections import Counter
 from imblearn.over_sampling import ADASYN, SMOTE
 from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
@@ -53,19 +55,11 @@ from sklearn.feature_selection import SelectKBest, f_regression, chi2, f_classif
 from sklearn.metrics import f1_score, mean_squared_error, accuracy_score, r2_score, roc_auc_score, recall_score, precision_score
 from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-from sklearn.metrics import label_ranking_average_precision_score as LRAPS
-from sklearn.metrics import label_ranking_loss as LRL
-from sklearn.svm import SVC
 from sklearn.linear_model import LinearRegression, BayesianRidge, LogisticRegression, LogisticRegressionCV
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.experimental import enable_iterative_imputer
-from sklearn.impute import IterativeImputer, SimpleImputer
 from collections import Counter
-
-from ipywidgets import interact, interactive, fixed, interact_manual
-import ipywidgets as widgets
 
 # Global variables
 IDENTIFIERS = ["pid", "Time"]
@@ -121,7 +115,7 @@ def sigmoid_f(x):
 # df_train = pd.read_csv(r"data/train_features.csv")
 df_train_label = pd.read_csv(r"data/train_labels.csv")
 # df_val = pd.read_csv(r"data/test_features.csv")
-#
+
 # mnar_columns = [
 #         sub + "_presence" for sub in FEATURES_MNAR
 #     ]
@@ -132,8 +126,9 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #             df_train["pid"] == patient
 #             ][column].any())
 #         df_train.at[patient, column] = presence
-# print("Done adding features about MNAR features")
-#
+
+# print("Done adding features about MNAR features in train")
+
 # # Adding engineered features
 # pid = df_val["pid"].unique()
 # for patient in tqdm(pid):
@@ -142,8 +137,10 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #             df_val["pid"] == patient
 #             ][column].any())
 #         df_val.at[patient, column] = presence
-# print("Done adding features about MNAR features")
-#
+
+# print("Done adding features about MNAR features in val")
+
+# cols_for_timeseries = ["Temp", "RRate", "ABPm", "ABPd", "SpO2", "Heartrate", "ABPs"]
 # columns_for_regression = ["Temp", "Hgb", "RRate", "BaseExcess", "WBC", "PaCO2", "FiO2", "Glucose", "ABPm", "ABPd", "SpO2", "Hct", "Heartrate", "ABPs", "pH"]
 # columns_for_regression_trend = [
 #         sub + "_trend" for sub in columns_for_regression
@@ -158,21 +155,18 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #         sub + "_max" for sub in columns_for_regression
 #     ]
 # cols_to_add = columns_for_regression_trend + columns_for_regression_std + columns_for_regression_min + columns_for_regression_max
-#
+
 # df_train = df_train.reindex(
 #         df_train.columns.tolist() + cols_to_add,
 #         axis=1,
 #     )
-#
-# pid = df_train["pid"].unique()
-#
-# for patient in tqdm(pid):
-#     for column in columns_for_regression:
+
+# train_pid = df_train["pid"].unique()
+
+# for patient in tqdm(train_pid):
+#     for i, column in enumerate(columns_for_regression):
 #         if df_train.loc[df_train["pid"] == patient][column].isna().sum() <= 8:
 #             series = df_train.loc[df_train["pid"] == patient][column]
-#             # Fill missing values between two non nans with their average
-#             series = (series.ffill() + series.bfill()) / 2
-#             # Drop the rest of the value
 #             series = series.dropna()
 #             standard_deviation = series.std()
 #             minimum = series.min()
@@ -189,7 +183,7 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #             df_train.at[patient, column + "_std"] = standard_deviation
 #             df_train.at[patient, column + "_min"] = minimum
 #             df_train.at[patient, column + "_max"] = maximum
-#
+
 #     # fill rest of values with 0 for trends col umns
 #     df_train[columns_for_regression_trend] = df_train[
 #         columns_for_regression_trend
@@ -203,22 +197,25 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #     df_train[columns_for_regression_max] = df_train[
 #         columns_for_regression_max
 #     ].fillna(value=0)
-#
-# pid = df_val["pid"].unique()
-#
+
+#     for column in cols_for_timeseries:
+#         series = df_train.loc[df_train["pid"] == patient][column]
+#         for i, value in enumerate(series):
+#             df_train.at[patient, column + f"{i}"] = value
+
+# val_pid = df_val["pid"].unique()
+
 # df_val = df_val.reindex(
 #         df_val.columns.tolist() + cols_to_add,
 #         axis=1,
 #     )
-#
-# for patient in tqdm(pid):
+
+# for patient in tqdm(val_pid):
 #     for column in columns_for_regression:
 #         if df_val.loc[df_val["pid"] == patient][column].isna().sum() <= 8:
 #             series = df_val.loc[df_val["pid"] == patient][column]
-#             # Fill missing values between two non nans with their average
-#             series = (series.ffill() + series.bfill()) / 2
-#             # Drop the rest of the value
 #             series = series.dropna()
+#             # Drop the rest of the value
 #             standard_deviation = series.std()
 #             minimum = series.min()
 #             maximum = series.max()
@@ -234,7 +231,7 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #             df_val.at[patient, column + "_std"] = standard_deviation
 #             df_val.at[patient, column + "_min"] = minimum
 #             df_val.at[patient, column + "_max"] = maximum
-#
+
 #     # fill rest of values with 0 for trends col umns
 #     df_val[columns_for_regression_trend] = df_val[
 #         columns_for_regression_trend
@@ -248,9 +245,16 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #     df_val[columns_for_regression_max] = df_val[
 #         columns_for_regression_max
 #     ].fillna(value=0)
-#
+
+#     for column in cols_for_timeseries:
+#         series = df_val.loc[df_val["pid"] == patient][column]
+#         for i, value in enumerate(series):
+#             df_val.at[patient, column + f"{i}"] = value
+
+
+
 # df_train_grouped = pd.DataFrame(index=df_train["pid"].unique(), columns=df_train.columns)
-#
+
 # for patient in tqdm(df_train["pid"].unique()):
 #     for column in df_train.columns:
 #         patient_timeseries = df_train.loc[df_train["pid"] == patient][column]
@@ -259,10 +263,10 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #         elif column is not "pid":
 #             df_train_grouped.at[patient, column] = patient_timeseries.mean()
 # df_train = df_train_grouped
-#
-#
+
+
 # df_val_grouped = pd.DataFrame(index=df_val["pid"].unique(), columns=df_val.columns)
-#
+
 # for patient in tqdm(df_val["pid"].unique()):
 #     for column in df_val.columns:
 #         patient_timeseries = df_val.loc[df_val["pid"] == patient][column]
@@ -271,7 +275,7 @@ df_train_label = pd.read_csv(r"data/train_labels.csv")
 #         elif column is not "pid":
 #             df_val_grouped.at[patient, column] = patient_timeseries.mean()
 # df_val = df_val_grouped
-#
+
 # df_train.to_csv("df_train_philip.csv")
 # df_val.to_csv("df_val_philip.csv")
 
@@ -310,11 +314,11 @@ for sign in VITAL_SIGNS:
     y_train_vital_signs.append(df_train_label[sign].astype(int).values)
 
 # Scale data 
-scaler = StandardScaler(with_mean=True, with_std=True)
-X_train_scaled = scaler.fit_transform(X_train)
-X_val_scaled = scaler.transform(X_val)
-
-
+# scaler = StandardScaler(with_mean=True, with_std=True)
+# X_train_scaled = scaler.fit_transform(X_train)
+# X_val_scaled = scaler.transform(X_val)
+X_train_scaled = X_train
+X_val_scaled = X_val
 # ## Modelling medical tests
 # Modelling using extreme gradient boosting
 clf = xgb.XGBClassifier(objective="binary:logistic", n_thread=-1)
@@ -328,7 +332,10 @@ for i, test in enumerate(MEDICAL_TESTS):
     X_train_scaled, y_train_medical_tests[i], test_size=0.10, random_state=42, shuffle=True
     )
 
-    scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
+    print("Downsampling")
+    sampler = RandomUnderSampler(random_state=42)
+    X_train, y_train = sampler.fit_resample(X_train, y_train)
+    # scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
 
     print("Fitting coarse model")
     # Coarse parameter grid not optimized at all yet
@@ -342,7 +349,7 @@ for i, test in enumerate(MEDICAL_TESTS):
         "subsample": np.arange(0.1, 1, 0.05),
         "colsample_bytree": np.arange(0.3, 1, 0.05),
         "n_estimators": range(50, 150, 1),
-        "scale_pos_weight": [scale_pos_weight],
+        "scale_pos_weight": [1],
         "reg_lambda": [0, 1], # Ridge regularization
         "reg_alpha": [0, 1], # Lasso regularization
         "eval_metric": ["error"],
@@ -350,7 +357,7 @@ for i, test in enumerate(MEDICAL_TESTS):
     }
     coarse_search = RandomizedSearchCV(estimator=clf,
             param_distributions=coarse_param_grid, scoring="roc_auc",
-            n_jobs=-1, cv=10, n_iter=500, verbose=1)
+            n_jobs=-1, cv=10, n_iter=150, verbose=1)
     coarse_search.fit(X_train, y_train)
     print(coarse_search.best_estimator_.predict_proba(X_test)[:,1])
     print(f"ROC score on test set {roc_auc_score(y_test, coarse_search.best_estimator_.predict_proba(X_test)[:,1])}")
@@ -402,7 +409,10 @@ X_train, X_test, y_train, y_test = train_test_split(
     X_train_scaled, y_train_sepsis[0], test_size=0.10, random_state=42, shuffle=True
 )
 
-scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
+# scale_pos_weight = Counter(y_train)[0] / Counter(y_train)[1]
+print("Downsampling")
+sampler = RandomUnderSampler(random_state=42)
+X_train, y_train = sampler.fit_resample(X_train, y_train)
 
 param_grid = {
         "booster": ["dart"],
@@ -414,7 +424,7 @@ param_grid = {
         "subsample": np.arange(0.1, 1, 0.05),
         "colsample_bytree": np.arange(0.3, 1, 0.05),
         "n_estimators": range(50, 150, 1),
-        "scale_pos_weight": [scale_pos_weight],
+        "scale_pos_weight": [1],
         "reg_lambda": [0, 1], # Ridge regularization
         "reg_alpha": [0, 1], # Lasso regularization
         "eval_metric": ["error"],
@@ -425,8 +435,7 @@ param_grid = {
 print("Fitting model")
 coarse_search = RandomizedSearchCV(estimator=clf,
         param_distributions=param_grid, scoring="roc_auc",
-        n_jobs=-1, cv=10, n_iter=500, verbose=1)
-print(y_train_res)
+        n_jobs=-1, cv=10, n_iter=150, verbose=1)
 coarse_search.fit(X_train, y_train)
 
 sepsis_model = coarse_search.best_estimator_
@@ -489,7 +498,7 @@ for i, sign in enumerate(VITAL_SIGNS):
     
     coarse_search = RandomizedSearchCV(estimator=clf,
             param_distributions=param_grid, scoring="r2",
-            n_jobs=-1, cv=10, n_iter=500, verbose=1)
+            n_jobs=-1, cv=10, n_iter=150, verbose=1)
     coarse_search.fit(X_train, y_train)
     models.append(coarse_search.best_estimator_)
     print(f"CV score {coarse_search.best_score_}")
