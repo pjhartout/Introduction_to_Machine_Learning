@@ -50,9 +50,9 @@ print(device_lib.list_local_devices())
 T_G_WIDTH = 150
 T_G_HEIGHT = 150
 T_G_NUMCHANNELS = 3
-CHUNKSIZE = 32
-BATCHSIZE = 2048
-
+CHUNKSIZE = 512
+BATCHSIZE = 32
+LEARNING_RATE=0.001
 
 # In[7]:
 
@@ -72,11 +72,9 @@ train_triplets.head()
 
 
 # split in test and training set, we take 0.3 of the dataframe and use it for testing and the rest for training
-train_triplets = train_triplets.sample(frac=1)
-n_test = 500
-test_images = train_triplets[:n_test]
-train_images = train_triplets[n_test:]
-
+train_images = train_triplets.sample(frac=1)
+# n_test = 500
+# test_images = train_triplets[:n_test]
 
 # In[9]:
 
@@ -171,7 +169,7 @@ def createResNetModel(emb_size):
 
     model = Model([input_anchor, input_positive, input_negative], stacked_dists, name='triple_siamese')
 
-    v_optimizer = optimizers.Adam(lr=0.001)
+    v_optimizer = optimizers.Adam(lr=LEARNING_RATE)
 
     model.compile(optimizer=v_optimizer, loss=triplet_loss, metrics=[accuracy])
 
@@ -212,7 +210,7 @@ def t_read_image(loc):
 
 
 # load file names
-for direc, subdir, file in os.walk(r"data/food"):
+for dir, subdir, file in os.walk(r"data/food"):
     list_dir = file[:]
 
 
@@ -248,7 +246,7 @@ else:
     cnn_model = keras.models.model_from_json(loaded_model_json)
     # load weights into new model
     cnn_model.load_weights("Xception.h5")
-    cnn_model.compile(optimizer=optimizers.Adam(lr=0.001), loss=triplet_loss, metrics=[accuracy])
+    cnn_model.compile(optimizer=optimizers.Adam(lr=LEARNING_RATE), loss=triplet_loss, metrics=[accuracy])
     print("Loaded model from disk")
 
 
@@ -269,26 +267,17 @@ print("Getting negatives train ...")
 negatives_train = [img_array[img] for img in np.array(train_images["C"])]
 
 
-# In[18]:
-
-
-print("Getting anchors test ...")
-anchors_test = [img_array[img] for img in np.array(test_images["A"])]
-print("Getting positives test ...")
-positives_test = [img_array[img] for img in np.array(test_images["B"])]
-print("Getting negatives test ...")
-negatives_test = [img_array[img] for img in np.array(test_images["C"])]
-
-
 # In[22]:
 
 
 numepochs = 100
 total_t_ch = int(np.ceil(len(anchors_train) / float(CHUNKSIZE)))
-total_v_ch = int(np.ceil(len(anchors_test) / float(CHUNKSIZE)))
-
 
 # In[ ]:
+
+xception_callbacks = [
+    tf.keras.callbacks.EarlyStopping(patience=4),
+]
 
 
 for e in tqdm(range(0, numepochs)):
@@ -299,36 +288,11 @@ for e in tqdm(range(0, numepochs)):
         negatives_t = negatives_train[t*CHUNKSIZE:(t+1)*CHUNKSIZE]
         Y_train = np.random.randint(2, size=(1,2,len(anchors_t))).T
         # This method does NOT use data augmentation
-        cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,  batch_size=BATCHSIZE)        
-
-
+        cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,
+                      batch_size=BATCHSIZE, callbacks=xception_callbacks, validation_split=0.1)
 # In[ ]:
 
 
-# In case the validation images don't fit in memory, we load chunks from disk again. 
-val_res = [0.0, 0.0]
-total_w = 0.0
-for v in range(0, total_v_ch):
-
-    print('Loading validation image lists ...')
-    print ("Epoch :{}, train chunk {}/{}...".format(e,v+1,total_v_ch))
-    anchors_v = anchors_test[v*CHUNKSIZE:(v+1)*CHUNKSIZE]
-    positives_v =positives_test[v*CHUNKSIZE:(v+1)*CHUNKSIZE]
-    negatives_v = negatives_test[v*CHUNKSIZE:(v+1)*CHUNKSIZE]
-    Y_val = np.random.randint(2, size=(1,2,len(anchors_v))).T
-
-    # Weight of current validation measurement. 
-    # if loaded expected number of items, this will be 1.0, otherwise < 1.0, and > 0.0.
-    w = float(len(anchors_v)) / float(CHUNKSIZE)
-    total_w = total_w + w
-
-    curval = cnn_model.evaluate([anchors_v, positives_v, negatives_v], Y_val, batch_size=BATCHSIZE)
-    val_res[0] = val_res[0] + w*curval[0]
-    val_res[1] = val_res[1] + w*curval[1]
-#     print(pd.Series(np.argmax(val_res)).value_counts())
-val_res = [x / total_w for x in val_res]
-
-print('Validation Results: ', str(val_res))
 
 
 # In[ ]:
@@ -343,21 +307,7 @@ cnn_model.save_weights("Xception_2.h5")
 print("Saved model to disk")
  
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
 # Now we want to generate the output 0, for each triplet of image on the validation to get the score
-
-
-# In[ ]:
-
 
 print("Getting anchors test ...")
 anchors_val = [img_array[img] for img in np.array(test_triplets["A"])]
@@ -365,9 +315,6 @@ print("Getting first images ...")
 first_val = [img_array[img] for img in np.array(test_triplets["B"])]
 print("Getting second test ...")
 second_val = [img_array[img] for img in np.array(test_triplets["C"])]
-
-
-# In[ ]:
 
 
 total_v_ch = int(np.ceil(len(anchors_val) / float(CHUNKSIZE)))
