@@ -170,9 +170,9 @@ for e in tqdm(range(0, EPOCHS)):
         # This method does NOT use data augmentation
         chunk_performance_data = cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,
                       batch_size=BATCHSIZE, validation_split=0.1)
-        chunks_val_acc.append(chunk_performance_data["val_accuracy"])
+        chunks_val_acc.append(chunk_performance_data.history["val_accuracy"])
     val_accuracies.append(sum(chunks_val_acc) / len(chunks_val_acc))
-    
+    print(f"Accuracy average: {sum(chunks_val_acc) / len(chunks_val_acc)}")
     # We stop if the validation loss is greater than the loss of the three previous epochs
     if len(val_accuracies)>10 and val_accuracies[-1]>val_accuracies[-2] and val_accuracies[-1]>val_accuracies[-3] and val_accuracies[-1]>val_accuracies[-4]:
         break
