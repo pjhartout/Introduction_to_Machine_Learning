@@ -24,11 +24,11 @@ import pandas as pd
 import cv2 
 from tqdm import tqdm
 
-print(keras.__version__)
+# print(keras.__version__)
 import tensorflow
-print(tensorflow.__version__)
+# print(tensorflow.__version__)
 from tensorflow.python.client import device_lib
-print(device_lib.list_local_devices())
+# print(device_lib.list_local_devices())
 
 T_G_WIDTH = 150
 T_G_HEIGHT = 150
@@ -158,11 +158,9 @@ negatives_train = [img_array[img] for img in np.array(train_images["C"])]
 
 total_t_ch = int(np.ceil(len(anchors_train) / float(CHUNKSIZE)))
 
-xception_callbacks = [
-    tf.keras.callbacks.EarlyStopping(patience=4),
-]
-
+val_accuracies = []
 for e in tqdm(range(0, EPOCHS)):
+    chunks_val_acc = []
     for t in tqdm(range(0, total_t_ch)):
         print ("Epoch :{}, train chunk {}/{}".format(e,t+1,total_t_ch))
         anchors_t = anchors_train[t*CHUNKSIZE:(t+1)*CHUNKSIZE]
@@ -170,9 +168,15 @@ for e in tqdm(range(0, EPOCHS)):
         negatives_t = negatives_train[t*CHUNKSIZE:(t+1)*CHUNKSIZE]
         Y_train = np.random.randint(2, size=(1,2,len(anchors_t))).T
         # This method does NOT use data augmentation
-        cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,
-                      batch_size=BATCHSIZE, callbacks=xception_callbacks, validation_split=0.1)
-
+        chunk_performance_data = cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,
+                      batch_size=BATCHSIZE, validation_split=0.1)
+        chunks_val_acc.append(chunk_performance_data["val_accuracy"])
+    val_accuracies.append(sum(chunks_val_acc) / len(chunks_val_acc))
+    
+    # We stop if the validation loss is greater than the loss of the three previous epochs
+    if len(val_accuracies)>10 and val_accuracies[-1]>val_accuracies[-2] and val_accuracies[-1]>val_accuracies[-3] and val_accuracies[-1]>val_accuracies[-4]:
+        break
+    
 # serialize model to JSON
 model_json = cnn_model.to_json()
 with open("model_2.json", "w") as json_file:
