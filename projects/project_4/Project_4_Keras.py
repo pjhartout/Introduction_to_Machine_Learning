@@ -38,8 +38,9 @@ BATCHSIZE = 32
 LEARNING_RATE=0.001
 USE_PRETRAINED_MODEL=False
 EPOCHS = 100
+MIN_EPOCHS=10 # minimal number of epochs before early stopping takes effect.
 
-train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ")
+train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ",nrows=30)
 test_triplets = pd.read_csv("data/test_triplets.txt", names=["A", "B", "C"], sep=" ")
 
 for column in ["A", "B", "C"]:
@@ -173,8 +174,11 @@ for e in tqdm(range(0, EPOCHS)):
         chunks_val_acc.append(chunk_performance_data.history["val_accuracy"])
     val_accuracies.append(sum(chunks_val_acc) / len(chunks_val_acc))
     print(f"Accuracy average: {sum(chunks_val_acc) / len(chunks_val_acc)}")
-    # We stop if the validation loss is greater than the loss of the three previous epochs
-    if len(val_accuracies)>10 and val_accuracies[-1]>val_accuracies[-2] and val_accuracies[-1]>val_accuracies[-3] and val_accuracies[-1]>val_accuracies[-4]:
+    # We stop if the difference between epochs is less than 0.05
+    difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
+    difference_2 = np.abs(val_accuracies[-1] - val_accuracies[-3])
+    difference_3 = np.abs(val_accuracies[-1] - val_accuracies[-4])
+    if difference_1<0.05 and difference_2<0.05 and difference_3<0.05 and len(val_accuracies)>MIN_EPOCHS:
         break
     
 # serialize model to JSON
