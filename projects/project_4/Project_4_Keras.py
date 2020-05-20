@@ -40,7 +40,7 @@ USE_PRETRAINED_MODEL=False
 EPOCHS = 100
 MIN_EPOCHS=10 # minimal number of epochs before early stopping takes effect.
 
-train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ",nrows=30)
+train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ")
 test_triplets = pd.read_csv("data/test_triplets.txt", names=["A", "B", "C"], sep=" ")
 
 for column in ["A", "B", "C"]:
@@ -171,15 +171,17 @@ for e in tqdm(range(0, EPOCHS)):
         # This method does NOT use data augmentation
         chunk_performance_data = cnn_model.fit([anchors_t, positives_t, negatives_t], Y_train, epochs=1,
                       batch_size=BATCHSIZE, validation_split=0.1)
-        chunks_val_acc.append(chunk_performance_data.history["val_accuracy"])
+        chunks_val_acc.append(chunk_performance_data.history["val_accuracy"][0])
+    print(chunks_val_acc)
     val_accuracies.append(sum(chunks_val_acc) / len(chunks_val_acc))
     print(f"Accuracy average: {sum(chunks_val_acc) / len(chunks_val_acc)}")
     # We stop if the difference between epochs is less than 0.05
-    difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
-    difference_2 = np.abs(val_accuracies[-1] - val_accuracies[-3])
-    difference_3 = np.abs(val_accuracies[-1] - val_accuracies[-4])
-    if difference_1<0.05 and difference_2<0.05 and difference_3<0.05 and len(val_accuracies)>MIN_EPOCHS:
-        break
+    if len(val_accuracies)>MIN_EPOCHS:
+        difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
+        difference_2 = np.abs(val_accuracies[-1] - val_accuracies[-3])
+        difference_3 = np.abs(val_accuracies[-1] - val_accuracies[-4])
+        if difference_1<0.05 and difference_2<0.05 and difference_3<0.05:
+            break
     
 # serialize model to JSON
 model_json = cnn_model.to_json()
