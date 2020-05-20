@@ -180,9 +180,9 @@ for e in tqdm(range(0, EPOCHS)):
         difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
         difference_2 = np.abs(val_accuracies[-1] - val_accuracies[-3])
         difference_3 = np.abs(val_accuracies[-1] - val_accuracies[-4])
-        if difference_1<0.05 and difference_2<0.05 and difference_3<0.05:
+        if difference_1<0.005 and difference_2<0.005 and difference_3<0.005:
             break
-    
+
 # serialize model to JSON
 model_json = cnn_model.to_json()
 with open("model_2.json", "w") as json_file:
