@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="JavaScriptSettings">
-    <option name="languageLevel" value="ES6" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.7.6 (sftp://pjh@tensorflow-20200510-142413.europe-west2-a.coastal-setting-276420:22/opt/conda/bin/python3.7)" project-jdk-type="Python SDK" />
-</project>

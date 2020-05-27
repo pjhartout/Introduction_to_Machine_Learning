@@ -460,7 +460,6 @@ joblib.dump(sepsis_model, f"xgboost_fine_sepsis.pkl")
 
 # ## Modelling vital signs
 
-# In[115]:
 
 
 # Modelling of vital signs
@@ -506,14 +505,8 @@ for i, sign in enumerate(VITAL_SIGNS):
     print(f"Finished test for medical tests.")
 
 
-# In[116]:
-
-
 for i, model in enumerate(models):
     joblib.dump(models[i], f"xgboost_fine_{VITAL_SIGNS[i]}.pkl")
-
-
-# In[117]:
 
 
 # Get predictions for vital signs using ANN
@@ -526,9 +519,6 @@ for i, vital_sign in enumerate(VITAL_SIGNS):
 df_pred_vital_signs = df_pred_vital_signs.reset_index().rename(columns={"index": "pid"})
 
 # ## Export to ZIP file
-
-# In[118]:
-
 
 df_predictions = pd.merge(df_pred_medical_test, df_pred_sepsis, on="pid")
 df_predictions = pd.merge(df_predictions, df_pred_vital_signs, on="pid")
