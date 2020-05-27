@@ -31,7 +31,7 @@ T_G_WIDTH = 150
 T_G_HEIGHT = 150
 T_G_NUMCHANNELS = 3
 CHUNKSIZE = 4096 
-BATCHSIZE = 32
+BATCHSIZE = 64
 LEARNING_RATE = 0.001
 EPOCHS = 1
 MIN_EPOCHS = 10  # minimal number of epochs before early stopping takes effect.
@@ -46,7 +46,7 @@ for column in ["A", "B", "C"]:
     train_triplets[column] = train_triplets[column].apply(lambda x: x.zfill(5))
     test_triplets[column] = test_triplets[column].apply(lambda x: x.zfill(5))
 
-train_images = train_triplets.sample(frac=1)
+train_images = train_triplets.sample(fracs=1)
 
 
 def createXceptionModel(emb_size):
