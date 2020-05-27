@@ -8,7 +8,7 @@ import keras
 import tensorflow as tf
 import tensorflow_addons as tfa
 
-import keras.applications
+import tensorflow.keras.applications as tfapp
 from keras import backend as K
 from keras.models import Model
 from keras import optimizers
@@ -30,11 +30,11 @@ import tensorflow
 from tensorflow.python.client import device_lib
 # print(device_lib.list_local_devices())
 
-T_G_WIDTH = 150
-T_G_HEIGHT = 150
+T_G_WIDTH = 100
+T_G_HEIGHT = 100
 T_G_NUMCHANNELS = 3
-CHUNKSIZE = 256
-BATCHSIZE = 32
+CHUNKSIZE = 160
+BATCHSIZE = 16
 LEARNING_RATE=0.001
 USE_PRETRAINED_MODEL=False
 EPOCHS = 100
@@ -56,36 +56,36 @@ train_triplets.head()
 train_images = train_triplets.sample(frac=1)
 
 def createResNetModel(emb_size):
-
     # Initialize a ResNet50_ImageNet Model
-    xception_input = kl.Input(shape=(T_G_WIDTH,T_G_HEIGHT,T_G_NUMCHANNELS))
-    xception_model = keras.applications.Xception(include_top=False,
+    model_input = kl.Input(shape=(T_G_WIDTH,T_G_HEIGHT,T_G_NUMCHANNELS))
+    model_VGG = tfapp.VGG16(
+        include_top=False,
         weights="imagenet",
-        input_tensor=xception_input,
+        input_tensor=model_input,
         input_shape=None,
-        pooling=max,
+        pooling=None,
+        classes=None,
+        classifier_activation="softmax",
     )
-
+    """
     # New Layers over ResNet50
-    net = xception_model.output
+    net = model_VGG.output
     net = kl.GlobalAveragePooling2D(name='gap')(net)
     net = kl.Dropout(0.5)(net)
     net = kl.Dense(emb_size,activation='relu',name='t_emb_1')(net)
     net = kl.Lambda(lambda  x: K.l2_normalize(x,axis=1), name='t_emb_1_l2norm')(net)
     
     # model creation
-    base_model = Model(xception_model.input, net, name="base_model")
+    base_model = Model(model_VGG.input, net, name="base_model")"""
 
     # triplet framework, shared weights
     input_shape=(T_G_WIDTH,T_G_HEIGHT,T_G_NUMCHANNELS)
     input_anchor = kl.Input(shape=input_shape, name='input_anchor')
     input_positive = kl.Input(shape=input_shape, name='input_pos')
     input_negative = kl.Input(shape=input_shape, name='input_neg')
-    print(type(base_model))
-    print(type(input_positive))
-    net_anchor = base_model(input_anchor)
-    net_positive = base_model(input_positive)
-    net_negative = base_model(input_negative)
+    net_anchor = model_VGG(input_anchor)
+    net_positive = model_VGG(input_positive)
+    net_negative = model_VGG    (input_negative)
 
     # The Lamda layer produces output using given function. Here its Euclidean distance.
     positive_dist = kl.Lambda(euclidean_distance, name='pos_dist')([net_anchor, net_positive])
@@ -121,17 +121,17 @@ def t_read_image(loc):
     t_image = cv2.imread(loc)
     t_image = cv2.resize(t_image, (T_G_HEIGHT,T_G_WIDTH))
     t_image = t_image.astype("float32")
-    t_image = keras.applications.resnet50.preprocess_input(t_image, data_format='channels_last')
+    model_input = tfapp.vgg19.preprocess_input(t_image)
 
     return t_image
 
 # load file names
 for main_dir, subdir, file in os.walk(r"data/food/"):
-    list_dir = file[:]
+    list_dir = file[1:]
 # load the image
 img_array = {}
 for file in tqdm(list_dir):
-    img = t_read_image(os.path.join("data/food", file))
+    img = t_read_image(os.path.join("data/food/", file))
     img_array[file.split(".jpg")[0]]=img_to_array(img)
 
 USE_PRETRAINED_MODEL = False
@@ -156,7 +156,7 @@ print("Getting negatives train ...")
 negatives_train = [img_array[img] for img in np.array(train_images["C"])]
 
 
-
+"""
 total_t_ch = int(np.ceil(len(anchors_train) / float(CHUNKSIZE)))
 
 val_accuracies = []
@@ -174,7 +174,7 @@ for e in tqdm(range(0, EPOCHS)):
         chunks_val_acc.append(chunk_performance_data.history["val_accuracy"][0])
     print(chunks_val_acc)
     val_accuracies.append(sum(chunks_val_acc) / len(chunks_val_acc))
-    print(f"Accuracy average: {sum(chunks_val_acc) / len(chunks_val_acc)}")
+    print("Accuracy average: { {}/{} }".format(sum(chunks_val_acc),len(chunks_val_acc)))
     # We stop if the difference between epochs is less than 0.05
     if len(val_accuracies)>MIN_EPOCHS:
         difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
@@ -190,7 +190,7 @@ with open("model_2.json", "w") as json_file:
 # serialize weights to HDF5
 cnn_model.save_weights("Xception_2.h5")
 print("Saved model to disk")
- 
+"""
 # Now we want to generate the output 0, for each triplet of image on the validation to get the score
 print("Getting anchors test ...")
 anchors_val = [img_array[img] for img in np.array(test_triplets["A"])]
