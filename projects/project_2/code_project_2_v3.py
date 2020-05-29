@@ -23,7 +23,7 @@ from tqdm import tqdm
 
 
 PERCENT_PRESENT_THRESHOLD = 0.8 # all columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 100 # Number of models to be fitted for each
+N_ITER = 1 # Number of models to be fitted for each
 
 IDENTIFIERS = ["pid", "Time"]
 
@@ -187,7 +187,7 @@ print("Finished prediction df preparations.")
 # Training all classifiers
 ####################################################################################################
 print("Starting training models medical tests")
-for i, clf in tqdm(enumerate(CLASSIFIERS)):
+for i, clf in enumerate(CLASSIFIERS):
     print(f"Fitting model for {clf}.")
     y_train = df_train_labels[clf].astype(int).values
     X_train, X_test, y_train, y_test = train_test_split(
@@ -240,7 +240,7 @@ print("Finished training classifiers")
 ####################################################################################################
 # Training all regressors
 ####################################################################################################
-for i, reg in tqdm(enumerate(REGRESSORS)):
+for i, reg in enumerate(REGRESSORS):
     print(f"Fitting model for {reg}.")
     y_train = df_train_labels[reg].astype(int).values
     X_train, X_test, y_train, y_test = train_test_split(
