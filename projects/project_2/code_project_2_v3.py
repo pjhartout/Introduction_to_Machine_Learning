@@ -22,8 +22,10 @@ from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from tqdm import tqdm
 
 
-PERCENT_PRESENT_THRESHOLD = 0.8 # all columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 1 # Number of models to be fitted for each
+PERCENT_PRESENT_THRESHOLD = (
+    0.8
+)  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
+N_ITER = 100  # Number of models to be fitted for each
 
 IDENTIFIERS = ["pid", "Time"]
 
@@ -101,21 +103,27 @@ df_train_features.index = pd.MultiIndex.from_arrays(
     names=["pid", "Time"],
 )
 # Unstack columns which have multiple values available as determined in percent_missing
-df_train_features_unstacked = df_train_features[features_to_time_series].unstack(level=-1)
+df_train_features_unstacked = df_train_features[features_to_time_series].unstack(
+    level=-1
+)
 
 # Take the median of all other columns
 features_to_median = np.setdiff1d(df_train_features.columns, features_to_time_series)
-df_train_features_median = df_train_features[features_to_median].groupby(level=0).median()
+df_train_features_median = (
+    df_train_features[features_to_median].groupby(level=0).median()
+)
 
-mask_column_names = [
-        sub + "_presence" for sub in features_to_median
-    ]
+mask_column_names = [sub + "_presence" for sub in features_to_median]
 
 # Add masking variable
-df_train_features_mask = df_train_features_median.mask(df_train_features_median.isna(), 0) 
+df_train_features_mask = df_train_features_median.mask(
+    df_train_features_median.isna(), 0
+)
 df_train_features_mask[df_train_features_mask != 0] = 1
 
-df_train_features_median = df_train_features_median.join(df_train_features_mask, rsuffix='_presence')
+df_train_features_median = df_train_features_median.join(
+    df_train_features_mask, rsuffix="_presence"
+)
 
 # Merge result
 df_train_features = pd.merge(
@@ -152,10 +160,12 @@ df_test_features_unstacked = df_test_features[features_to_time_series].unstack(l
 df_test_features_median = df_test_features[features_to_median].groupby(level=0).median()
 
 # Add masking variable
-df_test_features_mask = df_test_features_median.mask(df_test_features_median.isna(), 0) 
+df_test_features_mask = df_test_features_median.mask(df_test_features_median.isna(), 0)
 df_test_features_mask[df_test_features_mask != 0] = 1
 
-df_test_features_median = df_test_features_median.join(df_test_features_mask, rsuffix='_presence')
+df_test_features_median = df_test_features_median.join(
+    df_test_features_mask, rsuffix="_presence"
+)
 
 # Merge result
 df_test_features = pd.merge(
@@ -229,7 +239,10 @@ for i, clf in enumerate(CLASSIFIERS):
     print(f"Best parameters {clf_search.best_params_}")
 
     # Model persistence
-    joblib.dump(clf_search.best_estimator_, f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl")
+    joblib.dump(
+        clf_search.best_estimator_,
+        f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl",
+    )
 
     # Validation predictions
     y_pred = clf_search.best_estimator_.predict_proba(X_val)[:, 1]
@@ -269,11 +282,16 @@ for i, reg in enumerate(REGRESSORS):
 
     regressor_search.fit(X_train, y_train)
     print(f"CV score {regressor_search.best_score_}")
-    print(f"Test score is {r2_score(y_test, regressor_search.best_estimator_.predict(X_test))}")
+    print(
+        f"Test score is {r2_score(y_test, regressor_search.best_estimator_.predict(X_test))}"
+    )
     print(f"Finished test for medical tests.")
 
     # Model persistence
-    joblib.dump(regressor_search.best_estimator_, f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl")
+    joblib.dump(
+        regressor_search.best_estimator_,
+        f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl",
+    )
 
     y_pred = regressor_search.best_estimator_.predict(X_val)
     df_pred_reg[reg] = y_pred
@@ -290,9 +308,11 @@ df_predictions.to_csv(
     sep=",",
     header=True,
     encoding="utf-8-sig",
-    float_format="%.2f", 
+    float_format="%.2f",
 )
 
-with zipfile.ZipFile("projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED) as zf:
+with zipfile.ZipFile(
+    "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
+) as zf:
     zf.write("projects/project_2/predictions.csv")
 os.remove("projects/project_2/predictions.csv")
