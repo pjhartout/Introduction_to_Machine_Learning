@@ -209,11 +209,21 @@ for i, clf in enumerate(CLASSIFIERS):
     X_train, y_train = sampler.fit_resample(X_train, y_train)
 
     parameter_distributions = {
+        "booster": ["dart"],
         "n_estimators": stats.randint(150, 500),
         "learning_rate": stats.uniform(0.01, 0.07),
-        "max_depth": [4, 5, 6, 7],
+        "max_depth": [4, 5, 6, 7, 8, 9, 10],
         "colsample_bytree": stats.uniform(0.5, 0.45),
-        "min_child_weight": [1, 2, 3],
+        "min_child_weight": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "eta": stats.uniform(0, 1),
+        "gamma": range(0, 100, 1),
+        "max_delta_step": range(1, 10, 1),
+        "subsample": np.arange(0.1, 1, 0.05),
+        "colsample_bytree": np.arange(0.3, 1, 0.05),
+        "scale_pos_weight": [1],
+        "reg_lambda": [0, 1],  # Ridge regularization
+        "reg_alpha": [0, 1],  # Lasso regularization
+        "eval_metric": ["error"],
     }
 
     model = xgb.XGBClassifier(objective="binary:logistic", n_thread=-1)
