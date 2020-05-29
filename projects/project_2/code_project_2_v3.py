@@ -6,14 +6,6 @@ from __future__ import print_function
 """ This is the Implementation of project 3, version 3.
 This script is meant to be executed from the root of the IML repository.
 
-Objectives:
-- implement XGBoost for all subtasks
-- no imputation
-- where n% of values are available, take them all and interpolate
-- add masking variables
-- standard scaler
-- train with n iterations from random search
-
 """
 
 import joblib
@@ -31,7 +23,7 @@ from tqdm import tqdm
 
 
 PERCENT_PRESENT_THRESHOLD = 0.8 # all columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 1 # Number of models to be fitted for each
+N_ITER = 100 # Number of models to be fitted for each
 
 IDENTIFIERS = ["pid", "Time"]
 
@@ -89,8 +81,10 @@ df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
 df_test_features = pd.read_csv("projects/project_2/data/test_features.csv")
 print("Data loaded.")
 
-###############################################################################
-## Preprocessing our training data
+####################################################################################################
+# Preprocessing training data
+####################################################################################################
+
 percent_missing = df_train_features.isnull().sum() * 100 / len(df_train_features)
 
 features_to_time_series = percent_missing[
@@ -138,9 +132,10 @@ for i in tqdm(range(len(features_to_time_series))):
 scaler = StandardScaler()
 X_train_preprocessed = scaler.fit_transform(df_train_features)
 
-#######################################################################################################################
+####################################################################################################
+# Preprocessing testing data
+####################################################################################################
 
-## Preprocessing our testing data
 df_test_features = df_test_features.set_index(IDENTIFIERS)
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_test_features.index = pd.MultiIndex.from_arrays(
@@ -179,16 +174,18 @@ X_val = scaler.transform(df_test_features)
 
 print("Finished feature preprocessing.")
 
-###############################################################################
+####################################################################################################
+# Preprocessing prediction df
+####################################################################################################
 
 val_pids = np.unique(df_test_features.index.values)
 df_pred_clf = pd.DataFrame(index=val_pids, columns=CLASSIFIERS)
 df_pred_reg = pd.DataFrame(index=val_pids, columns=REGRESSORS)
 print("Finished prediction df preparations.")
 
-###############################################################################
-sampler = RandomUnderSampler(random_state=42)
-
+####################################################################################################
+# Training all classifiers
+####################################################################################################
 print("Starting training models medical tests")
 for i, clf in tqdm(enumerate(CLASSIFIERS)):
     print(f"Fitting model for {clf}.")
@@ -239,6 +236,10 @@ for i, clf in tqdm(enumerate(CLASSIFIERS)):
     df_pred_clf[clf] = y_pred
 
 print("Finished training classifiers")
+
+####################################################################################################
+# Training all regressors
+####################################################################################################
 for i, reg in tqdm(enumerate(REGRESSORS)):
     print(f"Fitting model for {reg}.")
     y_train = df_train_labels[reg].astype(int).values
@@ -277,7 +278,9 @@ for i, reg in tqdm(enumerate(REGRESSORS)):
     y_pred = regressor_search.best_estimator_.predict(X_val)
     df_pred_reg[reg] = y_pred
 
-
+####################################################################################################
+# Process and export predictions
+####################################################################################################
 df_predictions = df_pred_clf.join(df_pred_reg)
 
 print("Export predictions DataFrame to a zip file")
