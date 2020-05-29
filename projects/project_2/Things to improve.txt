@@ -1,6 +1,0 @@
-Following conversation with Gian:
-* Rewrite code such that XGBoost is used everywhere
-* RandomUnderSampler (without replacement, but should not be a problem)
-* Use one line per patient
-* Don't do imputation
-* Run 150 fits per label
