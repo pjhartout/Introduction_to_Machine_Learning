@@ -21,7 +21,6 @@ from sklearn.model_selection import RandomizedSearchCV, train_test_split
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from tqdm import tqdm
 
-
 PERCENT_PRESENT_THRESHOLD = (
     0.8
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
@@ -100,7 +99,7 @@ percent_missing = df_train_features.isnull().sum() * 100 / len(df_train_features
 
 features_to_time_series = percent_missing[
     (percent_missing > 0) & (percent_missing < (1 - PERCENT_PRESENT_THRESHOLD) * 100)
-].index.tolist()
+    ].index.tolist()
 
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_train_features.index = pd.MultiIndex.from_arrays(
@@ -141,8 +140,8 @@ df_train_features = pd.merge(
 # Take care of interpolation on time series data
 print("Interpolate time series training features")
 for i in tqdm(range(len(features_to_time_series))):
-    df_train_features[df_train_features.columns[i : i + 12]] = df_train_features[
-        df_train_features.columns[i : i + 12]
+    df_train_features[df_train_features.columns[i: i + 12]] = df_train_features[
+        df_train_features.columns[i: i + 12]
     ].interpolate(axis=1)
 
 df_train_labels.join(df_train_features)
@@ -184,8 +183,8 @@ df_test_features = pd.merge(
 # Take care of interpolation on time series data
 print("Interpolate time series testing features")
 for i in tqdm(range(len(features_to_time_series))):
-    df_test_features[df_test_features.columns[i : i + 12]] = df_test_features[
-        df_test_features.columns[i : i + 12]
+    df_test_features[df_test_features.columns[i: i + 12]] = df_test_features[
+        df_test_features.columns[i: i + 12]
     ].interpolate(axis=1)
 
 # Scale the data using tranform
@@ -243,7 +242,8 @@ for i, clf in enumerate(CLASSIFIERS):
     # Performance outline
     print(clf_search.best_estimator_.predict_proba(X_test)[:, 1])
     print(
-        f"ROC score on test set {roc_auc_score(y_test, clf_search.best_estimator_.predict_proba(X_test)[:,1])}"
+        f"ROC score on test set "
+        f"{roc_auc_score(y_test, clf_search.best_estimator_.predict_proba(X_test)[:, 1])}"
     )
     print(f"CV score {clf_search.best_score_}")
     print(f"Best parameters {clf_search.best_params_}")
@@ -322,7 +322,7 @@ df_predictions.to_csv(
 )
 
 with zipfile.ZipFile(
-    "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
+        "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
 ) as zf:
     zf.write("projects/project_2/predictions.csv")
 os.remove("projects/project_2/predictions.csv")
