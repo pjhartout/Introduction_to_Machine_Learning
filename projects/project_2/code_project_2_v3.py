@@ -18,7 +18,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from scipy import stats
 from sklearn.metrics import roc_auc_score, r2_score
 from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
+from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
 PERCENT_PRESENT_THRESHOLD = (
