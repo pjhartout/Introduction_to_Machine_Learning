@@ -26,7 +26,7 @@ PERCENT_PRESENT_THRESHOLD = (
     0.8
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
 N_ITER = 100  # Number of models to be fitted for each
-
+CV_FOLDS = 10
 IDENTIFIERS = ["pid", "Time"]
 
 CLASSIFIERS = [
@@ -82,6 +82,15 @@ df_train_features = pd.read_csv("projects/project_2/data/train_features.csv")
 df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
 df_test_features = pd.read_csv("projects/project_2/data/test_features.csv")
 print("Data loaded.")
+####################################################################################################
+# Set and sort indices
+####################################################################################################
+df_train_labels = df_train_labels.set_index("pid")
+df_train_labels = df_train_labels.sort_index()
+df_train_features = df_train_features.set_index(IDENTIFIERS)
+df_train_features = df_train_features.sort_index()
+df_test_features = df_test_features.set_index(IDENTIFIERS)
+df_test_features = df_test_features.sort_index()
 
 ####################################################################################################
 # Preprocessing training data
@@ -93,7 +102,6 @@ features_to_time_series = percent_missing[
     (percent_missing > 0) & (percent_missing < (1 - PERCENT_PRESENT_THRESHOLD) * 100)
 ].index.tolist()
 
-df_train_features = df_train_features.set_index(IDENTIFIERS)
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_train_features.index = pd.MultiIndex.from_arrays(
     [
@@ -137,6 +145,8 @@ for i in tqdm(range(len(features_to_time_series))):
         df_train_features.columns[i : i + 12]
     ].interpolate(axis=1)
 
+df_train_labels.join(df_train_features)
+
 scaler = StandardScaler()
 X_train_preprocessed = scaler.fit_transform(df_train_features)
 
@@ -144,7 +154,6 @@ X_train_preprocessed = scaler.fit_transform(df_train_features)
 # Preprocessing testing data
 ####################################################################################################
 
-df_test_features = df_test_features.set_index(IDENTIFIERS)
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_test_features.index = pd.MultiIndex.from_arrays(
     [
@@ -209,21 +218,11 @@ for i, clf in enumerate(CLASSIFIERS):
     X_train, y_train = sampler.fit_resample(X_train, y_train)
 
     parameter_distributions = {
-        "booster": ["dart"],
         "n_estimators": stats.randint(150, 500),
         "learning_rate": stats.uniform(0.01, 0.07),
-        "max_depth": [4, 5, 6, 7, 8, 9, 10],
+        "max_depth": [4, 5, 6, 7],
         "colsample_bytree": stats.uniform(0.5, 0.45),
-        "min_child_weight": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "eta": stats.uniform(0, 1),
-        "gamma": range(0, 100, 1),
-        "max_delta_step": range(1, 10, 1),
-        "subsample": np.arange(0.1, 1, 0.05),
-        "colsample_bytree": np.arange(0.3, 1, 0.05),
-        "scale_pos_weight": [1],
-        "reg_lambda": [0, 1],  # Ridge regularization
-        "reg_alpha": [0, 1],  # Lasso regularization
-        "eval_metric": ["error"],
+        "min_child_weight": [1, 2, 3],
     }
 
     model = xgb.XGBClassifier(objective="binary:logistic", n_thread=-1)
@@ -231,6 +230,7 @@ for i, clf in enumerate(CLASSIFIERS):
     clf_search = RandomizedSearchCV(
         model,
         param_distributions=parameter_distributions,
+        cv=CV_FOLDS,
         n_iter=N_ITER,
         scoring="roc_auc",
         error_score=0,
@@ -285,7 +285,7 @@ for i, reg in enumerate(REGRESSORS):
         param_distributions=parameter_distributions,
         scoring="r2",
         n_jobs=-1,
-        cv=10,
+        cv=CV_FOLDS,
         n_iter=N_ITER,
         verbose=1,
     )
@@ -309,7 +309,7 @@ for i, reg in enumerate(REGRESSORS):
 ####################################################################################################
 # Process and export predictions
 ####################################################################################################
-df_predictions = df_pred_clf.join(df_pred_reg)
+df_predictions = df_pred_clf.join(df_pred_reg).sort_index
 
 print("Export predictions DataFrame to a zip file")
 df_predictions.to_csv(
