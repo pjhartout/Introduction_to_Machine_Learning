@@ -26,6 +26,15 @@ PERCENT_PRESENT_THRESHOLD = (
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
 N_ITER = 100  # Number of models to be fitted for each
 CV_FOLDS = 10
+
+PARAM_DIST = {
+        "n_estimators": stats.randint(150, 500),
+        "learning_rate": stats.uniform(0.01, 0.07),
+        "max_depth": [4, 5, 6, 7],
+        "colsample_bytree": stats.uniform(0.5, 0.45),
+        "min_child_weight": [1, 2, 3],
+}
+
 IDENTIFIERS = ["pid", "Time"]
 
 CLASSIFIERS = [
@@ -216,19 +225,11 @@ for i, clf in enumerate(CLASSIFIERS):
     sampler = RandomUnderSampler(random_state=42)
     X_train, y_train = sampler.fit_resample(X_train, y_train)
 
-    parameter_distributions = {
-        "n_estimators": stats.randint(150, 500),
-        "learning_rate": stats.uniform(0.01, 0.07),
-        "max_depth": [4, 5, 6, 7],
-        "colsample_bytree": stats.uniform(0.5, 0.45),
-        "min_child_weight": [1, 2, 3],
-    }
-
     model = xgb.XGBClassifier(objective="binary:logistic", n_thread=-1)
 
     clf_search = RandomizedSearchCV(
         model,
-        param_distributions=parameter_distributions,
+        param_distributions=PARAM_DIST,
         cv=CV_FOLDS,
         n_iter=N_ITER,
         scoring="roc_auc",
@@ -270,19 +271,11 @@ for i, reg in enumerate(REGRESSORS):
         X_train_preprocessed, y_train, test_size=0.10, random_state=42, shuffle=True
     )
 
-    parameter_distributions = {
-        "n_estimators": stats.randint(150, 500),
-        "learning_rate": stats.uniform(0.01, 0.07),
-        "max_depth": [4, 5, 6, 7],
-        "colsample_bytree": stats.uniform(0.5, 0.45),
-        "min_child_weight": [1, 2, 3],
-    }
-
     regressor = xgb.XGBRegressor(objective="reg:squarederror", n_thread=-1)
 
     regressor_search = RandomizedSearchCV(
         estimator=regressor,
-        param_distributions=parameter_distributions,
+        param_distributions=PARAM_DIST,
         scoring="r2",
         n_jobs=-1,
         cv=CV_FOLDS,
