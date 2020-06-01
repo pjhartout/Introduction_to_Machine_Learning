@@ -302,7 +302,7 @@ for i, reg in enumerate(REGRESSORS):
 ####################################################################################################
 # Process and export predictions
 ####################################################################################################
-df_predictions = df_pred_clf.join(df_pred_reg).sort_index
+df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 
 print("Export predictions DataFrame to a zip file")
 df_predictions.to_csv(
