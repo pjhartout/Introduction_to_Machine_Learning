@@ -55,36 +55,6 @@ REGRESSORS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 
 SEPSIS = ["LABEL_Sepsis"]
 
-FEATURES_MNAR = [
-    "EtCO2",
-    "PTT",
-    "BUN",
-    "Lactate",
-    "Hgb",
-    "HCO3",
-    "BaseExcess",
-    "Fibrinogen",
-    "Phosphate",
-    "WBC",
-    "Creatinine",
-    "PaCO2",
-    "AST",
-    "FiO2",
-    "Platelets",
-    "SaO2",
-    "Glucose",
-    "Magnesium",
-    "Potassium",
-    "Calcium",
-    "Alkalinephos",
-    "Bilirubin_direct",
-    "Chloride",
-    "Hct",
-    "Bilirubin_total",
-    "TroponinI",
-    "pH",
-]
-
 print("Loading data.")
 df_train_features = pd.read_csv("projects/project_2/data/train_features.csv")
 df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
@@ -271,10 +241,10 @@ for i, reg in enumerate(REGRESSORS):
         X_train_preprocessed, y_train, test_size=0.10, random_state=42, shuffle=True
     )
 
-    regressor = xgb.XGBRegressor(objective="reg:squarederror", n_thread=-1)
+    model = xgb.XGBRegressor(objective="reg:squarederror", n_thread=-1)
 
     regressor_search = RandomizedSearchCV(
-        estimator=regressor,
+        estimator=model,
         param_distributions=PARAM_DIST,
         scoring="r2",
         n_jobs=-1,
