@@ -25,7 +25,7 @@ PERCENT_PRESENT_THRESHOLD = (
     0.8
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
 N_ITER = 100  # Number of models to be fitted for each
-CV_FOLDS = 10
+CV_FOLDS = 10 # Cross validation folds
 
 PARAM_DIST = {
         "n_estimators": stats.randint(150, 500),
