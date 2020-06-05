@@ -24,15 +24,15 @@ from tqdm import tqdm
 PERCENT_PRESENT_THRESHOLD = (
     0.8
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 100  # Number of models to be fitted for each
-CV_FOLDS = 10 # Cross validation folds
+N_ITER = 1  # Number of models to be fitted for each
+CV_FOLDS = 5  # Cross validation folds
 
 PARAM_DIST = {
-        "n_estimators": stats.randint(150, 500),
-        "learning_rate": stats.uniform(0.01, 0.07),
-        "max_depth": [4, 5, 6, 7],
-        "colsample_bytree": stats.uniform(0.5, 0.45),
-        "min_child_weight": [1, 2, 3],
+    "n_estimators": stats.randint(150, 500),
+    "learning_rate": stats.uniform(0.01, 0.07),
+    "max_depth": [4, 5, 6, 7],
+    "colsample_bytree": stats.uniform(0.5, 0.45),
+    "min_child_weight": [1, 2, 3],
 }
 
 IDENTIFIERS = ["pid", "Time"]
@@ -60,9 +60,9 @@ df_train_features = pd.read_csv("projects/project_2/data/train_features.csv")
 df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
 df_test_features = pd.read_csv("projects/project_2/data/test_features.csv")
 print("Data loaded.")
-####################################################################################################
+################################################################################
 # Set and sort indices
-####################################################################################################
+################################################################################
 df_train_labels = df_train_labels.set_index("pid")
 df_train_labels = df_train_labels.sort_index()
 df_train_features = df_train_features.set_index(IDENTIFIERS)
@@ -70,15 +70,15 @@ df_train_features = df_train_features.sort_index()
 df_test_features = df_test_features.set_index(IDENTIFIERS)
 df_test_features = df_test_features.sort_index()
 
-####################################################################################################
+################################################################################
 # Preprocessing training data
-####################################################################################################
+################################################################################
 
 percent_missing = df_train_features.isnull().sum() * 100 / len(df_train_features)
 
 features_to_time_series = percent_missing[
     (percent_missing > 0) & (percent_missing < (1 - PERCENT_PRESENT_THRESHOLD) * 100)
-    ].index.tolist()
+].index.tolist()
 
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_train_features.index = pd.MultiIndex.from_arrays(
@@ -119,8 +119,8 @@ df_train_features = pd.merge(
 # Take care of interpolation on time series data
 print("Interpolate time series training features")
 for i in tqdm(range(len(features_to_time_series))):
-    df_train_features[df_train_features.columns[i: i + 12]] = df_train_features[
-        df_train_features.columns[i: i + 12]
+    df_train_features[df_train_features.columns[i : i + 12]] = df_train_features[
+        df_train_features.columns[i : i + 12]
     ].interpolate(axis=1)
 
 df_train_labels.join(df_train_features)
@@ -128,9 +128,9 @@ df_train_labels.join(df_train_features)
 scaler = StandardScaler()
 X_train_preprocessed = scaler.fit_transform(df_train_features)
 
-####################################################################################################
+################################################################################
 # Preprocessing testing data
-####################################################################################################
+################################################################################
 
 # This resets the time index to indicate that all values have the same secondary index (0-11)
 df_test_features.index = pd.MultiIndex.from_arrays(
@@ -162,8 +162,8 @@ df_test_features = pd.merge(
 # Take care of interpolation on time series data
 print("Interpolate time series testing features")
 for i in tqdm(range(len(features_to_time_series))):
-    df_test_features[df_test_features.columns[i: i + 12]] = df_test_features[
-        df_test_features.columns[i: i + 12]
+    df_test_features[df_test_features.columns[i : i + 12]] = df_test_features[
+        df_test_features.columns[i : i + 12]
     ].interpolate(axis=1)
 
 # Scale the data using tranform
@@ -171,18 +171,18 @@ X_val = scaler.transform(df_test_features)
 
 print("Finished feature preprocessing.")
 
-####################################################################################################
+################################################################################
 # Preprocessing prediction df
-####################################################################################################
+################################################################################
 
 val_pids = np.unique(df_test_features.index.values)
 df_pred_clf = pd.DataFrame(index=val_pids, columns=CLASSIFIERS)
 df_pred_reg = pd.DataFrame(index=val_pids, columns=REGRESSORS)
 print("Finished prediction df preparations.")
 
-####################################################################################################
+################################################################################
 # Training all classifiers
-####################################################################################################
+################################################################################
 print("Starting training models medical tests")
 for i, clf in enumerate(CLASSIFIERS):
     print(f"Fitting model for {clf}.")
@@ -231,9 +231,9 @@ for i, clf in enumerate(CLASSIFIERS):
 
 print("Finished training classifiers")
 
-####################################################################################################
+################################################################################
 # Training all regressors
-####################################################################################################
+################################################################################
 for i, reg in enumerate(REGRESSORS):
     print(f"Fitting model for {reg}.")
     y_train = df_train_labels[reg].astype(int).values
@@ -269,9 +269,9 @@ for i, reg in enumerate(REGRESSORS):
     y_pred = regressor_search.best_estimator_.predict(X_val)
     df_pred_reg[reg] = y_pred
 
-####################################################################################################
+################################################################################
 # Process and export predictions
-####################################################################################################
+################################################################################
 df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 
 print("Export predictions DataFrame to a zip file")
@@ -286,7 +286,7 @@ df_predictions.to_csv(
 )
 
 with zipfile.ZipFile(
-        "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
+    "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
 ) as zf:
     zf.write("predictions.csv")
 os.remove("projects/project_2/predictions.csv")
