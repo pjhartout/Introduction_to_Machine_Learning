@@ -277,7 +277,8 @@ df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 print("Export predictions DataFrame to a zip file")
 df_predictions.to_csv(
     "projects/project_2/predictions.csv",
-    index=None,
+    index=True,
+    index_label="pid",
     sep=",",
     header=True,
     encoding="utf-8-sig",
@@ -287,5 +288,5 @@ df_predictions.to_csv(
 with zipfile.ZipFile(
         "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
 ) as zf:
-    zf.write("projects/project_2/predictions.csv")
+    zf.write("predictions.csv")
 os.remove("projects/project_2/predictions.csv")
