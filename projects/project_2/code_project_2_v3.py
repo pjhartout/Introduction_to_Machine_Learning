@@ -7,6 +7,12 @@ from __future__ import print_function
 This script is meant to be executed from the root of the IML repository.
 
 """
+from imblearn.under_sampling import RandomUnderSampler
+from scipy import stats
+from sklearn.metrics import roc_auc_score, r2_score
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
 
 import joblib
 import zipfile
@@ -14,12 +20,6 @@ import os
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from imblearn.under_sampling import RandomUnderSampler
-from scipy import stats
-from sklearn.metrics import roc_auc_score, r2_score
-from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from sklearn.preprocessing import StandardScaler
-from tqdm import tqdm
 
 PERCENT_PRESENT_THRESHOLD = (
     0.8
@@ -255,15 +255,16 @@ for i, reg in enumerate(REGRESSORS):
 
     regressor_search.fit(X_train, y_train)
     print(f"CV score {regressor_search.best_score_}")
+    y_pred = regressor_search.best_estimator_.predict(X_test)
     print(
-        f"Test score is {r2_score(y_test, regressor_search.best_estimator_.predict(X_test))}"
+        f"Test score is {r2_score(y_test, y_pred)}"
     )
     print(f"Finished test for medical tests.")
 
     # Model persistence
     joblib.dump(
         regressor_search.best_estimator_,
-        f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl",
+        f"projects/project_2/xgboost_fine_{REGRESSORS[i]}.pkl",
     )
 
     y_pred = regressor_search.best_estimator_.predict(X_val)
@@ -272,6 +273,7 @@ for i, reg in enumerate(REGRESSORS):
 ################################################################################
 # Process and export predictions
 ################################################################################
+
 df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 
 print("Export predictions DataFrame to a zip file")
