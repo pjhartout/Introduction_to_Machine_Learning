@@ -7,12 +7,6 @@ from __future__ import print_function
 This script is meant to be executed from the root of the IML repository.
 
 """
-from imblearn.under_sampling import RandomUnderSampler
-from scipy import stats
-from sklearn.metrics import roc_auc_score, r2_score
-from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from sklearn.preprocessing import StandardScaler
-from tqdm import tqdm
 
 import joblib
 import zipfile
@@ -20,6 +14,14 @@ import os
 import numpy as np
 import pandas as pd
 import xgboost as xgb
+
+from imblearn.under_sampling import RandomUnderSampler
+from scipy import stats
+from sklearn.metrics import roc_auc_score, r2_score
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
+
 
 PERCENT_PRESENT_THRESHOLD = (
     0.8
