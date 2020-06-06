@@ -16,6 +16,11 @@ dependencies:
   - tensorboard
   - xgboost
   - tqdm
-  - ipywidgets  
+  - ipywidgets
   - imbalanced-learn
-
+  - keras
+  - pip
+  - pip:
+      - tensorflow_addons
+      - opencv-python
+      - itertools
