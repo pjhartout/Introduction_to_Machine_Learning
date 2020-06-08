@@ -31,8 +31,8 @@ import cv2
 from tqdm import tqdm
 
 
-T_G_WIDTH = 224
-T_G_HEIGHT = 224
+T_G_WIDTH = 331
+T_G_HEIGHT = 331
 T_G_NUMCHANNELS = 3
 CHUNK_SIZE = 256
 BATCH_SIZE = 32
@@ -41,9 +41,10 @@ USE_PRETRAINED_MODEL = True
 EMBEDDING_SIZE = 300
 EPOCHS = 100
 MIN_EPOCHS = 10  # minimal number of epochs before early stopping takes effect.
-STEPS_PER_EPOCH = 100
+STEPS_PER_EPOCH = 10
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-
+TEST_SAMPLES = 256
+LOAD_ROWS = None
 ###############################################################################
 # Data preprocessing functions
 ###############################################################################
@@ -74,17 +75,37 @@ def image_generator(df_to_load):
     files_to_load = [str(file) + ".jpg" for file in list_of_files]
 
     img_array = {}
-    for file in files_to_load:
+    for file in tqdm(files_to_load):
         img = t_read_image(os.path.join("data/food", file))
         img_array[file.split(".jpg")[0]] = img_to_array(img)
 
-    anchors_train = [img_array[img] for img in np.array(df_to_load["A"])]
-    positives_train = [img_array[img] for img in np.array(df_to_load["B"])]
-    negatives_train = [img_array[img] for img in np.array(df_to_load["C"])]
+    frame_size = BATCH_SIZE
 
-    y = np.random.randint(2, size=(1, 2, len(anchors_train))).T
+    while df_to_load.empty is not True:
 
-    yield ([anchors_train, positives_train, negatives_train], y)
+        if frame_size > len(df_to_load):
+            frame_size = len(df_to_load)
+
+        batch_images = df_to_load.sample(
+            n=BATCH_SIZE, replace=False, random_state=42
+        )
+        # Remove those images from the dataframe
+        train_triplets = df_to_load.drop(batch_images.index)
+        anchors_train = [img_array[img] for img in np.array(batch_images["A"])]
+        positives_train = [
+            img_array[img] for img in np.array(batch_images["B"])
+        ]
+        negatives_train = [
+            img_array[img] for img in np.array(batch_images["C"])
+        ]
+        y = np.random.randint(2, size=(1, 2, len(anchors_train))).T
+
+        yield {
+            "input_1": anchors_train,
+            "input_2": positives_train,
+            "input_3": negatives_train,
+        },
+        {"output": y}
 
 
 def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
@@ -116,12 +137,10 @@ def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
 
 def createNASNetLargeModel(emb_size):
     # Initialize a NASNetLargeModel model
-    nasnetlarge_input = kl.Input(shape=(T_G_WIDTH, T_G_HEIGHT, T_G_NUMCHANNELS))
     nasnetlarge_model = keras.applications.NASNetLarge(
         include_top=False,
         weights="imagenet",
-        input_tensor=nasnetlarge_input,
-        input_shape=None,
+        input_shape=(T_G_WIDTH, T_G_HEIGHT, T_G_NUMCHANNELS),
         pooling=None,
     )
 
@@ -130,7 +149,9 @@ def createNASNetLargeModel(emb_size):
     net = kl.GlobalAveragePooling2D(name="gap")(net)
     net = kl.Dropout(0.5)(net)
     net = kl.Dense(emb_size, activation="relu", name="t_emb_1")(net)
-    net = kl.Lambda(lambda x: K.l2_normalize(x, axis=1), name="t_emb_1_l2norm")(net)
+    net = kl.Lambda(lambda x: K.l2_normalize(x, axis=1), name="t_emb_1_l2norm")(
+        net
+    )
 
     # model creation
     base_model = Model(nasnetlarge_model.input, net, name="base_model")
@@ -195,7 +216,9 @@ def l2Norm(x):
 
 def euclidean_distance(vects):
     x, y = vects
-    return K.sqrt(K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), K.epsilon()))
+    return K.sqrt(
+        K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), K.epsilon())
+    )
 
 
 ###############################################################################
@@ -205,8 +228,13 @@ def euclidean_distance(vects):
 print("Reading file lists")
 path, dirs, files = next(os.walk("data/food"))
 
-train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ")
-test_triplets = pd.read_csv("data/test_triplets.txt", names=["A", "B", "C"], sep=" ")
+train_triplets = pd.read_csv(
+    "data/train_triplets.txt", names=["A", "B", "C"], sep=" ", nrows=LOAD_ROWS
+)
+
+test_triplets = pd.read_csv(
+    "data/test_triplets.txt", names=["A", "B", "C"], sep=" ", nrows=LOAD_ROWS
+)
 
 for column in train_triplets.columns:
     train_triplets[column] = train_triplets[column].astype(str)
@@ -214,28 +242,48 @@ for column in train_triplets.columns:
     train_triplets[column] = train_triplets[column].apply(lambda x: x.zfill(5))
     test_triplets[column] = test_triplets[column].apply(lambda x: x.zfill(5))
 
+print("Creating training dataset generator")
+train_generator = image_generator(train_triplets[:TEST_SAMPLES])
+val_generator = image_generator(test_triplets[TEST_SAMPLES:])
 
-print("Creating dataset generator")
-data_generator = image_generator(train_triplets)
+# print("Creating dataset object")
 
-print("Creating dataset object")
-train_data = tf.data.Dataset.from_generator(
-    lambda: data_generator,
-    output_types=(tf.float32, tf.float32, tf.float32, tf.int8),
-    output_shapes=(None, None, None, []),
-)
+# output_types = (
+#     [tf.float64, tf.float64, tf.float64],
+#     tf.int64,
+# )
 
-print("Transform to dataset instance")
-train_data = prepare_for_training(train_data, cache=True, shuffle_buffer_size=1000)
+# output_shapes = (
+#     (1),
+#     (T_G_NUMCHANNELS, 1),
+# )
 
-print("Prepare print")
-print(list(train_data.prefetch(2).as_numpy_iterator()))
+# train_data = tf.data.Dataset.from_generator(
+#     lambda: train_generator,
+#     output_types=output_types,
+#     # output_shapes=output_shapes,
+# )
 
+# val_data = tf.data.Dataset.from_generator(
+#     lambda: val_generator,
+#     output_types=output_types,
+#     # output_shapes=output_shapes,
+# )
+
+
+# print("Transform to dataset instance")
+# train_data.batch(BATCH_SIZE)
+# val_data.batch(BATCH_SIZE)
+
+# print("Prepare print")
+# for entry in train_data.prefetch(1).as_numpy_iterator():
+#     print(entry.shape)
 ###############################################################################
-# Model training and validation
+# Modelo training and validation
 ###############################################################################
 
-# model = createNASNetLargeModel(EMBEDDING_SIZE)
+print("Create model")
+model = createNASNetLargeModel(EMBEDDING_SIZE)
 
 # callbacks = [
 #     tf.keras.callbacks.EarlyStopping(monitor="loss", patience=3),
@@ -244,18 +292,51 @@ print(list(train_data.prefetch(2).as_numpy_iterator()))
 #     ),
 # ]
 
-# model.fit(
-#     train_data,
-#     validation_split=0.1,
-#     batch_size=BATCH_SIZE,
-#     epochs=EPOCHS,
-#     steps_per_epoch=STEPS_PER_EPOCH,
-#     callbacks=callbacks,
-#     workers=20,
-#     use_multiprocessing=True,
-#     max_queue_size=10
-# )
+print("Fitting model")
+model.fit(
+    train_generator,
+    # validation_data=val_data,
+    epochs=EPOCHS,
+    steps_per_epoch=STEPS_PER_EPOCH,
+    # workers=20,
+    # use_multiprocessing=True,
+    # max_queue_size=10,
+)
 
 ###############################################################################
 # Model inference
 ###############################################################################
+
+
+# train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+#     featurewise_center=False,
+#     samplewise_center=False,
+#     featurewise_std_normalization=False,
+#     samplewise_std_normalization=False,
+#     zca_whitening=False,
+#     zca_epsilon=1e-06,
+#     rotation_range=0,
+#     width_shift_range=0.0,
+#     height_shift_range=0.0,
+#     brightness_range=None,
+#     shear_range=0.0,
+#     zoom_range=0.0,
+#     channel_shift_range=0.0,
+#     fill_mode="nearest",
+#     cval=0.0,
+#     horizontal_flip=False,
+#     vertical_flip=False,
+#     rescale=None,
+#     preprocessing_function=None,
+#     data_format=None,
+#     validation_split=0.01,
+#     dtype=None,
+# )
+
+# train_generator = train_datagen.flow_from_directory(
+#     "data/food",
+#     target_size=(T_G_WIDTH, T_G_HEIGHT),
+#     batch_size=32,
+#     classes=np.random.randint(2, size=(1, 2, len(anchors_t))).T
+#     class_mode=None,
+# )
