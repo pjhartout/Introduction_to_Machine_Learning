@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-"""project_4.py
+"""project_4.py - DEPRECATED - FIRST SHOT
 
 This is a rework of project 4 with a generator and ways to optimize memory
 """
@@ -45,6 +45,7 @@ STEPS_PER_EPOCH = 10
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 TEST_SAMPLES = 256
 LOAD_ROWS = None
+
 ###############################################################################
 # Data preprocessing functions
 ###############################################################################
@@ -279,7 +280,7 @@ val_generator = image_generator(test_triplets[TEST_SAMPLES:])
 # for entry in train_data.prefetch(1).as_numpy_iterator():
 #     print(entry.shape)
 ###############################################################################
-# Modelo training and validation
+# Model training and validation
 ###############################################################################
 
 print("Create model")
