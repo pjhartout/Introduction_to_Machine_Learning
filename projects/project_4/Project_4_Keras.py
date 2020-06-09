@@ -41,9 +41,14 @@ LEARNING_RATE = 0.001
 USE_PRETRAINED_MODEL = False
 EPOCHS = 100
 MIN_EPOCHS = 10  # minimal number of epochs before early stopping takes effect.
+N_ROWS = 128
 
-train_triplets = pd.read_csv("data/train_triplets.txt", names=["A", "B", "C"], sep=" ")
-test_triplets = pd.read_csv("data/test_triplets.txt", names=["A", "B", "C"], sep=" ")
+train_triplets = pd.read_csv(
+    "data/train_triplets.txt", names=["A", "B", "C"], sep=" ", nrows=N_ROWS
+)
+test_triplets = pd.read_csv(
+    "data/test_triplets.txt", names=["A", "B", "C"], sep=" ", nrows=N_ROWS
+)
 
 for column in ["A", "B", "C"]:
     train_triplets[column] = train_triplets[column].astype(str)
@@ -74,7 +79,9 @@ def createResNetModel(emb_size):
     net = kl.GlobalAveragePooling2D(name="gap")(net)
     net = kl.Dropout(0.5)(net)
     net = kl.Dense(emb_size, activation="relu", name="t_emb_1")(net)
-    net = kl.Lambda(lambda x: K.l2_normalize(x, axis=1), name="t_emb_1_l2norm")(net)
+    net = kl.Lambda(lambda x: K.l2_normalize(x, axis=1), name="t_emb_1_l2norm")(
+        net
+    )
 
     # model creation
     base_model = Model(xception_model.input, net, name="base_model")
@@ -141,7 +148,9 @@ def l2Norm(x):
 
 def euclidean_distance(vects):
     x, y = vects
-    return K.sqrt(K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), K.epsilon()))
+    return K.sqrt(
+        K.maximum(K.sum(K.square(x - y), axis=1, keepdims=True), K.epsilon())
+    )
 
 
 def t_read_image(loc):
@@ -218,7 +227,11 @@ for e in tqdm(range(0, EPOCHS)):
         difference_1 = np.abs(val_accuracies[-1] - val_accuracies[-2])
         difference_2 = np.abs(val_accuracies[-1] - val_accuracies[-3])
         difference_3 = np.abs(val_accuracies[-1] - val_accuracies[-4])
-        if difference_1 < 0.005 and difference_2 < 0.005 and difference_3 < 0.005:
+        if (
+            difference_1 < 0.005
+            and difference_2 < 0.005
+            and difference_3 < 0.005
+        ):
             break
 
 # serialize model to JSON
@@ -246,7 +259,8 @@ for v in tqdm(range(0, total_v_ch)):
     first_val_chunk = first_val[v * CHUNKSIZE : (v + 1) * CHUNKSIZE]
     second_val_chunk = second_val[v * CHUNKSIZE : (v + 1) * CHUNKSIZE]
     predictions = cnn_model.predict(
-        [anchors_val_chunk, first_val_chunk, second_val_chunk], batch_size=BATCHSIZE
+        [anchors_val_chunk, first_val_chunk, second_val_chunk],
+        batch_size=BATCHSIZE,
     )
     for distance in predictions:
         predictions_list.append(np.argmin(np.array([distance[1], distance[0]])))
