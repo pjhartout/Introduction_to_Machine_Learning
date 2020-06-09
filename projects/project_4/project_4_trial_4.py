@@ -13,6 +13,9 @@ tf.data.Dataset.from_generator yields two numpy arrays: one of size (n,2,1) and
 one of size (3, n, T_G_WIDTH, T_G_HEIGHT, T_G_NUMCHANNELS) which is what is
 yielded by the tensorflow dataset object from_generator instead of a list.
 
+Feed multiple inputs to keras model is possible:
+https://stackoverflow.com/questions/52582275/tf-data-with-multiple-inputs-outputs-in-keras
+
 """
 
 import cv2
