@@ -48,7 +48,7 @@ tf.random.set_seed(T_G_SEED)
 np.random.seed(T_G_SEED)
 T_G_WIDTH, T_G_HEIGHT, T_G_NUMCHANNELS = 50, 50, 3
 CHUNK_SIZE = 100
-BATCH_SIZE = 2
+BATCH_SIZE = 5
 LEARNING_RATE = 0.001
 EMBEDDING_SIZE = 300
 EPOCHS = 100
@@ -191,23 +191,16 @@ DATA_GEN_ARGS = {}
 datagen = ImageDataGenerator(**DATA_GEN_ARGS)
 
 
-def create_data_generator(X1, X2, X3, Y):
+def create_data_generator(X1, X2, X3):
     local_seed = T_G_SEED
-    genX1 = datagen.flow(
-        X1, Y, batch_size=len(X1), seed=local_seed, shuffle=False
-    )
-    genX2 = datagen.flow(
-        X2, Y, batch_size=len(X2), seed=local_seed, shuffle=False
-    )
-    genX3 = datagen.flow(
-        X3, Y, batch_size=len(X3), seed=local_seed, shuffle=False
-    )
     while True:
-        X1i = genX1.next()
-        X2i = genX2.next()
-        X3i = genX3.next()
-
-        yield [X1i[0], X2i[0], X3i[0]], X1i[1]
+        i = 0
+        while i < BATCH_SIZE - 1:
+            anchors = X1[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
+            positives = X2[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
+            negatives = X3[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
+            i = i + 1
+            yield [anchors, positives, negatives]
 
 
 ###############################################################################
@@ -227,12 +220,6 @@ def main():
     val_triplets = train_triplets.sample(frac=VAL_FRAC)
     train_triplets = train_triplets.drop(val_triplets.index)
 
-    val_triplets_len = len(val_triplets)
-    train_triplets_len = len(train_triplets)
-
-    total_train_chunks = int(np.ceil(train_triplets_len / float(CHUNK_SIZE)))
-    total_val_chunks = int(np.ceil(val_triplets_len / float(CHUNK_SIZE)))
-
     # load file names
     for main_dir, subdir, file in os.walk(r"data/food/"):
         list_dir = file[:]
@@ -249,41 +236,40 @@ def main():
     print("Getting negatives train ...")
     negatives_train = [img_array[img] for img in np.array(train_triplets["C"])]
 
+    print("Getting anchors val ...")
+    anchors_val = [img_array[img] for img in np.array(val_triplets["A"])]
+    print("Getting positives val ...")
+    positives_val = [img_array[img] for img in np.array(val_triplets["B"])]
+    print("Getting negatives val ...")
+    negatives_val = [img_array[img] for img in np.array(val_triplets["C"])]
+
     print("Creating model ...")
     model = createModel(EMBEDDING_SIZE)
-    for e in range(EPOCHS):
-        for chunk in range(total_train_chunks):
-            anchors_train_chunk = np.array(
-                anchors_train[chunk * CHUNK_SIZE : (chunk + 1) * CHUNK_SIZE]
-            )
 
-            positives_train_chunk = np.array(
-                positives_train[chunk * CHUNK_SIZE : (chunk + 1) * CHUNK_SIZE]
-            )
+    train_generator = create_data_generator(
+        anchors_train, positives_train, negatives_train
+    )
+    train_dataset = tf.data.Dataset.from_generator(
+        lambda: train_generator, output_types=(tf.float32)
+    )
+    train_dataset.prefetch(AUTOTUNE)
 
-            negatives_train_chunk = np.array(
-                negatives_train[chunk * CHUNK_SIZE : (chunk + 1) * CHUNK_SIZE]
-            )
+    val_generator = create_data_generator(
+        anchors_val, positives_val, negatives_val
+    )
+    val_dataset = tf.data.Dataset.from_generator(
+        lambda: val_generator, output_types=(tf.float32)
+    )
+    val_dataset.prefetch(AUTOTUNE)
 
-            y = np.random.randint(2, size=(1, 2, len(anchors_train_chunk))).T
-
-            gen = create_data_generator(
-                anchors_train_chunk,
-                positives_train_chunk,
-                negatives_train_chunk,
-                y,
-            )
-            training_dataset = tf.data.Dataset.from_generator(
-                lambda: gen, output_types=(tf.float32, tf.float32)
-            )
-            # training_dataset.prefetch(AUTOTUNE)
-            model.fit(
-                training_dataset,
-                steps_per_epoch=len(y) / BATCH_SIZE,
-                epochs=1,
-                shuffle=False,
-                use_multiprocessing=True,
-            )
+    model.fit(
+        train_dataset,
+        validation_data=val_dataset,
+        steps_per_epoch=len(train_triplets) / BATCH_SIZE,
+        epochs=EPOCHS,
+        shuffle=False,
+        use_multiprocessing=True,
+    )
 
 
 if __name__ == "__main__":
