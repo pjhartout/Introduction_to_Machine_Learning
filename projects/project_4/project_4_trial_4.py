@@ -195,10 +195,10 @@ def create_data_generator(X1, X2, X3):
     local_seed = T_G_SEED
     while True:
         i = 0
-        while i < BATCH_SIZE - 1:
-            anchors = X1[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
-            positives = X2[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
-            negatives = X3[i * BATCH_SIZE : (i + 1) * BATCH_SIZE]
+        while i < len(X1):
+            anchors = X1[i : (i + 1)]
+            positives = X2[i: (i + 1)]
+            negatives = X3[i: (i + 1)]
             i = i + 1
             yield [anchors, positives, negatives]
 
