@@ -134,8 +134,8 @@ def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
     ds = ds.repeat()
     ds = ds.batch(BATCH_SIZE)
 
-    # `prefetch` lets the dataset fetch batches in the background while the model
-    # is training.
+    # `prefetch` lets the dataset fetch batches in the background while the
+    # model is training.
     ds = ds.prefetch(buffer_size=AUTOTUNE)
 
     return ds
