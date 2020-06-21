@@ -24,10 +24,10 @@ from tqdm import tqdm
 
 
 PERCENT_PRESENT_THRESHOLD = (
-    0.8
+    0.7
 )  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 1  # Number of models to be fitted for each
-CV_FOLDS = 5  # Cross validation folds
+N_ITER = 100  # Number of models to be fitted for each
+CV_FOLDS = 10  # Cross validation folds
 
 PARAM_DIST = {
     "n_estimators": stats.randint(150, 500),
@@ -58,9 +58,9 @@ REGRESSORS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 SEPSIS = ["LABEL_Sepsis"]
 
 print("Loading data.")
-df_train_features = pd.read_csv("projects/project_2/data/train_features.csv")
-df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
-df_test_features = pd.read_csv("projects/project_2/data/test_features.csv")
+df_train_features = pd.read_csv("data/train_features.csv")
+df_train_labels = pd.read_csv("data/train_labels.csv")
+df_test_features = pd.read_csv("data/test_features.csv")
 print("Data loaded.")
 ################################################################################
 # Set and sort indices
@@ -224,7 +224,7 @@ for i, clf in enumerate(CLASSIFIERS):
     # Model persistence
     joblib.dump(
         clf_search.best_estimator_,
-        f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl",
+        f"xgboost_fine_{CLASSIFIERS[i]}.pkl",
     )
 
     # Validation predictions
@@ -266,7 +266,7 @@ for i, reg in enumerate(REGRESSORS):
     # Model persistence
     joblib.dump(
         regressor_search.best_estimator_,
-        f"projects/project_2/xgboost_fine_{REGRESSORS[i]}.pkl",
+        f"xgboost_fine_{REGRESSORS[i]}.pkl",
     )
 
     y_pred = regressor_search.best_estimator_.predict(X_val)
@@ -280,7 +280,7 @@ df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 
 print("Export predictions DataFrame to a zip file")
 df_predictions.to_csv(
-    "projects/project_2/predictions.csv",
+    "predictions.csv",
     index=True,
     index_label="pid",
     sep=",",
@@ -290,7 +290,7 @@ df_predictions.to_csv(
 )
 
 with zipfile.ZipFile(
-    "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
+    "predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
 ) as zf:
     zf.write("predictions.csv")
-os.remove("projects/project_2/predictions.csv")
+os.remove("predictions.csv")

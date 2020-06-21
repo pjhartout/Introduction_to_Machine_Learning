@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-"""The goal of this script is to make sure that we select the best pretrained model to train it for our purposes.
-We will loop through all existing constructs of neural networks proposed by Keras and evaluate them. Following the selection process, we will then make sure that we train this model. 
+"""The goal of this script is to make sure that we select the best pretrained
+model to train it for our purposes.
+
+We will loop through all existing constructs of neural networks proposed by
+Keras and evaluate them. Following the selection process, we will then make sure
+that we train this model.
 """
 
 import keras
@@ -30,7 +34,7 @@ from tensorflow.python.client import device_lib
 T_G_WIDTH = 150
 T_G_HEIGHT = 150
 T_G_NUMCHANNELS = 3
-CHUNKSIZE = 4096 
+CHUNKSIZE = 4096
 BATCHSIZE = 16
 LEARNING_RATE = 0.001
 EPOCHS = 1
@@ -414,7 +418,7 @@ total_t_ch = int(np.ceil(len(anchors_train) / float(CHUNKSIZE)))
 anchors_t = anchors_train #[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
 positives_t = positives_train #[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
 negatives_t = negatives_train #[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
-Y_train = np.random.randint(2, size=(1, 2, len(anchors_t))).T  
+Y_train = np.random.randint(2, size=(1, 2, len(anchors_t))).T
 
 model = createNASNetLargeModel(EMBEDDING_SIZE)
 
@@ -441,7 +445,7 @@ with open("model_nasnetlarge.json", "w") as json_file:
 # serialize weights to HDF5
 cnn_model.save_weights("model_nasnetlarge.h5")
 print("Saved model to disk")
- 
+
 # Now we want to generate the output 0, for each triplet of image on the validation to get the score
 print("Getting anchors test ...")
 anchors_val = [img_array[img] for img in np.array(test_triplets["A"])]
@@ -478,7 +482,7 @@ np.savetxt('predictions.txt', predictions_array, fmt='%d', delimiter='\n')
 #             anchors_t = anchors_train[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
 #             positives_t = positives_train[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
 #             negatives_t = negatives_train[t * CHUNKSIZE : (t + 1) * CHUNKSIZE]
-#             Y_train = np.random.randint(2, size=(1, 2, len(anchors_t))).T  
+#             Y_train = np.random.randint(2, size=(1, 2, len(anchors_t))).T
 #           # This method does NOT use data augmentation
 #             chunk_performance_data = model.fit(
 #                 [anchors_t, positives_t, negatives_t],
