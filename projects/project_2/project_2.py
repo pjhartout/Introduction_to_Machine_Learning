@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function
 
@@ -24,9 +24,9 @@ from tqdm import tqdm
 
 
 PERCENT_PRESENT_THRESHOLD = (
-    0.7
-)  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
-N_ITER = 100  # Number of models to be fitted for each
+    0.8  # columns containing >PERCENT_PRESENT_THRESHOLD will be unstacked
+)
+N_ITER = 200  # Number of models to be fitted for each
 CV_FOLDS = 10  # Cross validation folds
 
 PARAM_DIST = {
@@ -58,9 +58,9 @@ REGRESSORS = ["LABEL_RRate", "LABEL_ABPm", "LABEL_SpO2", "LABEL_Heartrate"]
 SEPSIS = ["LABEL_Sepsis"]
 
 print("Loading data.")
-df_train_features = pd.read_csv("data/train_features.csv")
-df_train_labels = pd.read_csv("data/train_labels.csv")
-df_test_features = pd.read_csv("data/test_features.csv")
+df_train_features = pd.read_csv("projects/project_2/data/train_features.csv")
+df_train_labels = pd.read_csv("projects/project_2/data/train_labels.csv")
+df_test_features = pd.read_csv("projects/project_2/data/test_features.csv")
 print("Data loaded.")
 ################################################################################
 # Set and sort indices
@@ -76,10 +76,13 @@ df_test_features = df_test_features.sort_index()
 # Preprocessing training data
 ################################################################################
 
-percent_missing = df_train_features.isnull().sum() * 100 / len(df_train_features)
+percent_missing = (
+    df_train_features.isnull().sum() * 100 / len(df_train_features)
+)
 
 features_to_time_series = percent_missing[
-    (percent_missing > 0) & (percent_missing < (1 - PERCENT_PRESENT_THRESHOLD) * 100)
+    (percent_missing > 0)
+    & (percent_missing < (1 - PERCENT_PRESENT_THRESHOLD) * 100)
 ].index.tolist()
 
 # This resets the time index to indicate that all values have the same secondary index (0-11)
@@ -91,12 +94,14 @@ df_train_features.index = pd.MultiIndex.from_arrays(
     names=["pid", "Time"],
 )
 # Unstack columns which have multiple values available as determined in percent_missing
-df_train_features_unstacked = df_train_features[features_to_time_series].unstack(
-    level=-1
-)
+df_train_features_unstacked = df_train_features[
+    features_to_time_series
+].unstack(level=-1)
 
 # Take the median of all other columns
-features_to_median = np.setdiff1d(df_train_features.columns, features_to_time_series)
+features_to_median = np.setdiff1d(
+    df_train_features.columns, features_to_time_series
+)
 df_train_features_median = (
     df_train_features[features_to_median].groupby(level=0).median()
 )
@@ -121,9 +126,11 @@ df_train_features = pd.merge(
 # Take care of interpolation on time series data
 print("Interpolate time series training features")
 for i in tqdm(range(len(features_to_time_series))):
-    df_train_features[df_train_features.columns[i : i + 12]] = df_train_features[
+    df_train_features[
         df_train_features.columns[i : i + 12]
-    ].interpolate(axis=1)
+    ] = df_train_features[df_train_features.columns[i : i + 12]].interpolate(
+        axis=1
+    )
 
 df_train_labels.join(df_train_features)
 
@@ -143,13 +150,19 @@ df_test_features.index = pd.MultiIndex.from_arrays(
     names=["pid", "Time"],
 )
 # Unstack columns which have multiple values available as determined in percent_missing
-df_test_features_unstacked = df_test_features[features_to_time_series].unstack(level=-1)
+df_test_features_unstacked = df_test_features[features_to_time_series].unstack(
+    level=-1
+)
 
 # Take the median of all other columns
-df_test_features_median = df_test_features[features_to_median].groupby(level=0).median()
+df_test_features_median = (
+    df_test_features[features_to_median].groupby(level=0).median()
+)
 
 # Add masking variable
-df_test_features_mask = df_test_features_median.mask(df_test_features_median.isna(), 0)
+df_test_features_mask = df_test_features_median.mask(
+    df_test_features_median.isna(), 0
+)
 df_test_features_mask[df_test_features_mask != 0] = 1
 
 df_test_features_median = df_test_features_median.join(
@@ -190,7 +203,11 @@ for i, clf in enumerate(CLASSIFIERS):
     print(f"Fitting model for {clf}.")
     y_train = df_train_labels[clf].astype(int).values
     X_train, X_test, y_train, y_test = train_test_split(
-        X_train_preprocessed, y_train, test_size=0.10, random_state=42, shuffle=True
+        X_train_preprocessed,
+        y_train,
+        test_size=0.10,
+        random_state=42,
+        shuffle=True,
     )
 
     print("Downsampling")
@@ -224,7 +241,7 @@ for i, clf in enumerate(CLASSIFIERS):
     # Model persistence
     joblib.dump(
         clf_search.best_estimator_,
-        f"xgboost_fine_{CLASSIFIERS[i]}.pkl",
+        f"projects/project_2/xgboost_fine_{CLASSIFIERS[i]}.pkl",
     )
 
     # Validation predictions
@@ -240,7 +257,11 @@ for i, reg in enumerate(REGRESSORS):
     print(f"Fitting model for {reg}.")
     y_train = df_train_labels[reg].astype(int).values
     X_train, X_test, y_train, y_test = train_test_split(
-        X_train_preprocessed, y_train, test_size=0.10, random_state=42, shuffle=True
+        X_train_preprocessed,
+        y_train,
+        test_size=0.10,
+        random_state=42,
+        shuffle=True,
     )
 
     model = xgb.XGBRegressor(objective="reg:squarederror", n_thread=-1)
@@ -258,15 +279,13 @@ for i, reg in enumerate(REGRESSORS):
     regressor_search.fit(X_train, y_train)
     print(f"CV score {regressor_search.best_score_}")
     y_pred = regressor_search.best_estimator_.predict(X_test)
-    print(
-        f"Test score is {r2_score(y_test, y_pred)}"
-    )
+    print(f"Test score is {r2_score(y_test, y_pred)}")
     print(f"Finished test for medical tests.")
 
     # Model persistence
     joblib.dump(
         regressor_search.best_estimator_,
-        f"xgboost_fine_{REGRESSORS[i]}.pkl",
+        f"projects/project_2/xgboost_fine_{REGRESSORS[i]}.pkl",
     )
 
     y_pred = regressor_search.best_estimator_.predict(X_val)
@@ -280,7 +299,7 @@ df_predictions = df_pred_clf.join(df_pred_reg).sort_index()
 
 print("Export predictions DataFrame to a zip file")
 df_predictions.to_csv(
-    "predictions.csv",
+    "projects/project_2/predictions.csv",
     index=True,
     index_label="pid",
     sep=",",
@@ -290,7 +309,7 @@ df_predictions.to_csv(
 )
 
 with zipfile.ZipFile(
-    "predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
+    "projects/project_2/predictions.zip", "w", compression=zipfile.ZIP_DEFLATED
 ) as zf:
-    zf.write("predictions.csv")
-os.remove("predictions.csv")
+    zf.write("projects/project_2/predictions.csv")
+os.remove("projects/project_2/predictions.csv")

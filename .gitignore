@@ -1,6 +1,8 @@
 /.idea/
-/notes
-/projects/project_4/data
+data/
+summary/summary_iml.log
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
