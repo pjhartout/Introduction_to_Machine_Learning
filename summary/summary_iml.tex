@@ -1,11 +1,11 @@
 \documentclass[a4paper,10pt,twoside]{article}
 \usepackage[utf8x]{inputenc}
-\usepackage[english]{babel} 
+\usepackage[english]{babel}
 \usepackage[usenames,dvipsnames,figures]{xcolor}
 \usepackage{lmodern,tikz,makeidx,graphicx,eurosym,amsmath,comment,titlesec,subcaption,multirow,hyperref,url,enumerate,chemfig,sectsty,mathrsfs,amssymb,amsthm,multicol,fancyhdr,setspace,indentfirst,multicol,gensymb,textcomp,booktabs,bookmark,array,tikz,mathtools,tabulary,xcolor,tcolorbox}
 \usepackage[neverdecrease]{paralist}
 \usepackage[authoryear]{natbib}
-\usepackage[autostyle]{csquotes}  
+\usepackage[autostyle]{csquotes}
 \usepackage[final]{pdfpages}
 \usepackage{mhchem}
 \usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
@@ -28,11 +28,11 @@
 
 \RequirePackage{amsmath,amssymb,latexsym}
 \hypersetup{
-    colorlinks=false,       % false: boxed links; true: colored links
-    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,      % color of file links
-    urlcolor=black           % color of external links
+    colorlinks=false, % false: boxed links; true: colored links
+    linkcolor=black, % color of internal links (change box color with linkbordercolor)
+    citecolor=black, % color of links to bibliography
+    filecolor=black, % color of file links
+    urlcolor=black % color of external links
 }
 
 \setlength\columnsep{26pt}
@@ -47,7 +47,7 @@
   }%
 }
 
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\angstrom}{\mbox{\normalfont\AA}}
 \newlength{\drop}
 \newtheorem{definition}{Definition}[section]
@@ -59,20 +59,21 @@
 \setcounter{tocdepth}{1}
 
 \pagestyle{fancy}
-\setlength{\headheight}{25pt} 
+\setlength{\headheight}{25pt}
 \lhead{\textbf{Philip Hartout}}
 \rhead{\textbf{Introduction to Machine Learning - Summary}}
 \rfoot{}
 
 \title{Introduction to Machine Learning \\ Summary}
 \author{Philip Hartout}
-\date{\today}   
+\date{\today}
 
 \begin{document}
 
 \maketitle
 
 \tableofcontents
+
 
 \section{Linear Regression}
 Objective, approximate:
@@ -109,14 +110,14 @@ This can be solved in closed form:
 
 where:
 \begin{equation*}
-    X = 
+    X =
     \begin{bmatrix}
         X_{1,1} & \ldots & X_{1,d}\\
         \vdots & \ddots & \vdots\\
         X_{n,1} & \ldots & X_{n,d}\\
-    \end{bmatrix}        
+    \end{bmatrix}
     \text{ and }
-    y = 
+    y =
     \begin{bmatrix}
         y_{1} \\
         \vdots \\
@@ -130,14 +131,14 @@ Requires a convex objective function.
 \begin{definition}[Convexity]
     A function is convex iff $\forall \mathbf{x},\mathbf{x}', \lambda\in[0,1] \text{ it holds that } f(\lambda x+(1-\lambda)x')\leq \lambda f(x)+(1-\lambda)f(x')$
 \end{definition}
-Note that the least squares objective function defined in \ref{objective_lse} is convex. 
+Note that the least squares objective function defined in \ref{objective_lse} is convex.
 \subsubsection{Gradient descent}
 We start with an arbitrary $w_0\in\mathbb{R}^d$, then for $t=0,1,2,\ldots$ we perform the following operation:
 \begin{equation*}
     w_{t+1} = w_t -\eta_t\nabla\hat{R}(w_t)
 \end{equation*}
 where $\eta_t$ is the learning rate.\\
-Under mild assumptions, if the step size is sufficiently small, the gradient descent procedure converges to a stationary point, where the gradient is zero. For convex objectives, it therefore finds the optimal solution. In the case of the squared loss and a constant step size (e.g. 0.5), the algorithm converges at linear rate. If you look at the difference in empirical value at iteration $t$ and compare that with the optimal value, then the gap is going to shrink at linear rate. If we look for a solution within a margin $\epsilon$, it is found in $\mathcal{O}(\ln(\frac{1}{\epsilon}))$ iterations.  The fact that the objective function congerges at linear rate can be formally described 
+Under mild assumptions, if the step size is sufficiently small, the gradient descent procedure converges to a stationary point, where the gradient is zero. For convex objectives, it therefore finds the optimal solution. In the case of the squared loss and a constant step size (e.g. 0.5), the algorithm converges at linear rate. If you look at the difference in empirical value at iteration $t$ and compare that with the optimal value, then the gap is going to shrink at linear rate. If we look for a solution within a margin $\epsilon$, it is found in $\mathcal{O}(\ln(\frac{1}{\epsilon}))$ iterations. The fact that the objective function congerges at linear rate can be formally described
 as follows:
 
 \begin{equation*}
@@ -147,7 +148,7 @@ as follows:
 where $\hat{w}$ is the optimal value for the hyperparameters.\\
 For computing the gradient, we recall that:
 \begin{equation*}
-    \nabla\hat{R}(\hat{w}) = 
+    \nabla\hat{R}(\hat{w}) =
     \begin{bmatrix}
         \frac{\partial}{\partial w_1}\hat{R}(w) & \ldots & \frac{\partial}{\partial w_d}\hat{R}(w)
     \end{bmatrix}
@@ -182,7 +183,7 @@ The step size can be updates adaptively, via either:
             \text{If }\hat{R}(w_{t+1})<\hat{R}(w_{t}): \eta_{t+1}\leftarrow\eta_{t}\cdot c_{acc}
         \end{equation*}
         where $c_{acc}>1$
-        \item If the function increases, decrease the step size. 
+        \item If the function increases, decrease the step size.
         \begin{equation*}
             \text{If }\hat{R}(w_{t+1})>\hat{R}(w_{t}): \eta_{t+1}\leftarrow\eta_{t}\cdot c_{dec}
         \end{equation*}
@@ -239,7 +240,7 @@ Expected value of a random variable can be calculated as follows:
         \int xp(x)dx\qquad\text{if }X\text{ is continuous}\\
     \end{cases}
 \end{equation*}
-Expectations respect linear properties, i.e. let $X, Y$ be random variable and 
+Expectations respect linear properties, i.e. let $X, Y$ be random variable and
 $a,b\in\mathbb{R}$, then we have $\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]$.
 
 \section{Generalization and model validation}
@@ -252,7 +253,7 @@ Using nonlinear features of our data (basis functions), we can fit nonlinear fun
     f(\mathbf{x}) = \sum_{i=1}^{d}w_i\phi(\mathbf{x})
 \end{equation}
 
-where $\mathbf{x}\in\mathbb{R}^d$, $x\mapsto \tilde{x}=\phi(\mathbf{x})\in\mathbb{R}^d$ and $w\in\mathbb{R}^d$. 
+where $\mathbf{x}\in\mathbb{R}^d$, $x\mapsto \tilde{x}=\phi(\mathbf{x})\in\mathbb{R}^d$ and $w\in\mathbb{R}^d$.
 \begin{itemize}
     \item 1 dim.: $\phi(\mathbf{x})=\begin{bmatrix}
         1,x, x^2, \ldots, x^k
@@ -276,7 +277,7 @@ The i.i.d. assumption is invalid when:
     \item spatially correlated data
     \item correlated noise
 \end{itemize}
-If violated, we can still use ML but the interpretation of the results needs to be carefully analyzed. The most important thing is to choose the train/test split to assess the desired generalization properties of the trained model. 
+If violated, we can still use ML but the interpretation of the results needs to be carefully analyzed. The most important thing is to choose the train/test split to assess the desired generalization properties of the trained model.
 
 \subsection{Expected error and generalization error}
 Once the iid assumption is verified, our goal is then to minimize the expected error (true risk) under $P$, i.e.:
@@ -349,7 +350,7 @@ Thus, we obtain an overly optimistic estimate. A more realistic evaluation would
         \mathbb{E}_{D,V}[\hat{R}_V(\hat{\mathbf{w}}_D)] &= \mathbb{E}_D[\mathbb{E}_V[\hat{R}_V(\hat{\mathbf{w}}_D)]]\qquad\text{independence of $D,V$}\\
         &=\mathbb{E}_D[\mathbb{E}_V[\frac{1}{|V|}\sum_{i=1}^{|V|}(y_i-\hat{\mathbf{w}}_D^Tx_i)^2]]\qquad\text{(Definition of $\hat{R}_D(.)$)}\\
         &=\mathbb{E}_D[\frac{1}{|V|}\sum_{i=1}^{|V|}\mathbb{E}_{x_i, y_i}(y_i-\hat{\mathbf{w}}_D^Tx_i)^2]\qquad\text{since $(x_i,y_i)\bot D$}\\
-        &=\mathbb{E}_D[R(\mathbf{\hat{w}}_D)]   
+        &=\mathbb{E}_D[R(\mathbf{\hat{w}}_D)]
     \end{align*}
 \end{proof}
 \subsection{Evaluation for model selection}
@@ -373,7 +374,7 @@ Finally, select the model:
     \hat{m}=\arg\min_{m}\frac{1}{k}\sum_{i=1}^{k}\hat{R}_{m}^{(i)}
 \end{equation*}
 \subsection{Splitting the data for model selection}
-This splitting can be done randomly through Monte Carlo cross-validation. 
+This splitting can be done randomly through Monte Carlo cross-validation.
 \begin{itemize}
     \item Pick training set of given size uniformly at random
     \item Validate on remaining points
@@ -387,7 +388,7 @@ It can also be achieved through $k$-fold cross-validation, which is the default 
 \end{itemize}
 Note that the cross-validation error is almost unbiased for large enough $k$. The following should be considered to pick $k$:
 \begin{itemize}
-    \item Too small: 
+    \item Too small:
     \begin{itemize}
         \item Risk of overfitting on test set
         \item Using too little data for training
@@ -398,7 +399,7 @@ Note that the cross-validation error is almost unbiased for large enough $k$. Th
         \item In general, leads to better performance. $k=n$ is perfectly fine, specific instance called leave-one-out cross-validation
         \item Higher computational complexity.
     \end{itemize}
-\end{itemize} 
+\end{itemize}
 In practice, $k=5$ or $k=10$ is ofen used and works well.
 \subsection{Best practice for evaludating models in supervised learning}
 Follow the following steps:
@@ -438,7 +439,7 @@ A lot of supervised learning problems can be written in this way:
 \begin{equation*}
     \min_{\mathbf{w}}\hat{R}(\mathbf{w})+\lambda C(\mathbf{w}).
 \end{equation*}
-It's possible to control complexity by varying regulzation parameter $\lambda$. 
+It's possible to control complexity by varying regulzation parameter $\lambda$.
 \subsection{Renormalizing data through standardization}
 This process ensures that each feature has zero mean and unit variance:
 
@@ -499,7 +500,7 @@ The gradient of the perceptron loss function can be computed as follows:
     \nabla\hat{R(w)}&=\sum_{i=1}^{n}\nabla_{\mathbf{w}}\max (0, -y_iw^Tx_i)\\
     &=\begin{cases}
         0\text{ if } y_iw^Tx_i\geq 0 \text{ i.e. correctly classified }
-        -y_ix_i\text{ otherwise} 
+        -y_ix_i\text{ otherwise}
     \end{cases}
 \end{align*}
 
@@ -614,12 +615,12 @@ Reasons why we don't want to work with all potentially available features:
 \begin{itemize}
     \item interpretability: understand which features are most important
     \item generalizationL simpler models may generalize better
-    \item storage computation and cost: if we select the most important features we don't need to store, sum and acquire data for unused features. 
+    \item storage computation and cost: if we select the most important features we don't need to store, sum and acquire data for unused features.
 \end{itemize}
-The naive way to select features is to try all subsets and pick the best features via cross-validation. Greedy feature selection, which is a general purpose approach, consists of greedily add or remove features to maximize cross-validated prediction accuracy and mutual information or other notions of informativeness not discussed here. It can be used for any method, not only linear regression or classifiers. 
+The naive way to select features is to try all subsets and pick the best features via cross-validation. Greedy feature selection, which is a general purpose approach, consists of greedily add or remove features to maximize cross-validated prediction accuracy and mutual information or other notions of informativeness not discussed here. It can be used for any method, not only linear regression or classifiers.
 
 \subsection{General greedy approach}
-Consider the set of features $V=\left\{1,\ldots, d\right\}$. We then define the cost function for scoring subsets S of V. $\hat{L}(S)$ is the cross-validation error using features in S only. More precisely: 
+Consider the set of features $V=\left\{1,\ldots, d\right\}$. We then define the cost function for scoring subsets S of V. $\hat{L}(S)$ is the cross-validation error using features in S only. More precisely:
 \begin{equation*}
     \mathbf{x}_i=[x_{i,1},\ldots,x_{i,d}]\rightarrow\mathbf{x}_{S,i}=[x_{i,j},\ldots,x_{i,j_k}]
 \end{equation*}
@@ -667,11 +668,11 @@ if $E_i>E_{i-1}$ break, else set $S\leftarrow \setminus\left\{s_i\right\}$
     \end{tabular}
 \end{table}
 
-We want a method that simultaneously solves the learning and the feature selection problem via a single optimization step. So far we have only done optimization via sparsity: i.e. explicitely select a subset of features. This is equivalent to constraining $\mathbf{w}$ to be sparse, i.e. contain at most $k$ non-zero entries. Alternatively, we can penalize the number of nonzero entries: 
+We want a method that simultaneously solves the learning and the feature selection problem via a single optimization step. So far we have only done optimization via sparsity: i.e. explicitely select a subset of features. This is equivalent to constraining $\mathbf{w}$ to be sparse, i.e. contain at most $k$ non-zero entries. Alternatively, we can penalize the number of nonzero entries:
 \begin{equation*}
     \hat{\mathbf{w}} = \arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-w^Tx_i)^2+\lambda \norm{w}_0
 \end{equation*}
-However, this is a difficult combinatorial optimization problem. The key idea then is to replace $\norm{\mathbf{w}}_0$ by a more tractable term. 
+However, this is a difficult combinatorial optimization problem. The key idea then is to replace $\norm{\mathbf{w}}_0$ by a more tractable term.
 
 The idea here is to use $L_1$ as a surrogate for $L_0$, where:
 \begin{equation*}
@@ -697,14 +698,14 @@ The sparsity trick can be applied to SVMs as well:
 This alternative penalty encourages coefficients to be exactly 0, which ignores thoses features as well, just like in Lasso regression.
 
 \subsection{Solving L1-regularized problems}
-The L1-norm is convex. Combined with convex losses, we can obtain convex optimization problems, which include Lasso and L1-SVM. Those problems can, in principle, be solved usng stochastic gradient descent. Convergence is, however, usually slow. and we rarely obtain exact 0 entries. Recent work in convex optimization deals with solving such problems very efficiently using proximal methods. 
+The L1-norm is convex. Combined with convex losses, we can obtain convex optimization problems, which include Lasso and L1-SVM. Those problems can, in principle, be solved usng stochastic gradient descent. Convergence is, however, usually slow. and we rarely obtain exact 0 entries. Recent work in convex optimization deals with solving such problems very efficiently using proximal methods.
 
 \begin{table}[htbp]
     \centering
     \begin{tabular}{lll}
         \toprule
         \textbf{Method} & Greedy & L1-regularization \\
-        \midrule        
+        \midrule
         \textbf{Advantages} & \begin{tabular}{@{}c@{}} Applies to any\\ prediction method \end{tabular} & \begin{tabular}{@{}c@{}} Faster (training and\\ feature selection happen\\jointly) \end{tabular} \\
         \midrule
         \textbf{Disadvantages} & \begin{tabular}{@{}c@{}} Slower (need to\\ train many models \end{tabular} & \begin{tabular}{@{}c@{}} Only works for \\ linear model \end{tabular} \\
@@ -716,13 +717,13 @@ The L1-norm is convex. Combined with convex losses, we can obtain convex optimiz
 
 \subsection{Revisiting the perceptron/SVM}
 
-There is a fundamental observation to be made here where the optimal hyperplace lies in the span of the data. 
+There is a fundamental observation to be made here where the optimal hyperplace lies in the span of the data.
 
 \begin{equation*}
     \mathbf{\hat{w}}=\sum_{i=1}^{n}\alpha_iy_i\mathbf{x}_i
 \end{equation*}
 
-that means that the output of any of the models discussed so far can be rewritten as a linear combination of the feature inputs that we have seen so far. Proving this losely can be done by stating that SGD starts from 0 and constructs such a representation. A more abstract proof follows from the representer theorem.  
+that means that the output of any of the models discussed so far can be rewritten as a linear combination of the feature inputs that we have seen so far. Proving this losely can be done by stating that SGD starts from 0 and constructs such a representation. A more abstract proof follows from the representer theorem.
 
 \subsection{Reformulating the perceptron}
 
@@ -775,7 +776,7 @@ An example of such a kernel can be applied to the perceptron loss:
     \Leftrightarrow \hat{\alpha} &= \arg\min_{\alpha_{1:n}}\frac{1}{n}\sum_{i=1}^{n}\max\left\{0 -\sum_{j=1}^{n}\alpha_jy_iy_jk(\mathbf{x}_j, \mathbf{x}_i)\right\}
 \end{align*}
 
-\subsection{The kernelized perceptron}  
+\subsection{The kernelized perceptron}
 At training time, the problem can be solved as follows:
 \begin{itemize}
     \item Initialize $\alpha_1=\ldots=\alpha_n=0$
@@ -821,9 +822,9 @@ A matrix is positive semidefinite iff:
 
 Suppose the data space $X=\left\{1,\ldots,n\right\}$ is finite, and we are given a p.s.d. matrix $\mathbf{K}\in\mathbb{R}^{n\times n}$, then we can always construct a feature map:
 \begin{equation*}
-    \phi:Z\rightarrow \mathbb{R}^n 
+    \phi:Z\rightarrow \mathbb{R}^n
 \end{equation*}
-such that $\mathbf{K}_{i,j}=\phi(i)^T\phi(j)$. 
+such that $\mathbf{K}_{i,j}=\phi(i)^T\phi(j)$.
 \begin{proof}[Proof]
     $\mathbf{K}$ is p.s.d. $\Rightarrow\mathbf{K}=UDU^T$ where $D=\begin{bmatrix}
         \lambda_1 & \ldots & 0\\
@@ -840,7 +841,7 @@ such that $\mathbf{K}_{i,j}=\phi(i)^T\phi(j)$.
 \end{proof}
 More generally:
 \begin{theorem}[Mercer's theorem]
-    Let $X$ be a compact subset of $\mathbb{R}^n$ and $k:X\times X\rightarrow \mathbb{R}^n$ a kernel function. Then one can expand $k$ in a uniformly convergent series of bounded functions  $\phi_i$ s.t.
+    Let $X$ be a compact subset of $\mathbb{R}^n$ and $k:X\times X\rightarrow \mathbb{R}^n$ a kernel function. Then one can expand $k$ in a uniformly convergent series of bounded functions $\phi_i$ s.t.
     \begin{equation*}
         k(x, x')=\sum_{i=1}^{\infty}\lambda_i\phi_i(x)\phi_i(x').
     \end{equation*}
@@ -882,7 +883,7 @@ Grafically, it looks like in figure \ref{decision_function_kernelized}.
 
 \subsection{Graphical representations of kernels}
 
-The graphical representation of a sample gaussian and exponential kernel can be found in figures 
+The graphical representation of a sample gaussian and exponential kernel can be found in figures
 
 \begin{figure}[htbp]
     \centering
@@ -929,7 +930,7 @@ Then the following functions are valid kernels:
 \end{equation*}
 where:
 \begin{equation*}
-    \mathbf{x}, \mathbf{x}'\in\mathbb{R}^d\qquad k:\mathbb{R}^d\times\mathbb{R}^d\rightarrow \mathbb{R}\qquad  k_j:\mathbb{R}\times\mathbb{R}\rightarrow\mathbb{R}
+    \mathbf{x}, \mathbf{x}'\in\mathbb{R}^d\qquad k:\mathbb{R}^d\times\mathbb{R}^d\rightarrow \mathbb{R}\qquad k_j:\mathbb{R}\times\mathbb{R}\rightarrow\mathbb{R}
 \end{equation*}
 The functions modelled by this kernel can be shown by showing what forms $f(x)$ takes:
 \begin{align*}
@@ -963,15 +964,15 @@ Kernels can be used as similarity measures. For instance, consider the Gaussian 
 
 The prediction for each point in $k$-NN is provided by:
 \begin{equation*}
-    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}[\mathbf{x}\text{ among $k$ nearest neighbors of }\mathbf{x}]\color{black})   
+    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}[\mathbf{x}\text{ among $k$ nearest neighbors of }\mathbf{x}]\color{black})
 \end{equation*}
 
 As we can see, it compares to the loss of the perceptron:
 
 \begin{equation*}
-    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}\alpha_ik(\mathbf{x}_i,\mathbf{x})\color{black})   
+    y=\text{sign}(\sum_{i=1}^{n}y_i\color{blue}\alpha_ik(\mathbf{x}_i,\mathbf{x})\color{black})
 \end{equation*}
-Note: choose $k$ in $k$-NN using cross-validation. 
+Note: choose $k$ in $k$-NN using cross-validation.
 
 \begin{table}
     \centering
@@ -983,7 +984,7 @@ Note: choose $k$ in $k$-NN using cross-validation.
         \textbf{Disadvantages} & Depends on all data & Training requires optimisation \\
         \bottomrule
     \end{tabular}
-\end{table} 
+\end{table}
 
 \subsection{Deriving non-parametric models from parametric ones}
 
@@ -1035,7 +1036,7 @@ We kernelize linear regression in two parts:
     =& \sum_{i=1}^{n}(\sum_{j=1}^{n}\alpha_j(x_j^Tx_i)\mathbf{x}_i-y_i)^2\\
     =& (\alpha^2k_i-y_i)^2
 \end{align*}
-and 
+and
 
 \begin{align*}
     =& \sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jx_i^Tx_j\\
@@ -1049,7 +1050,7 @@ hence we have:
 which has a closed-form solution:
 \begin{equation*}
     \hat{\alpha}=(\mathbf{K}+n\lambda \mathbf{I})^{-1}\mathbf{y}
-\end{equation*} 
+\end{equation*}
 For prediction, given a data point $\mathbf{x}$, we predict the response $y$ as:
 \begin{equation*}
     \hat{y}=\sum_{i=1}^{n}\hat{\alpha_i}k(\mathbf{x_i},\mathbf{x})
@@ -1095,7 +1096,7 @@ Choosing correct kernels is a combination of domain knowledge, brute force or he
 
 Often data looks very imbalanced, e.g. there are more false negatives than false positives, see figure \ref{imbalanced_data}. Sources of imbalanced data include fraud detection datasets, spam filtering, process monitoring, medical diagnosis, feedback in recommender systems. The main issues related with imbalanced data include \textit{performance metrics}, where the performance assessment of the model is not a good metric. It may be good to prefer certain mistakes over others, i.e. we trade false positives for false negatives. The minority class instance contribute little to the empirical risk. It therefore may be ignored during optimization. There are two solutions to the problem of imbalanced datasets:
 \begin{itemize}
-    \item \textbf{Subsampling}: this entails removing examples from the majority class (e.g. uniformly at random) such that the resulting dataset is balanced. 
+    \item \textbf{Subsampling}: this entails removing examples from the majority class (e.g. uniformly at random) such that the resulting dataset is balanced.
     \item \textbf{Upsampling}: this entails repeating data points from the minority class, possibly with small random perturbation to obtain a balanced data set.
     \item It's also a possibility to use cost-sensitive classification methods to deal with these issues.
 \end{itemize}
@@ -1155,7 +1156,7 @@ Which basically means that the tradeoff to make for imbalanced datasets can be d
 
 \subsection{Metrics for imbalanced datasets}
 
-A generally inappropriate metric for imbalanced datasets is accuracy, defined as 
+A generally inappropriate metric for imbalanced datasets is accuracy, defined as
 \begin{equation*}
     \text{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN}=\frac{TP+TN}{N}
 \end{equation*}
@@ -1196,13 +1197,13 @@ It is also important that the confusion matrix itself is also often used to eval
     \renewcommand\arraystretch{1.5}
     \setlength\tabcolsep{0pt}
     \begin{tabular}{c >{\bfseries}r @{\hspace{0.7em}}c @{\hspace{0.4em}}c @{\hspace{0.7em}}l}
-      \multirow{10}{*}{\parbox{1.1cm}{\bfseries\raggedleft actual\\ value}} & 
+      \multirow{10}{*}{\parbox{1.1cm}{\bfseries\raggedleft actual\\ value}} &
         & \multicolumn{2}{c}{\bfseries Prediction outcome} & \\
       & & \bfseries p & \bfseries n & \bfseries total \\
       & p$'$ & \MyBox{True}{Positive} & \MyBox{False}{Negative} & P$'$ \\[2.4em]
       & n$'$ & \MyBox{False}{Positive} & \MyBox{True}{Negative} & N$'$ \\
       & total & P & N &
-    \end{tabular}        
+    \end{tabular}
 \end{table}
 
 \subsection{Obtaining the optimal tradeoff}
@@ -1212,7 +1213,7 @@ Two ways of obtaining a good tradeoff is to either use a cost sensitive classifi
     y=\text{sign}(\mathbf{w}^T\mathbf{x}-\tau)
 \end{equation*}
 
-The optimal value for the threshold can be determined using the precision-recall curve \ref{precision-recall-curve}. 
+The optimal value for the threshold can be determined using the precision-recall curve \ref{precision-recall-curve}.
 
 \begin{figure}
     \centering
@@ -1240,20 +1241,20 @@ A multiclass problem is defined as follows. Given a dataset $\mathcal{D}={(\math
 
 \subsection{One-vs-all}
 
-One approach to solve the problem is to solve $c$ binary classifiers, i.e. one for each class, where all positive samples are from class i and all negative samples represent all other points. We then classify using the classifier with the largest confidence. In other words, we fit $f^{(i)}:\mathcal{X}\rightarrow\mathbb{R}$ and $f^{(i)}(x)=\mathbf{w}^{(i)T}\mathbf{x}$ and we predict $\hat{y}=\arg\max_{i}f^{(i)}(\mathbf{x})=\arg\max_{i}\mathbf{w}^{(i)T}\mathbf{x}$. 
+One approach to solve the problem is to solve $c$ binary classifiers, i.e. one for each class, where all positive samples are from class i and all negative samples represent all other points. We then classify using the classifier with the largest confidence. In other words, we fit $f^{(i)}:\mathcal{X}\rightarrow\mathbb{R}$ and $f^{(i)}(x)=\mathbf{w}^{(i)T}\mathbf{x}$ and we predict $\hat{y}=\arg\max_{i}f^{(i)}(\mathbf{x})=\arg\max_{i}\mathbf{w}^{(i)T}\mathbf{x}$.
 
 \subsubsection{Confidence in a classification}
 
-The confidence in a classification decision can be visualized as in figure \ref{confidence-in-classification}. For $\alpha>0$, we have 
+The confidence in a classification decision can be visualized as in figure \ref{confidence-in-classification}. For $\alpha>0$, we have
 \begin{equation*}
     \text{sign}((\alpha\mathbf{w})^T\mathbf{x})=\text{sign}(\mathbf{w}^T\mathbf{x})
 \end{equation*}
 
-Thus although $\alpha\mathbf{w}$ and $\mathbf{w}$ implement the same decision boundary, they have a different confidence level. There are two solutions to this problem: 
+Thus although $\alpha\mathbf{w}$ and $\mathbf{w}$ implement the same decision boundary, they have a different confidence level. There are two solutions to this problem:
 \begin{enumerate}
     \item $\mathbf{w}\leftarrow \frac{\mathbf{w}}{\norm{\mathbf{w}}_2}$, i.e. this is normalized to unit length.
-    \item In practice, when using regularization, the magnitude of $\norm[]{\mathbf{w}}_2$ is kept under control. 
-\end{enumerate} 
+    \item In practice, when using regularization, the magnitude of $\norm[]{\mathbf{w}}_2$ is kept under control.
+\end{enumerate}
 
 \begin{figure}
     \centering
@@ -1262,7 +1263,7 @@ Thus although $\alpha\mathbf{w}$ and $\mathbf{w}$ implement the same decision bo
     \label{confidence-in-classification}
 \end{figure}
 
-The decision boundary of the one-vs-all decision can be represented as in figure \ref{ova-decision-boundary}. 
+The decision boundary of the one-vs-all decision can be represented as in figure \ref{ova-decision-boundary}.
 
 \begin{figure}
     \centering
@@ -1294,7 +1295,7 @@ The idea is to train $c(c-1)/2$ binary classifiers, one for each pair of classes
     \centering
     \begin{tabular}{lll}
         \toprule
-        \textbf{Method} & \textit{One-vs-all} & \textit{One-vs-one} \\ 
+        \textbf{Method} & \textit{One-vs-all} & \textit{One-vs-one} \\
         \midrule
         \textbf{Advantages} & Only $c$ classifiers needed (faster!) & No confidence needed\\
         \textbf{Disadvantages} & Requires confidence + leads to class imbalance & Need to train $c(c-1)/2$)\\
@@ -1304,7 +1305,7 @@ The idea is to train $c(c-1)/2$ binary classifiers, one for each pair of classes
 
 \subsection{Encodings}
 
-There are other methods to tackle multiclass problems, e.g. using other encodings (error correcting output codes). There are also other explicit multiclass models, such as the multi-class perceptron/svm etc. Some models are naturally multi-class, such as nearest neighbors, generative probabilistic models, etc. However, one should keep in mind that one-vs-all/one-vs-one usually works very well. 
+There are other methods to tackle multiclass problems, e.g. using other encodings (error correcting output codes). There are also other explicit multiclass models, such as the multi-class perceptron/svm etc. Some models are naturally multi-class, such as nearest neighbors, generative probabilistic models, etc. However, one should keep in mind that one-vs-all/one-vs-one usually works very well.
 
 A way to reduce the number of classes we need to work with can be reduce by using an encoding. The length of the encoding will then scale with the $log_{2}c$, see table \ref{binary-label-encoding}. Then in principle the multiclassfication problem is phrased as a decoding task of the class label, where each classifier predicts one bit, which in this case we would get away with $\mathcal{O}(\log c)$ classifiers. In this case, ideas from coding theory to do multi-class classification can be used to do multi-class classification.
 
@@ -1342,7 +1343,7 @@ Given each data point $(\mathbf{x},y)$, we want to achieve that:
 \begin{equation*}
     \ell_{MC-H}(\mathbf{w}^{1},\ldots, \mathbf{w}^{c};\mathbf{x}, y)=\max(0,1+\max_{j\in\left\{1,\ldots, y-1,y+1, \ldots,c\right\}} \mathbf{w}^{(j)T}\mathbf{x}-\mathbf{w}^{(y)T}\mathbf{x})
 \end{equation*}
-which is equal to 0 when equation \ref{multiclasssvm} is satisfied. 
+which is equal to 0 when equation \ref{multiclasssvm} is satisfied.
 
 The gradient of the Hinge loss is then defined as:
 \begin{equation*}
@@ -1407,34 +1408,34 @@ A neural network can be represented as shown in figure \ref{graphical-representa
             },
             start chain=2,node distance=13mm
             ]
-            \node[on chain=2] 
+            \node[on chain=2]
             (x2) {$x_2$};
-            \node[on chain=2,join=by o-latex] 
+            \node[on chain=2,join=by o-latex]
             {$w_2$};
-            \node[on chain=2,init] (sigma) 
+            \node[on chain=2,init] (sigma)
             {$\displaystyle\Sigma$};
-            \node[on chain=2,squa,label=above:{\parbox{2cm}{\centering Activate \\ function}}]   
+            \node[on chain=2,squa,label=above:{\parbox{2cm}{\centering Activate \\ function}}]
             {$f$};
-            \node[on chain=2,label=above:Output,join=by -latex] 
+            \node[on chain=2,label=above:Output,join=by -latex]
             {$y$};
             \begin{scope}[start chain=1]
-            \node[on chain=1] at (0,1.5cm) 
+            \node[on chain=1] at (0,1.5cm)
             (x1) {$x_1$};
-            \node[on chain=1,join=by o-latex] 
+            \node[on chain=1,join=by o-latex]
             (w1) {$w_1$};
             \end{scope}
             \begin{scope}[start chain=3]
-            \node[on chain=3] at (0,-1.5cm) 
+            \node[on chain=3] at (0,-1.5cm)
             (x3) {$x_3$};
-            \node[on chain=3,label=below:Weights,join=by o-latex] 
+            \node[on chain=3,label=below:Weights,join=by o-latex]
             (w3) {$w_3$};
             \end{scope}
             \node[label=above:\parbox{2cm}{\centering Bias \\ $b$}] at (sigma|-w1) (b) {};
-            
+
             \draw[-latex] (w1) -- (sigma);
             \draw[-latex] (w3) -- (sigma);
             \draw[o-latex] (b) -- (sigma);
-            
+
             \draw[decorate,decoration={brace,mirror}] (x1.north west) -- node[left=10pt] {Inputs} (x3.south west);
         \end{tikzpicture}
     \includegraphics[width=.5\textwidth]{figures/ann-graph-representation.png}
@@ -1502,7 +1503,7 @@ Neural networks are powerful modelling tools, because any decision function can 
 Given a dataset $\mathcal{D} = {(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)}$, we optimize the weights $\mathbf{W}=(\mathbf{W}^{(1)}, \ldots, \mathbf{W}^{(L)})$ y applying a loss function (e.g. the perceptron loss, the multi-class hinge loss, square loss, etc.) to output:
 \begin{equation*}\label{empiricalriskminimisation}
     \ell(\mathbf{W};\mathbf{y}, \mathbf{x})=\ell(\mathbf{y};f(\mathbf{x},\mathbf{x})).
-\end{equation*} 
+\end{equation*}
 Then, we optimize the weights to minimise the loss over $\mathcal{D}$:
 \begin{equation*}
     \mathbf{W}*=\arg\min_{\mathbf{W}}\sum_{i=1}^{n}\ell(\mathbf{W};\mathbf{y}_i,\mathbf{x}_i)
@@ -1614,7 +1615,7 @@ where $\delta_i=\frac{\partial L}{\partial f_{i}}$ and $\delta '_j=\delta_i w_{i
 
 \subsubsection{Derivatives of activation functions}
 
-Sigmoid: 
+Sigmoid:
 \begin{equation*}
     \varphi(z)=\frac{1}{1+\exp(-z)}
 \end{equation*}
@@ -1623,7 +1624,7 @@ Sigmoid:
     \phi'(z)=\frac{-1}{(1+\exp(-z))^2}\cdot e^{-z}\cdot (-1)=\frac{e^{-z}}{1+e^{-z}}\cdot\frac{1}{1+e^{-z}}=\phi(z)(1-\phi(z))
 \end{equation*}
 
-The advantage of this function is that it is differentiable everywhere, however $\phi(z)\approx 0$ unless $z=\approx 0$. This leads to a problem that is called a vanishing gradient for deep models. 
+The advantage of this function is that it is differentiable everywhere, however $\phi(z)\approx 0$ unless $z=\approx 0$. This leads to a problem that is called a vanishing gradient for deep models.
 
 Rectified linear unit (ReLU):
 \begin{equation*}
@@ -1663,14 +1664,14 @@ The vectorized implementation of the backpropagation algorithm can be phrased as
     \end{itemize}
     \item For each hidden layer $\ell=L-1:-1:1$
     \begin{itemize}
-        \item Compute the error $\delta^{(\ell)}=\varphi'(\mathbf{z}^{(\ell)})\odot(\mathbf{W}^{(\ell +1) T}\delta^{(\ell+1)})$: 
+        \item Compute the error $\delta^{(\ell)}=\varphi'(\mathbf{z}^{(\ell)})\odot(\mathbf{W}^{(\ell +1) T}\delta^{(\ell+1)})$:
         \item Compute the gradient: $\nabla_{\mathbf{W}^{(\ell)}}\ell(\mathbf{W};\mathbf{y},\mathbf{x})=\delta^{(\ell)}\mathbf{v}^{(\ell-1)T}$
     \end{itemize}
 \end{enumerate}
 
 \subsection{Initializing weights}
 
-Because the optimization problem is non-convex, the initialization of the weights matters, i.e. if we pick innapropriate weights we are more likely to converge towards a suboptimal point in the optimization landscape. Random initialization is often preferred. The rationale of this comes from the propagation of variance. In order to understand why this is the case, assume a node $v_i^{(\ell)}$ with inputs $v_1^{(\ell -1)},\ldots,v_{n_{in}}^{(\ell -1)}$. We know that we carry out the computation $z_i^{(\ell)}=\sum_{j=1}^{n_{in}}w_{ij}v_j^{(\ell-1)}\Rightarrow v_i^{(\ell)}=\phi(z_i^{(\ell)})$ where $\phi(z)=\max(0,z)$. 
+Because the optimization problem is non-convex, the initialization of the weights matters, i.e. if we pick innapropriate weights we are more likely to converge towards a suboptimal point in the optimization landscape. Random initialization is often preferred. The rationale of this comes from the propagation of variance. In order to understand why this is the case, assume a node $v_i^{(\ell)}$ with inputs $v_1^{(\ell -1)},\ldots,v_{n_{in}}^{(\ell -1)}$. We know that we carry out the computation $z_i^{(\ell)}=\sum_{j=1}^{n_{in}}w_{ij}v_j^{(\ell-1)}\Rightarrow v_i^{(\ell)}=\phi(z_i^{(\ell)})$ where $\phi(z)=\max(0,z)$.
 
 \subsubsection{Variance propagation}
 
@@ -1686,7 +1687,7 @@ We then compute:
 \begin{align*}
     \mathbb{E}[z_i^{(1)}]&=\mathbb{E}\left[\sum_{j=1}^{n_{in}} w_{i,j}x_j\right]=\sum_{j}\mathbb{E}[w_{ij}]\mathbb{E}[x_j]=0\\
     \text{Var}[z_i^{(1)}]&=\sum_{j}\text{Var}[w_{ij}x_j]\myeq\sum_{j}\text{Var}(w_{ij})\sum_{j}\text{Var}(x_{j})=n\cdot \sigma^{2}\\
-    \text{Var}[z_i^{(1)}]&=\sum_{j}\text{Var}\left[w_{ij}v_j^{(\ell - 1)}\right] = \sum_{j}\text{Var}(w_{ij})\mathbb{E}\left[v_j^{(\ell -1)2}\right]=\frac{1}{2}n_{\text{in}}\sigma^2\coloneqq 1\Rightarrow\sigma^2=\frac{2}{n_{\text{in}}}      
+    \text{Var}[z_i^{(1)}]&=\sum_{j}\text{Var}\left[w_{ij}v_j^{(\ell - 1)}\right] = \sum_{j}\text{Var}(w_{ij})\mathbb{E}\left[v_j^{(\ell -1)2}\right]=\frac{1}{2}n_{\text{in}}\sigma^2\coloneqq 1\Rightarrow\sigma^2=\frac{2}{n_{\text{in}}}
 \end{align*}
 
 This means that in this setting (of course heavily idealized), that the random variables will have the same scale with the same variance across each layer.
@@ -1730,7 +1731,7 @@ Learning with momentum is a common extension to training with SGD as it can help
     \mathbf{W}&\leftarrow\mathbf{W}-a
 \end{align*}
 
-This allows getting over flatter surfaces of the optimization function quicker while also avoiding oscillations towards the end of the optimization process as we near the optimal point, see figure \ref{oscillation-momentum}. 
+This allows getting over flatter surfaces of the optimization function quicker while also avoiding oscillations towards the end of the optimization process as we near the optimal point, see figure \ref{oscillation-momentum}.
 
 \begin{figure}
     \centering
@@ -1746,7 +1747,7 @@ Multiple distinct weights compute the same prediction. I.e. given a network of t
     v_i &= \phi(\mathbf{w}_i,x)\\
     f &= w_1'v_1+w_2'v_2\\
     \mathbf{w}=[w_i,w_i']_i&,\bar{\mathbf{w}}=[\bar{w_i},\bar{w_i'}]_i
-\end{align*} 
+\end{align*}
 
 Suppose $\bar{\mathbf{w}_2}=\mathbf{{w}}_1$, $\bar{\mathbf{w}_1}=\mathbf{{w}}_2$, $\bar{\mathbf{w}_1'}=\mathbf{{w}}_2'$, $\bar{\mathbf{w}_2'}=\mathbf{{w}}_1'$, we then have:
 \begin{equation*}
@@ -1767,8 +1768,8 @@ For instance, this is valid for the tanh activation function, where $\varphi(z)=
 
 Due to the fact that neural networks have multiple parameters, they have the potential of overfitting the data. There are several countermeasures that can be adopted to mitigate this phenomenon:
 \begin{itemize}
-    \item Early stopping: it consists in stopping SGD until it converges. This is done by monitoring the prediction performance on a validation set and stop trainign once the validation error starts to increase. 
-    \item Regularization: add penalty term to keep the weights small. 
+    \item Early stopping: it consists in stopping SGD until it converges. This is done by monitoring the prediction performance on a validation set and stop trainign once the validation error starts to increase.
+    \item Regularization: add penalty term to keep the weights small.
     \begin{equation*}
         \hat{\mathbf{W}}=\arg\min_{\mathbf{W}}\sum_{i=1}^{n}\ell(\mathbf{W};\mathbf{x}_i,y_i)+\lambda\norm{W}_{F}^2
     \end{equation*}
@@ -1797,9 +1798,9 @@ After this procedure, $\phi(\mathbf{w}\mathbf{x})\rightarrow\phi(\mathbf{w}\text
 \subsection{Invariances}
 Predictions should be unchanged under some transformations of the data, e.g.
 \begin{itemize}
-    \item Classification of handwritten digits: the digit can be anywhere on the picture 
+    \item Classification of handwritten digits: the digit can be anywhere on the picture
     \item Speech recognition: the pitch should not matter for classification the speed of the speech should also not matter.
-\end{itemize} 
+\end{itemize}
 A model can be encouraged to learn specific invariances via the following methods:
 \begin{itemize}
     \item Augmentation of the training set
@@ -1824,10 +1825,10 @@ Important aspects of CNN have specific terminologies:
 \begin{itemize}
     \item Filters/kernels: the size of the filter that passes over an image
     \item Stride: the size of the step taken by the filter at each iteration
-    \item Padding: the distance between the border of the image and the first pixel to be processed. 
+    \item Padding: the distance between the border of the image and the first pixel to be processed.
 \end{itemize}
 
-Computing the output dimensions of a CNN can be done as follows. Applying $m$ different $f\times f$ filtes to an $n\times n$ image with padding $p$ and stride $s$, we get an output measurement of $\ell=\frac{n+2p-f}{s}+1$. In some applications (e.g. image classification), it can make sense to aggregate several units to decrease the width of the network (and hence the number of parameters). 
+Computing the output dimensions of a CNN can be done as follows. Applying $m$ different $f\times f$ filtes to an $n\times n$ image with padding $p$ and stride $s$, we get an output measurement of $\ell=\frac{n+2p-f}{s}+1$. In some applications (e.g. image classification), it can make sense to aggregate several units to decrease the width of the network (and hence the number of parameters).
 
 Pooling layers (equivalent to subsampling) can be added. In some applications, e.g. in image classification, it can make sense to aggregat several units to decrease the width of the network and hence the number of parameters. Usually, one considers either the average or the maximum value of the resulting output of the filter, see figure \ref{max-pooling-layers}.
 
@@ -1842,7 +1843,7 @@ An example of CNN architecture can be found in figure \ref{cnn-arch}.
 
 \subsection{Computational efficiency}
 
-A key operation for backpropagation training is the dense matrix vector multiplications. These are very suitable on general purpose GPUs and much work on special purpose hardware, for instance TPUs. They have been reponsible for large improvement in computations in recent years. 
+A key operation for backpropagation training is the dense matrix vector multiplications. These are very suitable on general purpose GPUs and much work on special purpose hardware, for instance TPUs. They have been reponsible for large improvement in computations in recent years.
 
 \subsection{Choice of parameters and architectures}
 
@@ -1850,7 +1851,7 @@ Several possible activation functions are available. Popular in the past were si
 
 A number of parameters have to be chosen:
 \begin{itemize}
-    \item The number and width of hidden layers 
+    \item The number and width of hidden layers
     \item Use convolution/pooling layers and how many
     \item Skip connections
     \item Type of activation functions
@@ -1880,7 +1881,7 @@ The difference is that kernels optimize $\alpha$'s only. It is therefore convex.
         \textbf{Method} & \textit{Method} & \textit{ANNs}\\
         \midrule
         \textbf{Advantages} & Convex optimization, no local minima, robust against noise, models grow with the size of the data & Flexible nonlinear models, with fixed parametrization. Multiple layers discover representations at multiple levels of abstraction\\
-        \textbf{Disadvantages} & Models grow with the size of data, don't allow multiple layers. & Many free parameters/architectural choices that need to be tuned. Often suffer from very noisy data.  \\
+        \textbf{Disadvantages} & Models grow with the size of data, don't allow multiple layers. & Many free parameters/architectural choices that need to be tuned. Often suffer from very noisy data. \\
     \end{tabulary}
     \label{kernels-vs-anns}
 \end{table}
@@ -1907,7 +1908,7 @@ Examples of clusterings tasks include:
 
 There are several standard approaches to clustering:
 \begin{itemize}
-    \item \textbf{Hierarchical clustering}: it consists of building a tree (bottom-up or top-down) representing distances among data points. For instance, this includes single-, average-linkage clustering. 
+    \item \textbf{Hierarchical clustering}: it consists of building a tree (bottom-up or top-down) representing distances among data points. For instance, this includes single-, average-linkage clustering.
     \item \textbf{Partitional approaches}: it consists in defining and optimizing a notion of cost defined over partitions: for instance, this includes spectral clustering, graph-cut based approaches.
     \item \textbf{Model-based approaches}: these methods consist in maintaining cluster models and infer cluster membership, e.g. assign each point to the closest cluster. Examples of model-based approaches include $k$-means clustering, Gaussian mixture models, etc...
 \end{itemize}
@@ -1941,12 +1942,12 @@ and:
 \begin{equation*}
     \hat{\mu}=\arg\min_{\mu}\hat{R}(\mu)
 \end{equation*}
-This is a non-convex optimization problem and is NP-hard in nature, which means that we can't solve this problem optimally in general. 
+This is a non-convex optimization problem and is NP-hard in nature, which means that we can't solve this problem optimally in general.
 
 \subsubsection{Lloyd's heuristic}
 Lloyd's algorithm consists in:
 \begin{itemize}
-    \item Initialize the cluster centers $\mu_0=[\mu_1^{(0)},\ldots,\mu_k^{(0)}]$  
+    \item Initialize the cluster centers $\mu_0=[\mu_1^{(0)},\ldots,\mu_k^{(0)}]$
     \item While the function does not converge:
     \begin{itemize}
         \item Assign each point $\mathbf{x}_i$ to closest center, i.e.:
@@ -1966,33 +1967,33 @@ Lloyd's algorithm consists in:
 
 \subsubsection{Properties of $k$-means}
 
-$k$-means is guaranteed to monotonically decrease the average squared distance in each iteration, i.e. $\hat{R}(\mu^{(t)})\geq\hat{R}(\mu^{(t+1)})$. 
+$k$-means is guaranteed to monotonically decrease the average squared distance in each iteration, i.e. $\hat{R}(\mu^{(t)})\geq\hat{R}(\mu^{(t+1)})$.
 
 \begin{proof}[Proof that $k$-means monotonically decreases]
     We know that $\hat{R}(\mu^{(t)})$ is defined by \\
     $\hat{R}(\mu^{(t)})=\sum_{i=1}^{n}\min_{j\in\left\{1,\ldots, k\right\}}\norm{\mathbf{x}_i-\mu_j^{(t)}}_2^2$ at a given timestep $t$. Our objective is to find $\mu_{z_i}$ s.t. $\hat{R}(\mu)=\min_{z}\hat{R}(\mu, z)$ (i.e. the set of cluster center assignments such that the distance is minimized). \\
-    
+
     We know that $\hat{R}(\mu,z)=\sum_{i=1}^{n}\norm[]{\mathbf{x}_i-\mu_{z_i}}_2^2$. Then, it can be shown that:
 
 
     \begin{equation*}
         \hat{R}(\mu^{(t)}, z^{(t)})\geq \hat{R}(\mu^{(t)}, z^{(t+1)})\geq \hat{R}(\mu^{(t+1)}, z^{(t+1)})
-    \end{equation*} 
+    \end{equation*}
     Since $z^{(t+1)}=\arg\min_{\mathbf{z}}\hat{R}(\mu^{(t)}, \mathbf{z})$ we can infer that $\hat{R}(\mu^{(t)}, z^{(t)})\geq \hat{R}(\mu^{(t)}, z^{(t+1)})$ and since $\mu^{(t)}=\arg\min_{\mu}=\hat{R})(\mu, z^{(t+1)})$, which means it converges to a local optimum.
 \end{proof}
 
-The complexity per iteration of the algorithm is in $\mathcal{O}(n\cdot k\cdot d)$. 
+The complexity per iteration of the algorithm is in $\mathcal{O}(n\cdot k\cdot d)$.
 
 As noted in the proof, the algorithm converges towards a local optimum. A graphical representation of such an event can be seen in figure \ref{local_optimum_k_means}.
 
 \begin{figure}
     \centering
-    \includegraphics[]{figures/local_optimum_k_means.png}    
+    \includegraphics[width=.5\textwidth]{figures/local_optimum_k_means.png}
     \caption{Local optima of a $k$-means algorithmiteration}
     \label{local_optimum_knn}
 \end{figure}
 
-\subsubsection{Challenges with $k$-means} 
+\subsubsection{Challenges with $k$-means}
 
 There are multiple challenges when performing $k$-means. Generally, the algorithm only converges to a local optimum, and the performance of the methodology is strongly dependent on the initialization. The number of iterations required can be exponential, even in the place. In practice however the algorithm converges very quickly. Determining the number of clusters $k$ is difficult, and cannot model clusters of arbitrary shape, although kernel Kernel-$k$-means can be used to fix this.
 
@@ -2002,7 +2003,7 @@ Lloyd's heuristic does not generally converge to the optimal solution. The perfo
     \item Multiple random restarts
     \item Farthest points heuristic, which often works well but is prone to outliers.
     \item Seeding with $k$-means ++.
-    \item Other methods exist as well. 
+    \item Other methods exist as well.
 \end{itemize}
 
 \subsection{$k$-means ++}
@@ -2010,8 +2011,8 @@ The idea behind $k$-means ++ is to increase the sampling probability of sampling
 
 The algorithm consists of the following steps:
 \begin{enumerate}
-    \item Start with a random data point as a center, where $i\sim\text{Uniform}(\left\{1,\ldots, n\right\})$ and $\mu_0=x_i$. 
-    \item Add centers 2 to $k$ randomly, proportionally to the squared distance to the closest selected center, i.e. for $j=2:k$, pick $ij$ with probability $\frac{1}{z}\cdot d(x_{ij};\mu_{1:j-1}^{(0)})$ where $d(x_{ij};\mu_{1:j-1}^{(0)})=\min_{\ell\in\left\{1,\ldots, j-1\right\}}\norm{\mathbf{x}_ij-\mu_{\ell}^{(0)}}_2^2$ and assign: $\mu_j^{(0)}=x_{ij}$ 
+    \item Start with a random data point as a center, where $i\sim\text{Uniform}(\left\{1,\ldots, n\right\})$ and $\mu_0=x_i$.
+    \item Add centers 2 to $k$ randomly, proportionally to the squared distance to the closest selected center, i.e. for $j=2:k$, pick $ij$ with probability $\frac{1}{z}\cdot d(x_{ij};\mu_{1:j-1}^{(0)})$ where $d(x_{ij};\mu_{1:j-1}^{(0)})=\min_{\ell\in\left\{1,\ldots, j-1\right\}}\norm{\mathbf{x}_ij-\mu_{\ell}^{(0)}}_2^2$ and assign: $\mu_j^{(0)}=x_{ij}$
 \end{enumerate}
 
 We can show that the expected cost of this procedure is in $\mathcal{O(\log(k))}$ times that of optimal $k$-means solutions: $\mathbb{E}[\hat{R}(\mu^{(0)})]\leq\mathcal{O}(\log k)\min_{\mu}\hat{R}(\mu)$
@@ -2105,7 +2106,7 @@ The motivation behind linear dimension reduction is that a low-dimensional repre
 
 \subsection{Linear dimension reduction for reconstruction}
 
-Given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}$, we want $z_i\mathbf{w}\approx\mathbf{x}_i$, e.g. minimizing $\norm{z_i\mathbf{w}=\mathbf{x}_i}_2^2$. To ensure uniqueness, we can normalize $\norm{\mathbf{w}}_2=1$,  and then we optimize over $\mathbf{w}, z_1, \ldots, z_n$ jointly:
+Given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\forall\mathbf{x}_i\subseteq\mathbb{R}^{d}$, we want $z_i\mathbf{w}\approx\mathbf{x}_i$, e.g. minimizing $\norm{z_i\mathbf{w}=\mathbf{x}_i}_2^2$. To ensure uniqueness, we can normalize $\norm{\mathbf{w}}_2=1$, and then we optimize over $\mathbf{w}, z_1, \ldots, z_n$ jointly:
 
 \begin{equation*}
     (\mathbf{w}*,z_{1:n}*) = \arg\min_{\norm{\mathbf{w}}_2 = 1, \mathbf{z}}\sum_{i=1}^{n}\norm{\mathbf{x}_i-z_i\cdot\mathbf{w}}_2^2 = \hat{R}(\mathbf{w}, z_{1:n})
@@ -2114,14 +2115,14 @@ Given a dataset $\mathcal{D}=\left\{\mathbf{x}_1,\ldots, \mathbf{x}_n\right\}\fo
 Solving this equation for $\mathbf{z}$ given a vector $\mathbf{w}$ and we get:
 
 \begin{equation*}
-    z_i*=\mathbf{w}^T\mathbf{x}_i    
+    z_i*=\mathbf{w}^T\mathbf{x}_i
 \end{equation*}
 
 Thus we effectively solve a regression problem, interpreting $\mathbf{x}$ as features and $z$ as labels. So, we obtain:
 
 \begin{align*}
     \mathbf{w}*&=\arg\min_{\norm{w}_2=1}\sum_{i=1}^{n}\norm{\mathbf{w}\mathbf{w}^T\mathbf{x}_i-\mathbf{x}_i}_2^2\\
-    &= \sum_{i=1}^{n}\norm{x_i}_2^2-\sum_{i=1}^{n}(\mathbf{w}^Tx_i)^2
+    &= \sum_{i=1}^{n}\norm{x_i}_2^2-\sum_{i=1}^{n}(\mathbf{w}^Tx_i)^2\\
 \end{align*}
 
 Since $\sum_{i=1}^{n}\norm{x_i}_2^2$ is constant w.r.t. $\mathbf{w}$, we have that:
@@ -2167,9 +2168,9 @@ Since this problem is constrained ($\norm{\mathbf{w}}_2=1$), we have that $\sum_
 
 \subsubsection{Extrapolating for $k>1$}
 
-Suppose we wish to project to more than one dimension. Thus, we want: 
+Suppose we wish to project to more than one dimension. Thus, we want:
 \begin{equation*}
-    (\mathbf{W}, \mathbf{z}_1, \ldots, \mathbf{z}_n)=\arg\min\sum_{i=1}^{n}\norm{\mathbf{W}\mathbf{z}_i-\mathbf{x}_i}_2^2 
+    (\mathbf{W}, \mathbf{z}_1, \ldots, \mathbf{z}_n)=\arg\min\sum_{i=1}^{n}\norm{\mathbf{W}\mathbf{z}_i-\mathbf{x}_i}_2^2
 \end{equation*}
 where $\mathbf{W}\in\mathbb{R}^{d\times k}$ is orthogonal, $\mathbf{z}_1, \ldots, \mathbf{z}_n\in\mathbb{R}^k$.
 
@@ -2192,7 +2193,7 @@ where $\mathbf{W}\in\mathbb{R}^{d\times k}$ is orthogonal, $\mathbf{z}_1, \ldots
     \Sigma = \sum_{i=1}^{d}\lambda_i\mathbb{v}_i\mathbb{v}_i^T \qquad \lambda_1\geq \ldots\geq \lambda_d\geq 0
 \end{equation*}
 
-Essentially, PCA is a projection. The linear mapping $\mathbf{f}(\mathbf{x})=\mathbf{W}^T\mathbf{x}$ obtained from PCA projects vectors $\mathbf{x}\in\mathbb{R}^d$ into a $k$-dimensional subspace. \footnote{If $\mathbf{f}(\mathbf{f}(\mathbf{x}))=\mathbf{f}(\mathbf{x})$, then it holds that $\mathbf{f}$ is a projection}. This projection is chosen to minimize the reconstruction error, measured in Euclidean norm. 
+Essentially, PCA is a projection. The linear mapping $\mathbf{f}(\mathbf{x})=\mathbf{W}^T\mathbf{x}$ obtained from PCA projects vectors $\mathbf{x}\in\mathbb{R}^d$ into a $k$-dimensional subspace. \footnote{If $\mathbf{f}(\mathbf{f}(\mathbf{x}))=\mathbf{f}(\mathbf{x})$, then it holds that $\mathbf{f}$ is a projection}. This projection is chosen to minimize the reconstruction error, measured in Euclidean norm.
 
 An illustration of PCA can be seen in figure \ref{pca_illustration}.
 
@@ -2203,7 +2204,7 @@ An illustration of PCA can be seen in figure \ref{pca_illustration}.
     \label{pca_illustration}
 \end{figure}
 
-The PCA can be obtained through singular value decomposition. Recall that it is possible to represent any $\mathbf{X}\in\mathbb{R}^{n\times d}$ as $\mathbf{X=USV}^T$ where $\mathbf{U}\in\mathbb{R}^{n\times n}$ and $\mathbf{V}\in\mathbb{R}^{d\times d}$ are orthogonal, and $\mathbf{S}\in\mathbb{R}^{n\times d}$ is diagonal (wlog in decreasing order). Its entries are called singular values. 
+The PCA can be obtained through singular value decomposition. Recall that it is possible to represent any $\mathbf{X}\in\mathbb{R}^{n\times d}$ as $\mathbf{X=USV}^T$ where $\mathbf{U}\in\mathbb{R}^{n\times n}$ and $\mathbf{V}\in\mathbb{R}^{d\times d}$ are orthogonal, and $\mathbf{S}\in\mathbb{R}^{n\times d}$ is diagonal (wlog in decreasing order). Its entries are called singular values.
 
 The top $k$ principal components are exactly the first $k$ columns of $\mathbf{V}$. Note that:
 \begin{equation}
@@ -2214,7 +2215,7 @@ Choosing $k$ for PCA can be done depending on the application domain:
 \begin{itemize}
     \item For visualization: by inspection
     \item For feature induction: by cross-validation
-    \item Otherwise: pick k so that most of the variance is explained. 
+    \item Otherwise: pick k so that most of the variance is explained.
 \end{itemize}
 
 Note that the PCA and the $k$-means problems are not very dissimilar. They both solve the following problem:
@@ -2243,7 +2244,7 @@ In order to reduce the dimensionality of data in higher dimensions in nonlinear 
 Therefore we can use kernels. This way we can solve non-linear problems by reducing them to linear ones in high-dimensional, implicitely represented spaces. A similar approach for supervised learning can be taken.
 
 The Ansatz we make is the following:
-$\mathbf{w}=\sum_{i=1}^{n}\alpha_i\mathbf{x}_i$. For PCA, $w*$ is leading eigenvector of $\mathbf{X}^T\mathbf{X}$. We then have that $\mathbf{X}^T\mathbf{X}\mathbf{w}=\lambda\mathbf{w}$, therefore $\mathbf{w}=\frac{1}{\lambda}\sum_{i}$. If we define $\beta = \mathbf{X}\mathbf{w}$, we then have that $\mathbf{w}=\frac{1}{\lambda}\sum_{i}\beta_i x_i$ and $\alpha_i=\frac{\beta_i}{\lambda}$. 
+$\mathbf{w}=\sum_{i=1}^{n}\alpha_i\mathbf{x}_i$. For PCA, $w*$ is leading eigenvector of $\mathbf{X}^T\mathbf{X}$. We then have that $\mathbf{X}^T\mathbf{X}\mathbf{w}=\lambda\mathbf{w}$, therefore $\mathbf{w}=\frac{1}{\lambda}\sum_{i}$. If we define $\beta = \mathbf{X}\mathbf{w}$, we then have that $\mathbf{w}=\frac{1}{\lambda}\sum_{i}\beta_i x_i$ and $\alpha_i=\frac{\beta_i}{\lambda}$.
 
 The objective we want to minimize is the following:
 \begin{align*}
@@ -2255,7 +2256,7 @@ The objective we want to minimize is the following:
     &=\alpha^T K^T K\alpha
 \end{align*}
 
-The constraints we want to put in place are the following: 
+The constraints we want to put in place are the following:
 \begin{align*}
     \norm{w}_2&=\mathbf{w}^T\mathbf{w}\\
     &=(\sum_{i=1}^{n}\alpha_i\mathbf{x}_i)^T(\sum_{j=1}^{n}\alpha_j\mathbf{x}_j)\\
@@ -2264,7 +2265,7 @@ The constraints we want to put in place are the following:
     &=\alpha^T\mathbf{K}\alpha\stackrel{!}{=}1
 \end{align*}
 
-Thus, kernel PCA requires solving $\max_{\alpha}\alpha^T\mathbf{K}^T\mathbf{K}\alpha$ such that $\alpha^TK\alpha=1$. 
+Thus, kernel PCA requires solving $\max_{\alpha}\alpha^T\mathbf{K}^T\mathbf{K}\alpha$ such that $\alpha^TK\alpha=1$.
 
 Applying feature maps using:
 \begin{equation*}
@@ -2386,7 +2387,7 @@ The aim is to find a local minimum via SGD (backpropagation). The initialization
 
 \section{Probabilistic modelling}
 
-The reason why we want to have a statistical perspective on supervised learning is that we want to quantify uncertainty, and express prior knowledge and assumptions about the data. 
+The reason why we want to have a statistical perspective on supervised learning is that we want to quantify uncertainty, and express prior knowledge and assumptions about the data.
 
 \subsection{Probabilistic interpretation of LSR}
 
@@ -2451,7 +2452,7 @@ Suppose we assume $Y=h(X)+\epsilon$, with $\epsilon\sim\mathcal{N}(0,\sigma^2)$.
 \begin{equation*}
     \hat{P}(Y=y|\mathbf{X},\mathbf{w},\sigma^2)=\mathcal{N}(y;\mathbf{w}^T\mathbf{x},\sigma^2)
 \end{equation*}
-and 
+and
 \begin{align*}
     \hat{\mathbf{w}}&=\arg\max_{\mathbf{w}}\hat{P}(y_{1:n}|X_{1:n},\mathbf{w},\sigma^2)\\
     &=\arg\min_{\mathbf{w}}-\sum_{i=1}^{n}\log\hat{P}(y_i|x_i,\mathbf{w},\sigma^2)\\
@@ -2485,12 +2486,12 @@ The fact that the MLE is given by the least squares solution, assuming that the 
 \begin{description}
     \item[Consistency] Parameter estimate converges to true parameters in probability
     \item[Asymptotic efficiency] the smallest variance among all well-behaved estimators for large $n$.
-    \item[Asymptotic normality]  
+    \item[Asymptotic normality]
 \end{description}
 However, all these properties are asymptotic. For finite $n$, we still need to be careful about overfitting.
 
 \subsection{Bias variance tradeoff}
-\begin{redbox}
+\begin{redbox}{}
     The bias variance tradeoff is defined as:
     \begin{equation*}
         \text{Prediction error} = \text{Bias}^2+\text{Variance} + \text{Noise}
@@ -2498,9 +2499,9 @@ However, all these properties are asymptotic. For finite $n$, we still need to b
 \end{redbox}
 where:
 \begin{description}
-    \item[Bias]: Excess risk of best model considered compared to minimal achievable risk knowing $P(\textbf{X},Y)$, i.e. given infinite data. 
+    \item[Bias]: Excess risk of best model considered compared to minimal achievable risk knowing $P(\textbf{X},Y)$, i.e. given infinite data.
     \item[Variance]: Risk incurred due to estimating model from limited data.
-    \item[Noise]: Risk incurred by optimal model (i.e. irreducible error).   
+    \item[Noise]: Risk incurred by optimal model (i.e. irreducible error).
 \end{description}
 
 To investigate where bias comes from, the MLE solution depends on training data $D$:
@@ -2534,7 +2535,7 @@ In summary:
     \mathcolor{BrickRed}{\mathbb{E}_D\mathbb{E}_{\mathbf{X},Y}[(Y-\hat{h}_D(\mathbf{X}))^2]} &= \mathbb{E}_{\mathbf{X}}[\mathcolor{NavyBlue}{\mathbb{E}_D\hat{h}_D(\mathbf{X})-h*(\mathbf{X})}]^2\\
     &+\mathcolor{ForestGreen}{\mathbb{E}_{\mathbf{X}}\mathbb{E}_D[\hat{h}_D(\mathbf{X})-\mathbb{E}_D,\hat{h}_D,(\mathbf{X})]^2}\\
     &+\mathcolor{magenta}{\mathbb{E}_{\mathbf{X},Y}[Y-h*(\mathbf{X})]^2}
-\end{align*}    
+\end{align*}
 
 where the terms are \textcolor{BrickRed}{expected risk}, \textcolor{NavyBlue}{bias}, \textcolor{ForestGreen}{variance} and \textcolor{magenta}{noise} and ideally we wish to find an estimator that simultaneously minimizes bias and variance.
 
@@ -2598,7 +2599,7 @@ The prior that corresponds to l1-regularization is the Laplace prior. Its shape 
 \begin{figure}[]
     \centering
     \includegraphics[width=.5\textwidth]{figures/laplaceprior.png}
-    \caption{Laplce prior compared to the Gaussian prior.}
+    \caption{Laplace prior compared to the Gaussian prior.}
     \label{laplaceprior}
 \end{figure}
 
@@ -2613,5 +2614,1329 @@ It is possible to introduce robustness by changing the likelihood (=loss) functi
 \end{equation*}
 
 which yields heavier tails than normal distributions.
+
+\subsection{Bayes' optimal predictor}
+
+Assuming the data is generated iid, i.e. $(x_i, xy_i)\sim P(X,Y)$, the hypothesis $h^*$ $R(h) = \mathbb{E}[Y|\mathbf{X}=\mathbf{x}]$ is given by the conditional mean $h^*(x)=\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]$ which is called the Bayes' optimal predictor for the squared loss. In this setting, one strategy for estimating a predictor from training data is to estimate the conditional distribution $\hat{P}(X|\mathbf{X})$ and then, for test point $\mathbf{x}$, the predicted label:
+\begin{equation*}
+  \hat{y} = \mathbb{\hat{E}}[Y|\mathbf{X}=\mathbf{x}] = \int\hat{P}(y|\mathbf{X}=\mathbf{x})ydy
+\end{equation*}
+
+Estimating the conditional distribution can be done using a common approach, which consists in (i) choose a particular parametric form from $\hat{P}(Y|\mathbf{X},\theta)$ and then optimize the parameters. This is done through maximum conditional likelihood estimation:
+\begin{equation*}
+  \theta^*=\arg\max_{\theta}\hat{P}(y_1,\ldots,y_n|\mathbb{x}_1,\ldots, \mathbf{x}_n,\theta)
+\end{equation*}
+
+In this context, Ridge regression can be understood as finding the MAP parameter estimate for a linear regression problem, assuming that:
+\begin{itemize}
+\item The noise $P(y|\mathbf{x},\mathbf{w})$ is iid Gaussian and
+  \item The prior $P(\mathbf{w})$ on the model parameters $\mathbf{w}$ is Gaussian.
+\end{itemize}
+
+Then, we have the equivalence:
+\begin{equation*}
+  \arg\min_{\mathbf{w}}\sum_{i=1}^{n}(y_i-\mathbf{w}^T\mathbf{x}_i)^2 + \lambda\norm{\mathbf{w}}_2^2 \equiv\arg\max_{\mathbf{w}}P(\mathbf{w})\prod_iP(y_i|\mathbf{x}_i, \mathbf{w})
+\end{equation*}
+
+More generally, regularized estimation can often be understood as MAP inference:
+
+\begin{align*}
+  \arg\min_{\mathbf{w}}\sum_{i=1}^{n}\ell(\mathbf{w}^T\mathbf{x}_i;\mathbf{x}_i,y_i) + C(\mathbf{w}) &= \arg\max_{\mathbf{w}}\prod_i P(y_i|\mathbf{x}_i,\mathbf{w})P(\mathbf{w})\\
+  &= \arg\max_{\mathbf{w}}P(\mathbf{w}|D)
+\end{align*}
+
+where $C(\mathbf{w})=-\log P(\mathbf{w})$ and $\ell(\mathbf{w}^T\mathbf{x}_i;\mathbf{x}_i,y_i) = -\log P(y_i|\mathbf{x}_i, \mathbf{w})$. This allows changing priors, which are equivalent to regularizers and likelihoods, which are equivalent to loss functions.
+
+\subsection{Probablistic modelling (risk) in classification}
+
+In classification, risk is defined as:
+\begin{equation*}
+  R(h) = \mathbb{E}_{\mathbf{X},Y}[[Y\neq h(\mathbf{X})]]
+\end{equation*}
+
+which is equal to 1 if $y\neq h(\mathbf{X})$ and 0 otherwise.
+
+Now, suppose we know $P(\mathbf{X},Y)$, which $h$ minimizes the risk then?
+
+\begin{equation*}
+  h^*(\mathbf{x}) = \arg\min_{\hat{y}}\underbrace{\mathbb{E}[[Y\neq \hat{y}|\mathbf{X}=\mathbf{x}]]}_{\ell(\hat{y})}
+\end{equation*}
+
+Expanding $\ell(\hat{y})$ yields:
+
+\begin{equation*}
+  \ell(\hat{y}) = \sum_{y=1}^C P(Y=y|\mathbf{X}=\mathbf{x})[y\neq \hat{y}] = \sum_{y_i, y\neq\hat{y}}P(Y=y|\mathbf{X}=\mathbf{x})=1-P(Y=\hat{y}|\mathbf{X}=\mathbf{x})
+\end{equation*}
+So $h^*(\mathbf{x}) =\arg\max_{\hat{y}} P(Y=\hat{y}|\mathbf{X}=\mathbf{x})$.
+
+In the context of logistic regression, we want to use a generalized linear model for the class probability. We know that $Y\in\left\{+1,-1\right\}$. The classification of a positive example is given by:
+\begin{equation*}
+  P(Y=1|\mathbf{x} = \sigma(\mathbf{w}^T\mathbf{x}))
+\end{equation*}
+
+where:
+
+\begin{equation*}
+  \sigma(z) = {1\over 1+\exp(-z)}
+\end{equation*}
+
+Note that this is equivalent to saying that $Y|\mathbf{X}=\mathbf{x}\sim\mathrm{Bernoulli} {(\sigma(\mathbf{w}^T\mathbf{x}))}$
+The derivation of $P(Y=-1|\mathbf{X})$ is given below:
+
+\begin{align*}
+  P(Y=-1|\mathbf{x}) &= 1 - P(Y=1|\mathbf{x})\\
+                     &= 1 - {1\over 1+\exp(-\mathbf{w}^T\mathbf{x})}\\
+                     &= {\exp(-\mathbf{w}^T\mathbf{x})\over 1+\exp(-\mathbf{w}^T\mathbf{x})}\\
+                     &= {1\over 1+\exp(\mathbf{w}^T\mathbf{x})}
+\end{align*}
+So, we get the general classification for $P(Y=y|\mathbf{x}) = {1\over 1+\exp(-y\cdot\mathbf{w}^T\mathbf{x})}$.
+
+Logistic regression (a classification method) replaces the assumption of Gaussian noise (squared loss) by i.i.d. Bernoulli noise, and yields the following classification equation:
+
+\begin{equation*}
+  P(y|\mathbf{x},\mathbf{w}) = \mathrm{Bernoulli}(y;\sigma(\mathbf{w}^T\mathbf{x}))
+\end{equation*}
+
+vs.
+
+\begin{equation*}
+  P(y|\mathbf{x},\mathbf{w}) = \mathcal{N}(y;\mathbf{w}^T\mathbf{x}, \sigma^2)
+\end{equation*}
+for least squares regression. Similar to least square, the parameters $\mathbf{w}$ can be estimated using MLE or MAP.
+
+The MLE for logistic regression is given by the following:
+
+\begin{align}\label{eq:mle_logistic_regression}
+  \hat{w} \in\arg\max_{\mathbf{w}} P(D|\mathbf{w})^{\text{iid}} &= \arg\max_{\mathbf{w}}\prod_{i=1}^{n}P(y_i|\mathbf{x}_i, \mathbf{w})\\
+  &= \arg\min_{\mathbf{w}} - \sum_{i=1}^{n}\log P(y_i|x_i,\mathbf{w})\\
+  &= \arg\min_{\mathbf{w}}\underbrace{\sum_{i-1}^{n}\underbrace{\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i))}_{\ell_{\text{logistic}}(\mathbf{w};\mathbf{x}_i,y_i)}}_{\hat{R}(\mathbf{w})}
+\end{align}
+
+Where the loss function we're trying to optimize is given by the following:
+
+\begin{equation*}
+  -\log P(y_i|\mathbf{x}_i,\mathbf{w}_i) = -\log{1\over 1+\exp(-y\mathbf{w}^T\mathbf{x}_i)} = \log (1+\exp(-y\mathbf{w}^T\mathbf{x}_i))
+\end{equation*}
+
+Plugging this result back into equation~\ref{eq:mle_logistic_regression} yields:
+
+\begin{equation*}
+  P(y_i|\mathbf{x}_i,\mathbf{w}) = {P(y_i,\mathbf{x}_i|\mathbf{w})\over P(\mathbf{x}_i,\mathbf{y})} \underbrace{= C_i P(y_i,x_i|\mathbf{w})}_{\text{if }P(\mathbf{x}_i|\mathbf{w})=P(\mathbf{x}_i)\rightarrow \mathbf{x}\text{ independent of }\mathbf{w}}
+\end{equation*}
+
+So, the negative log likelihood, which is equivalent to our objective function, is given by:
+\begin{equation*}
+  \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i))
+\end{equation*}
+which is a convex function, which means that we can use convex optimization techniques like SGD.
+
+Comparing the logistic loss to other loss functions already reviewed yields Figure~\ref{fig:comparison_loss_function}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/loss_functions.png}
+  \caption{Comparing logistic loss to other loss functions.}
+  \label{fig:comparison_loss_function}
+\end{figure}
+
+The loss for a data point $(\mathbf{x},y)$ is defined by:
+\begin{equation*}
+  \ell(\mathbf{w}) = \log(1+\exp(-y\mathbf{w}^T\mathbf{x}))
+\end{equation*}
+and its gradient is defined by:
+\begin{align*}
+  \nabla_{\mathbf{w}}\ell(\mathbf{w}) &= {1\over 1+\exp(-y\mathbf{w}^T\mathbf{x})}\cdot\exp(-y\mathbf{w}^T\mathbf{x})\cdot (-y\cdot\mathbf{x})\\
+  &= {\exp(-y\mathbf{w}^T\mathbf{x})\over 1 + \exp(-y\mathbf{w}^T\mathbf{x})}(-y\cdot\mathbf{x})\\
+  &= \underbrace{{1\over 1 + \exp(y\mathbf{w}^T\mathbf{x})}}_{P(Y\neq y|\mathbf{x})}(-y\cdot\mathbf{x})
+\end{align*}
+
+Once the gradient is defined, we can use SGD for logistic regression. The steps are:
+\begin{enumerate}
+  \item Initialize $\mathbf{w}$
+  \item For $t=1,2,\ldots$:
+    \begin{enumerate}
+    \item Pick data point $(\mathbf{x},y)$ uniformly at random from data $D$.
+    \item We compute the probability of misclassification with the current model, equivalent to:
+        \begin{equation*}
+          \hat{P}(Y=-y|\mathbf{w},\mathbf{x}) = {1\over 1+\exp(y\mathbf{w}^T\mathbf{x})}
+        \end{equation*}
+     \item Take a gradient step:
+       \begin{equation*}
+         \mathbf{w}\leftarrow\mathbf{w}+\eta_ty\mathbf{x}\hat{P}(Y=-y|\mathbf{w},\mathbf{x})
+       \end{equation*}
+    \end{enumerate}
+\end{enumerate}
+
+To control model complexity, regularization is desired. Thus, instead of solving the MLE, which corresponds to:
+\begin{equation*}
+  \min_{\mathbf{w}}\sum_{i=1}^n(\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i)))
+\end{equation*}
+we solve the regularized problem, which corresponds to either the Gaussian prior (L2):
+\begin{equation*}
+  \min_{\mathbf{w}}\sum_{i=1}^n\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i))+\lambda\norm{\mathbf{w}}_2^2
+\end{equation*}
+or Laplacian prior (L1):
+\begin{equation*}
+  \min_{\mathbf{w}}\sum_{i=1}^n\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i))+\lambda\norm{\mathbf{w}}_1
+\end{equation*}
+
+For L2-regularized SGD we add the following:
+
+\begin{enumerate}
+  \item Initialize $\mathbf{w}$
+  \item For $t=1,2,\ldots$:
+    \begin{enumerate}
+    \item Pick data point $(\mathbf{x},y)$ uniformly at random from data $D$.
+    \item We compute the probability of misclassification with the current model, equivalent to:
+        \begin{equation*}
+          \hat{P}(Y=-y|\mathbf{w},\mathbf{x}) = {1\over 1+\exp(y\mathbf{w}^T\mathbf{x})}
+        \end{equation*}
+     \item Take a gradient step:
+       \begin{equation*}
+         \mathbf{w}\leftarrow\mathbf{w}\textcolor{blue}{(1-2\lambda\eta_t)}+\eta_ty\mathbf{x}\hat{P}(Y=-y|\mathbf{w},\mathbf{x})
+       \end{equation*}
+    \end{enumerate}
+\end{enumerate}
+
+In summary regularized logistic regression has two steps:
+\begin{itemize}
+\item Learning
+  \begin{itemize}
+  \item Find optimal weights by minimizing logistic loss + regularizer, equivalent to:
+  \begin{equation*}
+    \hat{\mathbf{w}} = \arg\min_{\mathbf{w}}\sum_{i=1}^{n}\log(1+\exp(-y_i\mathbf{w}^T\mathbf{x}_i))+\lambda\norm{\mathbf{w}}_2^2
+    = \arg\max_{\mathbf{w}}P(\mathbf{w}|\mathbf{x}_1,\ldots,\mathbf{x}_n,y_1,\ldots,y_n)
+  \end{equation*}
+  \end{itemize}
+\item Classification
+  \begin{itemize}
+  \item Use a conditional distribution:
+    \begin{equation*}
+      \hat{P}(y|\mathbf{x},\hat{\mathbf{w}}) = {1\over 1+\exp(-y\hat{\mathbf{w}}^T\mathbf{x})}
+    \end{equation*}
+  \item Then, it's possible to predict the more likely class label:
+  \begin{equation*}
+    \hat{y}=\sigma(\hat{\mathbf{w}}^T\mathbf{x})
+  \end{equation*}
+  \end{itemize}
+\end{itemize}
+
+Let us derive that last result:
+\begin{align*}
+  \arg\max_{\hat{y}}P(\hat{y}|\mathbf{x},\hat{\mathbf{w}}) &=\arg\max_{\hat{y}}{1\over 1+\exp(-\hat{y}\hat{\mathbf{w}}^T)}\\
+  &=\arg\min_{\hat{y}}\exp(-\hat{y}\hat{\mathbf{w}}^T\mathbf{x}) \\
+  &=\arg\min_{\hat{y}}-\hat{y}\hat{\mathbf{w}}^T\mathbf{x}\\
+  &=\arg\min_{\hat{y}\in\{+1,-1\}}-\hat{y}\hat{\mathbf{w}}^T\mathbf{x}=\sigma(\mathbf{w}^T\mathbf{x})
+\end{align*}
+
+Additional desirable features of logistic regression:
+\begin{itemize}
+\item Can kernelize
+\item Can apply logistic loss function to neural networks in order to have them output probabilities
+\item Natural multi-class variants
+\end{itemize}
+
+For the kernelized logistic regression, we follow these steps:
+\begin{itemize}
+\item Learning:
+  \begin{itemize}
+  \item Find optimal weights by minimizing logistic loss + regularizer
+    \begin{equation*}
+      \hat{\alpha} = \arg\min_{\alpha}\sum_{i=1}^{n}\log(1+\exp(-y_i\alpha^T\mathbb{K}_i))+\lambda\alpha^T\mathbf{K}\alpha
+    \end{equation*}
+    where $\mathbf{K} = (\mathbf{K}_1|\ldots|\mathbf{K}_n)$
+  \end{itemize}
+  \item Classification:
+    \begin{itemize}
+    \item Use conditional distribution
+      \begin{equation*}
+        \hat{P}(y|\mathbf{x},\hat{\mathbf{w}}) = {1\over 1+\exp(-y\sum_{j=1}^{n}\alpha_jk(\mathbf{x}_j,\mathbf{x}))}
+    \end{equation*}
+    \item Predict the most likely label
+    \end{itemize}
+  \end{itemize}
+
+We can further extend multi-class logistic regression to a multi-class setting by maintaining one weight vector per class and model. We then have:
+
+\begin{equation*}
+  P(Y=i|\mathbf{x}, \mathbf{w}_1, \ldots, \mathbf{w}_c) = \underbrace{{\exp(\mathbf{w}_i^T\mathbf{x})\over \sum_{j=1}^{c}\exp(\mathbf{w}_j^T\mathbf{x})}}_{\hat{p}_i}
+\end{equation*}
+
+By default these weight vectors are not unique, and it is possible to force uniqueness by setting $w_c=0$, which recovers logistic regression as a special case.
+
+The corresponding function (cross-entropy loss) is equivalent to:
+\begin{equation*}
+  \ell(y;\mathbf{x}, \mathbf{w}_1,\ldots,\mathbf{w}_c)=-\log P(Y=y|\mathbf{x}, \mathbf{w}_1, \ldots, \mathbf{w}_c)
+\end{equation*}
+
+The multiclass classification illustration is shown in figure
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/multiclass-classification-probabilistic-interpretation.png}
+  \caption{Multiclass classification with a probabilistic interpretation.}
+  \label{fig:multiclass-classification-probabilistic-interpretation}
+\end{figure}
+
+Side note: training a neural network with multiple classes entails having multiple outputs and then compute the cross-entropy loss as well:
+\begin{equation*}
+  \ell(Y=i;f_1,\ldots, f_c) = -\log{\exp (f_i)\over \sum_{j=1}^{c}\exp(f_i)}
+\end{equation*}
+
+\begin{table}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    Method & SVM/Perceptron & Logistic regression\\
+    \midrule
+    Advantages & Sometimes higher classification accuracy; Sparse sol's & Can obtain probabilities\\
+    Disadvantages & Can't easily get class probabilities & Dense solutions\\
+    \bottomrule
+  \end{tabular}
+  \caption{(Dis)advantages in SVM vs. logistic regression}
+\end{table}
+
+\subsection{Bayesian Learning Theory}
+
+In the context of Bayesian decision theory, we consider the following. Given:
+\begin{itemize}
+\item A conditional distribution over labels $P(y|\mathbf{x})$ where $y\in\mathcal{Y}$ and $\mathcal{Y}$ can either be ${+1,-1}$, ${1,\ldots, c}$, $\mathbb{R}$
+\item A set of actions $\mathcal{A}$ where $\mathcal{A}\neq\mathcal{Y}$
+\item A cost function $C:\mathcal{Y}\times\mathcal{A}\rightarrow\mathbb{R}$
+\end{itemize}
+Bayesian decision theory recommends to pick the action that minimizes the expected cost:
+
+\begin{equation*}
+  a^*= \arg\min_{a\in\mathcal{A}}\mathbb{E}_y[C(y,a)|\mathbf{x}]
+\end{equation*}
+
+If we had access to the true distribution $P(y|\mathbf{x})$ this implements the Bayesian optimal decision. In practice, however, we can only estimate the distribution using e.g. logistic regression.
+
+Making the optimal decision for logistic regression is achieved as follows:
+\begin{itemize}
+\item We have an estimated conditional distribution:
+  \begin{equation*}
+    \hat{P}(y|\mathbf{x})=\mathrm{Bernoulli}(y;\sigma(\hat{\mathbf{w}}^T\mathbf{x}))
+  \end{equation*}
+\item An action set:
+  \begin{equation*}
+    \mathcal{A} = {+1,-1}
+  \end{equation*}
+\item A cost function:
+  \begin{equation*}
+    C(y,a)=\underbrace{[y\neq a]}_{
+      \begin{cases}
+        1\text{ if }y\neq0\\
+        0\text{ otherwise}
+      \end{cases}
+    }
+  \end{equation*}
+\item Then the action that minimizes the expected cost
+  \begin{equation*}
+    a^*=\arg\min_{a\in\mathcal{A}}\mathbb{E}_y[C(y,a)|\mathbf{x}] = \sum_yP(y|\mathbf{x})[y\neq a] = {1\over a+\exp(a\cdot \mathbf{w}^T\mathbf{x})}
+  \end{equation*}
+  is the most likely class:
+  \begin{align*}
+    a^*&=\arg\max_y\hat{P}(y|\mathbf{x})=\text{sign}(\mathbf{w}^T\mathbf{x})\\
+  \end{align*}
+  \begin{proof}
+    \begin{align*}
+      a^* &=\arg\min_a{1\over 1+\exp(a\mathbf{w}^T\mathbf{x})}\\
+          &=\arg\max_a 1+\exp(a\mathbf{w}^T\mathbf{x})\\
+          &=\arg\max_{a\in\{-1,+1\}} 1+\exp(a\mathbf{w}^T\mathbf{x})\\
+          &=\arg\max_y\hat{P}(y|\mathbf{x})=\text{sign}(\mathbf{w}^T\mathbf{x})\\
+    \end{align*}
+  \end{proof}
+\end{itemize}
+
+For asymmetric costs, we amend the procedure as follows:
+\begin{enumerate}
+\item Estimated conditional distribution
+  \begin{equation*}
+    \hat{P}(y|\mathbf{x})=\mathrm{Bernoulli}(y;\sigma(\hat{\mathbf{w}}^T\mathbf{x}))
+  \end{equation*}
+\item An action set:
+  \begin{equation*}
+    \mathcal{A} = {+1,-1}
+  \end{equation*}
+\item A cost function:
+  \begin{equation*}
+    C(y,a)=
+    \begin{cases}
+      c_{FP}\quad\text{if }y=-1\text{ and }a=+1\\
+      c_{FN}\quad\text{if }y=+1\text{ and }a=-1\\
+      0\qquad\text{otherwise}
+    \end{cases}
+  \end{equation*}
+\item Then the action that minimizes the expected cost is:
+  \begin{align*}
+    c_+ = \mathbb{E}_y[C(y,+1)|\mathbf{x}] &= P(y=-1|\mathbf{x})\cdot c_{FP}+\underbrace{P(y=+1|\mathbf{x})}_{p}\cdot 0\\
+                                           &=(1-p)\cdot c_{FP}\\
+    c_- = \mathbb{E}_y[C(y,-1)|\mathbf{x}] &= p\cdot C_{FN}+(1-p)\cdot 0 = p\cdot C_{FN}
+  \end{align*}
+\end{enumerate}
+In this context, if we predict +1, we can derive the following:
+\begin{align*}
+  \text{predict }+1 &\Leftrightarrow c_+ < c_-\\
+                    &\Leftrightarrow (1-p) c_{FP}<p c_{FN}\\
+                    &\Leftrightarrow p>{C_{FP}\over C_{FP}+C_{FN}}
+\end{align*}
+
+Asymmetric costs are shown in Figure~\ref{fig:asymmetric_costs}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/asymmetric_cost.png}
+  \caption{Asymetric cost illustration}
+  \label{fig:asymmetric_costs}
+\end{figure}
+
+It's also possible to made a ``doubtful'' logistic regression by making the following adjustments to the steps described above:
+
+\begin{itemize}
+\item We have an estimated conditional distribution:
+  \begin{equation*}
+    \hat{P}(y|\mathbf{x})=\mathrm{Bernoulli}(y;\sigma(\hat{\mathbf{w}}^T\mathbf{x}))
+  \end{equation*}
+\item An action set:
+  \begin{equation*}
+    \mathcal{A} = {+1,-1, D}
+  \end{equation*}
+\item A cost function:
+  \begin{equation*}
+    C(y,a)=
+    \begin{cases}
+      [y\neq a]\quad\text{if }a\in\{+1,-1\}\\
+      c\quad \text{if } a=D
+    \end{cases}
+  \end{equation*}
+\item Then the action that minimizes the expected cost
+  \begin{equation*}
+    a^*=\arg\min_{a\in\mathcal{A}}\mathbb{E}_y[C(y,a)|\mathbf{x}]
+  \end{equation*}
+  is given by:
+  \begin{equation*}
+    a^*=
+    \begin{cases}
+      y\quad\text{if }\hat{P}(y|\mathbf{x})\geq 1-c\\
+      D\quad\text{otherwise }
+
+    \end{cases}
+  \end{equation*}
+\end{itemize}
+This corresponds to picking a given class if confidence enough.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/doubtful_classification.png}
+  \caption{Area of doubt in doubtful logistic regression/}
+  \label{fig:doubt_doubtful_classification}
+\end{figure}
+
+For least squares, the optimal decision is given by:
+
+\begin{itemize}
+\item Estimated conditional distribution
+  \begin{equation*}
+    \hat{P}(y|\mathbf{x})=\mathcal{N}(y;\hat{\mathbf{w}}^T\mathbf{x},\sigma^2)
+  \end{equation*}
+\item Action set is $\mathcal{A}=\mathbb{R}$
+\item Cost function: $C(y,a)=(y-a)^2$
+\item Then the action that minimizes the expected cost is:
+  \begin{equation*}
+    a^*=\arg\min_{a\in\mathcal{A}}\mathbb{E}_y[C(y,a)|\mathbf{x}]
+  \end{equation*}
+  is the conditional mean:
+  \begin{align*}
+    a^*&=\mathbb{E}_y[y|\mathbf{x}]=\int\hat{P}(y|\mathbf{x})dy\\
+    &=\hat{\mathbf{w}}^T\mathbf{x}
+  \end{align*}
+\end{itemize}
+
+And the asymmetric cost for regression is given by:
+
+\begin{itemize}
+\item Estimated conditional distribution
+  \begin{equation*}
+    \hat{P}(y|\mathbf{x})=\mathcal{N}(y;\hat{\mathbf{w}}^T\mathbf{x},\sigma^2)
+  \end{equation*}
+\item Action set is $\mathcal{A}=\mathbb{R}$
+\item Cost function:
+  \begin{equation*}
+    C(y,a) = c_1\underbrace{\max(y-a,0)}_{underestimation}+c_@\underbrace{\max(a-y,0)}_{overestimation}
+  \end{equation*}
+  $=(y-a)^2$
+\item Then the action that minimizes the expected cost is:
+  \begin{equation*}
+    a^*=\arg\min_{a\in\mathcal{A}}\mathbb{E}_y[C(y,a)|\mathbf{x}]
+  \end{equation*}
+  is:
+  \begin{equation*}
+    a^*= \hat{\mathbf{w}}^T\mathbf{x}+\sigma\cdot\phi^{-1}({c_1\over c_1+c_2})
+  \end{equation*}
+where $\phi^{-1}$ is the inverse Gaussian CDF.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/asymmetric_cost_regression.png}
+  \caption{Asymmetric costs for regression}
+  \label{fig:asymmetric_costs_for_regression}
+\end{figure}
+
+Note: asking an expert for labels is expensive, so we want to minimize the number of labels. A strategy to pick the examples we are most uncertain about is called uncertainty sampling.
+
+\begin{itemize}
+\item Given $D={(\mathbf{x}_i, \mathbf{y}_i)}^{n}_{i=1}$ you estimate $\hat{P}(y|\mathbf{x})$
+\item For every $t=1,2,3,\ldots$:
+  \begin{equation*}
+    \hat{P}(y_i|\mathbf{x}_i)
+  \end{equation*}
+  given data $D$.
+\item we pick the sample we are most uncertain about:
+  \begin{equation*}
+    i_t\in\arg\min_i|0.5-\hat{P}(Y_i|\mathbf{x}_i)|
+  \end{equation*}
+\item We query the label $y_{it}$, and set $D\leftarrow D\cup\{(\mathbf{x}_{i_t},y_{i_t})\}$
+\end{itemize}
+
+An example of obtaining the uncertainty score $u_j$ in logistic regression is:
+\begin{equation*}
+  u_j=-|\mathbf{w}^T\mathbf{x}_j|
+\end{equation*}
+
+Note that active learning and uncertainty sampling violate the i.i.d. assumption. It's also possible to get stuck with bad models. More advanced selection criteria are available.
+
+Bayesian decision theory provides a principled way to derive decision rules from conditional distributions.
+
+It can accomodate more complex settings like doubt, asymmetric losses, and active learning.
+
+In summary:
+\begin{enumerate}
+\item Start with statistical assumptions on data. These data points are modeled iid but can be relaxed.
+\item Choose likelihood function, e.g. Gaussian, student-t, logistic, exponential
+\item We choose a prior, e.g. Gaussian, Laplace, exponential
+\item Optimize for MAP parameters
+\item Choose hyperparameters (variance, etc) through cross-validation.
+\item Make predictions via BDT.
+\end{enumerate}
+
+\section{Discriminative vs. Generative modelling}
+
+\subsection{Motivating example}
+
+So far, we have considered only methods that estimate conditional distributions:
+\begin{equation*}
+  P(y|\mathbf{x})
+\end{equation*}
+
+Examples: linear regression, logistic regression, etc...
+
+Such models do not attempt to model $P(\mathbf{x})$. Thus, they will not be able to detect outliers, i.e. unusual points for which $P(\mathbf{x})$ is very small.
+
+The crucial difference between discriminative and generative modelling is the following. In discriminative models, we estimate:
+\begin{equation*}
+  P(y|\mathbf{x})
+\end{equation*}
+and in generative models, we seek to estimate the joint distribution
+\begin{equation*}
+  P(y,\mathbf{x})
+\end{equation*}
+It is possible to derive the conditional distribution from the joint distribution, but not vice versa.
+\begin{equation*}
+  (y|\mathbf{x}) \rightarrow P(y|\mathbf{x})={P(\mathbf{x}, y)\over P(\mathbf{x})}
+\end{equation*}
+where:
+\begin{equation*}
+  P(\mathbf{x}) = \sum_{y'}P(\mathbf{x}, y')
+\end{equation*}
+
+The typical approach for generative modelling is to follow these steps:
+\begin{enumerate}
+\item Estimate priors on labels $P(y)$\footnote{Mind the chain rule in probabilities: $P(\mathbf{x},y)=P(\mathbf{x}|y)P(y)=P(y|\mathbf{x})P(\mathbf{x})$}
+\item Estimate the conditional distribution $P(\mathbf{x}|y)$ for each class $y$.
+\item Obtain predictive distribution using Bayes' rule:
+  \begin{equation*}
+    P(y,\mathbf{x})=\underbrace{{1\over Z}}_{P(\mathbf{x})}\underbrace{P(y)P(\mathbf{x}|y)}_{P(y,\mathbf{x})}
+  \end{equation*}
+\end{enumerate}
+
+Generative modeling attempts to infer the process, according to which examples are generated ($P(\mathbf{x},y)$). First, we generate class label $P(y)$. Then, we generate features given class $P(\mathbf{x}|y)$. An example of generative modelling is shown in figure~\ref{fig:example_generative_modelling}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/example_generative_modelling.png}
+  \caption{Example of a generative model setting, producing handwritten digits.}
+  \label{fig:example_generative_modelling}
+\end{figure}
+
+Gaussian naive Bayes classifiers:
+\begin{description}
+\item[Learning] Given data $\mathcal{D}=\{(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)\}$ we compute:
+\begin{itemize}
+\item MLE for class prior: $\hat{P}(Y=y)=\hat{p}_y={\text{Count}(Y=y)\over n}$
+\item MLE for feature distribution:
+  \begin{equation*}
+    \hat{P}(x_i|y)=\mathcal{N}(x_i;\mu_{y,i}\sigma^2_{y,i})
+  \end{equation*}
+  \begin{align*}
+    \hat{\mu}_{y,i}&={1\over\text{Count}(Y=y)}\sum_{j:y_j=y}\underbrace{x_{j,i}}_{\text{the value of feature }i\text{ for instance } j(x_j,y_j)}\\
+    \hat{\sigma}^2_{y,i}&={1\over \text{Count}(Y=y)}\sum_{j:y_j=y}(x_{j,i}-\hat{\mu}_{y,i})^2
+  \end{align*}
+\item Prediction given a new point $\mathbf{x}$:
+  \begin{equation*}
+    y=\arg\max_{y'}\hat{P}(y'|\mathbf{x})=\arg\max\hat{P}(y')\prod_{i=1}^{d}\hat{P}(x_i|y')
+  \end{equation*}
+\end{itemize}
+An example of decision boundaries under the following conditions:
+
+\begin{equation*}
+  \begin{cases}
+    d=1\quad\text{1 feature }x\\
+    \mathcal{Y}=\{-1,+1\}\\
+    P(Y=+1)=P(Y=-1)=0.5\\
+    \mu_+>\mu_-,\sigma_+^2<\sigma_-^2
+  \end{cases}
+\end{equation*}
+is shown in figure \ref{fig:binary_nb_decision_boundary}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/1d_decision_boundaries.png}
+  \caption{Decision boundaries of a 1D scenario of binary NB classifier}
+  \label{fig:binary_nb_decision_boundary}
+\end{figure}
+
+\end{description}
+
+\subsection{Generative modelling with Bayes}
+
+\begin{itemize}
+\item Model class label as generated from categorical variable:
+  \begin{equation*}
+    P(Y=y) = p_y \quad y\in\mathcal{Y}=\{1,\ldots, c\}
+  \end{equation*}
+\item Model features as conditionally independent given $Y$.
+  \begin{align*}
+    P(X_1,\ldots, X_d|Y)&=\prod_{i=1}^{d}P(X_i|Y)\\
+    P(X_1=\mathbf{x}_1,\ldots, X_d=\mathbf{x}_d|Y=y)&=\prod_{i=1}^{d}P(X_i=\mathbf{x}_i|Y=y_i)\\
+  \end{align*}
+Which is equivalent to saying that, given a class label, each feature is generated independently of the other features.
+
+The feature distributions still need to be specified ($P(X_i|Y)$).
+\end{itemize}
+
+The model features can also be generated from conditionally independent Gaussians:
+
+\begin{equation*}
+  P(x_i|y)=\mathcal{N}(x_i|\mu_{y,i},\sigma^2_{y,i})
+\end{equation*}
+So the features depend on class $y$ and feature $i\in\{1,\ldots, d\}$
+
+To estimate these parameters, we use MLE for $P(y)$. We assume that $\mathcal{Y}=\{-1,+1\}$. We want $P(Y=+1)=p$ and $P(Y=-1)=1-p$, and we have $\mathcal{D}=\{(\mathbf{x}_1,y_1), \ldots, (\mathbf{x}_n,y_n)\}$.
+
+We can use $\mathcal{D}$ to estimate $p$ via MLE:
+\begin{align*}
+  \max_{p'}P(\mathcal{D}|p')&=\prod_{i=1}^{n}p'^{[y_i=1]}(1-p)^{[y_i=0]}\\
+                            &=p'^{n_+}(1-p')^{n_-}\quad\text{where }
+                    \begin{cases}
+                      n_+ \quad\text{number of positive cases in }\mathcal{D}\\
+                      n_- \quad\text{number of negative cases in }\mathcal{D}\\
+                    \end{cases}
+                            &=\max_{p' }\ell(p')
+\end{align*}
+
+where
+\begin{equation*}
+  \ell(p')=n_+\log p'+n_-\log (1-p')
+\end{equation*}
+and
+\begin{equation*}
+  {\partial\ell\over\partial p} ={n_+\over p'}+{n_-\over 1-p'}=0\Leftrightarrow p'={n_+\over n_++n_-}
+\end{equation*}
+
+Now, when devising decision rules for binary classification, we want to know:
+\begin{equation*}
+  y=\arg\max_{\hat
+    {y'}} P(y'| \mathbf{x})
+\end{equation*}
+For binary tasks ($c=2$), this is equivalent to:
+\begin{equation*}
+    y=\text{sign}(\log{P(Y=1|\mathbf{x})\over P(Y=-1|\mathbf{x})})
+\end{equation*}
+The function $f(\mathbf{x})=\log{P(Y=1|\mathbf{x})\over P(Y=-1|\mathbf{x})}$ is called the discriminant function.
+
+In case of GNB and $c=2$ with constant variance, we have:
+\begin{equation*}
+  f(\mathbf{x})=\mathbf{w}^T\mathbf{x}+w_0
+\end{equation*}
+where:
+\begin{align*}
+  w_0&=log{\hat{p}_+\over1-\hat{p}_+}+\sum_{i=1}^{d}{\hat{\mu}^2_{-,i}-\hat{\mu}^2_{+,i}\over 2\hat{\sigma}^2_{i}}\\
+  w_i&={\hat{\mu}_{+,i}-\hat{\mu}_{-,i} \over\hat{\sigma}^2_{-,i}}
+\end{align*}
+
+There is a difference between the discriminant function vs. the class probability. Let us define
+
+\begin{align*}
+  P(Y=+1|\mathbf{x})&\coloneqq p(x)\\
+                    &\Rightarrow f(\mathbf{x})=\log{P(\mathbf{x})\over 1-p(\mathbf{x})}\\
+                    &\Rightarrow exp(f(\mathbf{x}))={p(\mathbf{x})\over 1-p(\mathbf{x})}\\
+                    &\Rightarrow p(\mathbf{x})={\exp(f(\mathbf{x}))\over 1+\exp(f\mathbf{x})}={1\over1+\exp(-f(\mathbf{x}))}=\sigma(f(\mathbf{x}))
+\end{align*}
+
+The same function holds for GNB and logistic regression provided assumptions are not violated; GMG and Log Reg will yield the same prediction.
+
+A significant issue with Naive Bayes model is the conditional independence assumption, which means that features are generated independently given a class label. If there is conditional correlation between class labels, then this assumption is violated. Due to this phenomenon, predictions can become overconfident. This might be fine if we care about the most likely class only, but not if we want to use probabilities for making decision, e.g. with asymmetric losses, etc.
+
+A more general solution is the Gaussian Bayes classifier. Model class label are generated from a categorical variable. Model features are generated by a multivariate Gaussian:
+\begin{equation*}
+  P(\mathbf{x}|y)=\mathcal{N}(\mathbf{x};\mu_y,\sum_y)
+\end{equation*}
+In GNB we assumed the covariance matrix $\sum_y$ to equate
+\begin{equation*}
+  \sum_y =
+  \begin{pmatrix}
+    \sigma_{y,1}^2 & \ldots & 0 \\
+    \vdots & \ddots & \ldots \\
+    0 & \ldots & \sigma_{y,d}^2 \\
+  \end{pmatrix}.
+\end{equation*}
+
+The MLE for the Gaussian Bayes Classifier is, for the class label distribution:
+
+\begin{equation*}
+  \hat{p}_y={\text{Count}(Y=y)\over n}
+\end{equation*}
+and for the features:
+\begin{align*}
+ \hat{P}(\mathbf{x}|y) &= \mathcal{N}(\mathbf{x};\hat{\mu}_y,\hat{\Sigma}_y)\\
+  \hat{\mu}_y &= {1\over \text{Count}(Y=y)}\sum_{i:y_i=y}\mathbf{x}_i\\
+  &\hat{\Sigma}_y={1\over \text{Count}(Y=y)}\sum_{i:y_i=y}(\mathbf{x}_i-\hat{\mu}_y)(\mathbf{x}_i-\hat{\mu}_y)^T\\
+\end{align*}
+
+The discriminant function for Gaussian Bayesian classifiers is given by:
+
+\begin{equation}\label{eq:discriminantgbc}
+  f(\mathbf{x})=\log({p\over 1-p})+{1\over 2}\left[\log{|\hat{\Sigma}_-|\over|\hat{\Sigma}_+|}+((\mathbf{x}-\hat{\mu}_-)^T\Sigma_-^{-1}(\mathbf{x}-\hat{\mu}_-))-((\mathbf{x}-\hat{\mu}_+)^T\Sigma_+^{-1}(\mathbf{x}-\hat{\mu}_+))\right]
+\end{equation}
+
+\subsection{Fisher's linear discriminant analysis}
+
+Suppose we fix $p=0.5$. Further, we assume that the covariance matrices are equal. Then equation \ref{eq:discriminantgbc} simplifies to:
+\begin{equation*}
+  f(\mathbf{x})=\mathbf{x}^T\hat{\Sigma}^{-1}(\hat{\mu}_+-\hat{\mu}_-)+{1\over 2}(\hat{\mu}^T_-\Sigma^{-1}\hat{\mu}_--\hat{\mu}_=^{T}\Sigma^{-1}\hat{\mu}_+)
+\end{equation*}
+Under these assumptions, we predict
+\begin{equation*}
+  y = \text{sign}(f(\mathbf{x})) = \text{sign}(\mathbf{w}^T\mathbf{x}+w_0)
+\end{equation*}
+where
+\begin{align*}
+  \mathbf{w} &= \hat{\Sigma}^{-1}*(\hat{\mu}_+-\hat{\mu}_-)\\
+  w_0 &= {1\over 2} (\hat{\mu}_-^T\Sigma^{-1}\hat{\mu}_- -\hat{\mu}_+^T\Sigma^{-1}\hat{\mu}_+)
+\end{align*}
+
+This linear classifier is called the linear discriminant analysis. Provided assumptions are met, LDA will make the same predictions as logistic regression.
+
+An illustration of GNB vs. NB is given in Figure~\ref{fig:gnb_vs_nb}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/GNB_vs_NB.png}
+  \caption{GNB vs NB}
+  \label{fig:gnb_vs_nb}
+\end{figure}
+
+Note on LDA vs. PCA. LDA can be viewed as a projection to a 1-dim subspace that maximizes the ratio of between-class and within class variances. In contrast, PCA with $k=1$ maximizes the variance of the resulting 1-dim projection. An illustration is shown in Figure~\ref{fig:lda-vs-pca}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/lda-vs-pca.png}
+  \caption{LDA vs. PCA.}
+  \label{fig:lda-vs-pca}
+\end{figure}
+
+\subsection{Quadratic Discriminant analysis}
+
+In the general case:
+
+\begin{equation*}
+  f(\mathbf{x})=\log{p\over 1-p}+{1\over 2}\left[\log{|\hat{\Sigma}_-|\over \hat{\Sigma}_+}\right]+((\mathbf{x}-\hat{\mu}_-)^T\Sigma_-^{-1}(\mathbf{x}-\hat{\mu}_-))-((\mathbf{x}-\hat{\mu}_+)^T\Sigma_+ ^{-1}(\mathbf{x}-\hat{\mu}_ +))
+\end{equation*}
+
+We predict $y=\text{sign}f(\mathbf{x})$. This is called quadratic discriminant analysis. This covers a lot more cases, as seen in figure~\ref{fig:qda}. An Euler Diagram showing GBC, LDA, GNB and LR is shown in Figure~\ref{fig:gbclass}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{figures/qda.png}
+  \hfill
+  \includegraphics[width=0.4\textwidth]{figures/qda_mutliple_classes.png}
+  \caption{Quadratic discriminant analysis illustration }
+\label{fig:qda}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/gbclass.png}
+  \caption{Big picture of GB classifiers}
+  \label{fig:gbclass}
+\end{figure}
+
+Comparing LDA with regression:
+\begin{itemize}
+\item Fisher's LDA:
+  \begin{itemize}
+  \item Generative model, i.e., models $P(\mathbf{X},Y)$
+  \item Can be used to detect outliers: $P(\mathbf{X})<t$
+  \item Assumes normality of $\mathbf{X}$.
+  \item Not very robust against violation of this assumption
+  \end{itemize}
+\item Logistic regression
+  \begin{itemize}
+  \item Discriminative model, i.e. models $P(\mathbf{X}|Y)$
+  \item Cannot detect outliers
+  \item Makes no assumptions on $\mathbf{X}$
+  \item More robust
+  \end{itemize}
+\end{itemize}
+
+Comparing GNB vs. more general GBCs:
+\begin{itemize}
+\item GNB models:
+  \begin{itemize}
+  \item Conditional independence assumption may lead to overconfidence
+  \item Predictions might still be useful
+  \item Number of parameters = $\mathcal{O}(cd)$
+  \item Complexity (memory + inference) linear in $d$.
+  \end{itemize}
+\item General Gaussian Bayes models
+  \begin{itemize}
+  \item Captures correlations among features
+  \item avoids overconfidence
+  \item number of Parameters = $\mathcal{O}(cd^2)$
+    \item Complexity quadratic in $d$.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Working with categorical features}
+
+If we have discrete features (gender, nationality, ...) it might not make sense to model $X_i$ as Gaussian. Generative models allow to easily swap different distributions, e.g. model $P(X_i|Y)$ as:
+\begin{itemize}
+\item Bernoulli
+\item Categorical
+\item Multinomial
+\item ...
+\end{itemize}
+For instance: take a categorical naive Bayes classifier. Model class label as generated from categorical variable, i.e. $P(Y=y)-p_y$ where $y\in\mathcal{Y}=\{1,\ldots,c\}$. Model features are generated by conditionally independent categorical r.v.
+
+\begin{align*}
+  P(\mathbf{X}_i=\mathbf{x}|Y=y) &= \theta_{\mathbf{x}|y}^{(i)}\\
+  \forall i,\mathbf{x},y:\theta_{\mathbf{x}|y}^{(i)} &\geq 0\\
+  \forall i,y:\sum_{i=1}^{c}\theta_{\mathbf{x}|y}^{(i)} &=1\\
+\end{align*}
+
+Given dataset $\mathcal{D}=\{(\mathbf{x}_1,y_1),\ldots(\mathbf{x}_n,y_n)\}$. We want and MLE for the class label distribution $\hat{P}(Y=y)=\hat{p}_y$ given by
+\begin{equation*}
+  \hat{p}_y={\text{Count}(Y=y)\over n}
+\end{equation*}
+and the MLE for the distribution of feature $i$: $\hat{P}(X_i=c|y)=\theta_{c|y}^{(i)}$
+is given by:
+\begin{equation}\label{eq:mlefeaturescatnbclass}
+  \theta_{c|y}^{(i)}={\text{Count}(X_i=c,Y=y)\over\text{Count}(Y=y)}
+\end{equation}
+
+The learning is done as follows:
+\begin{itemize}
+\item MLE for class prior:
+  \begin{equation*}
+    \hat{P}(Y=y) = \hat{p}_y={\text{Count}(Y=y)\over n}
+  \end{equation*}
+  \item MLE for distribution of feature $i$ is given by equation~\ref{eq:mlefeaturescatnbclass}.
+\item The prediction given a new point $\mathbf{x}$ is given by:
+  \begin{align*}
+    y = \arg\max_{y'}\hat{P}(y'|\mathbf{x})&=\arg\max_{y'}\hat{P}(y')\prod_{i=1}^{d}\overbrace{\hat{P}(x_i|y')}^{\text{Categorical}}\\
+    &=\arg\max_{y'}\log\hat{p}_y+\sum_{i=1}^{d}\log\theta_{x_i|y'}^{(i)}
+  \end{align*}
+\end{itemize}
+
+\subsection{Beyond categorical Naive Bayes}
+
+We could in principle lift the NB assumption by modelling a joint conditional distribution of the features: $P(\mathbf{X}_1,\ldots,\mathbf{X}_d|Y)$. The issue here is that the probability of each assignment needs to be specified. It therefore requires exponentially many parameters in $d$, which is computational intractable and overfits. A good remedy is to use graphical models and Bayesian networks.
+
+The Naive Bayes classifier does not require each feature to follow the same type of conditional distribution. For example, this model features that are both Gaussians while other features are categorical. The training (MLE) and prediction remain the same. Given:
+\begin{align*}
+  X_{1:10}:P(X_i|Y)&=\text{Categorical}(X_i|Y,\theta)\\
+  X_{1:10}:P(X_i|Y)&=\mathcal{N}(X_i|\mu_{i,y},\sigma^2_{i,y})\\
+\end{align*}
+We then have:
+\begin{equation*}
+  P(X_{1:20}|y)=\prod_{i=1}^{10}\text{Categorical}(X_i|Y,\theta)\prod_{i=11}^{20}\mathcal{N}(X_i|\mu_{i,y},\sigma^2_{i,y})
+\end{equation*}
+
+MLE is generally prone to overfitting. This is avoidable by restricting the model class (e.g. assumptions on covariance structure in GNB) which aim to reduce parameters. Using priors can also help.
+
+As prior for our class probabilities in the case that $c=2$, we have $P(Y=1)=\theta$. The MLE is $\hat{\theta}={\text{Count}(Y=1)\over n}$. In the case that $n=1$, we end up with $\hat{\theta}={1\over 1} =1$. We therefore may want to put a prior distribution $P(\theta)$ and compute the posterior distribution using the available data.
+
+\begin{equation*}
+  P(\theta|y_1,\ldots,y_n)={1\over z}P(\theta)\cdot P(y_{1:n}|\theta)
+\end{equation*}
+where $x=\int P(\theta)p(y_{1:n}|\theta)d\theta$.
+
+A natural choice for providing a prior of a r.v. is the beta distribution given by:
+
+\begin{equation*}
+  \mathrm {B} (\theta;\alpha_+,\alpha_-)={1\over\mathrm{B}(\alpha_+,\alpha_-)}\theta^{\alpha_+-1}(1-\theta)^{\alpha_--1}
+\end{equation*}
+Shapes of the p.d.f. of this distribution is shown in Figure~\ref{fig:beta_dist}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/beta_distribution.png}
+  \caption{Beta distribution under different values of $\alpha_+$ and $\alpha_-$}
+  \label{fig:beta_dist}
+\end{figure}
+
+Assume observation data $D$ with $n_+$ times $Y=+1$ and $n_-$ times $Y=-1$, then we have:
+
+\begin{equation*}
+  p(\theta|D)={1\over z}p(\theta)p(D|\theta)={1\over z'}\theta^{\alpha_+-1}(1-\theta)^{\alpha_--1}\theta^{n_+}(1-\theta)^{n_-}
+\end{equation*}
+
+\subsection{Conjugate prior and distributions}
+
+A pair of prior distributions and likelihood functions is called conjugate if the posterior distribution remains in the same family as the prior. For instance, if we take a prior $\mathrm {B} (\theta;\alpha_+,\alpha_-)$ and oberve $n_+$ positives and $n_-$ negatives, the posterior is given by $\mathrm {B} (\theta;\alpha_++x_+,\alpha_-+n_-)$. Here $\alpha_+$ and $\alpha_-$ act as pseudo-counts. The MAP estimate is given by:
+
+\begin{equation*}
+  \hat{\theta} = \arg\max_{\theta}p(\theta|y_1,\ldots,y_n;\alpha_+,\alpha_-)={\alpha_++n_+-1\over \alpha_++n_++\alpha_-+n_--2}
+\end{equation*}
+
+\begin{table}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Prior/posterior} & \textbf{Likelihood function}\\
+    \midrule
+    Beta & Bernouilli/Binomial\\
+    Dirichtlet & Categorial/Multinomial\\
+    Gaussian (fixed variance) & Gaussian\\
+    Gaussian-inverse Wishart & Gaussian\\
+    Gaussian process & Gaussian\\
+    \bottomrule
+  \end{tabular}
+  \caption{Conjugate prior and likelihood function}
+  \label{tab:likelihood_function}
+\end{table}
+
+It is possible to use conjugates as regularizers and add no substantial computational cost. The hyperparameters of these conjugate priors can be chosen using cross validation.
+
+\subsection{Generative vs. Discriminative models}
+
+\begin{itemize}
+\item Discriminative models:
+  \begin{itemize}
+  \item Model $P(y|\mathbf{x})$. Does not attempt to model $P(\mathbf{x})$
+  \item Cannot detect outliers (property of $P(\mathbf{x})$
+  \item Are typically more robust, since accurately modelling $\mathbf{x}$ may be difficult.
+\end{itemize}
+\item Generative models
+  \begin{itemize}
+  \item Model joint distribution $P(\mathbf{x},y)$, which is more ambitious
+  \item Can be more powerful if model assumptions are met (can detect outliers)
+  \item Are typically less robust against outliers.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Dealing with missing data}
+
+Missing data can either contain missing labels or missing features. An example of trying to infer class labels from feature distributions is shown in Figure~\ref{fig:gaussian_missing_data}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/Gaussian_Mixtures.png}
+G \caption{Gaussian Mixture allows to recover class labels from feature distribution.}
+  \label{fig:gaussian_missing_data}
+\end{figure}
+
+Figure~\ref{fig:gaussian_missing_data} is provided by a convex combination of Gaussian distributions:
+\begin{equation*}
+  P(\mathbf{x}|\theta) = P(\mathbf{x}|\mu,\Sigma,\mathbf{w}) = \sum_{i=1}^{c}w_i\mathcal{N}(\mathbf{x}\mu_i,\Sigma_i)
+\end{equation*}
+where $w_i\geq 0$ and $\sum_iw_i=1$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/Gaussian_mixtures_2.png}
+  \caption{Gaussian mixuture, contour and scatterplot}
+  \label{fig:gmm2}
+\end{figure}
+
+Fitting a mixture model means finding:
+\begin{equation*}
+  (\mu^*,\Sigma^*,w^*) = \arg\min-\sum_i\log\sum_{j=1}^{k}w_j\mathcal{N}(\mathbf{x}_i|\mu_j\Sigma_j)
+\end{equation*}
+
+The MLE for Gaussian mixture is found by minimizing:
+
+\begin{equation*}
+  L(w_{1:k},\mu_{1:k},\Sigma_{1:k})=-\sum_{i=1}^{n}\log\sum_{j=1}^{k}w_j\mathcal{N}(\mathbf{x}_i|\mu_j,\Sigma_j)
+\end{equation*}
+
+which is non-convex objective.
+
+It is still possible to apply stochastic gradient descent. However, several challenges remain:
+\begin{itemize}
+\item Covariance matrices must remain symmetric positive definite
+\item These constraints might be difficult to maintain.
+\end{itemize}
+
+Both GBC and GBB work with the joint distribution. The difference between GBCs in GMMs is that GMMs, the variable $z$ is unobserved. Therefore, fitting a GMM is equivalent to training a GBC without labels. This is equivalent to clustering, because we want to model a latent variable. If we could get the labels, we could compute the MLE in closed form.
+
+Enter: the Hard-EM algorithm. It consists of the following steps:
+
+
+\begin{itemize}
+\item Initialize the parameters $\theta^{(0)}$
+\item For $t=1,2,\ldots$:
+  \begin{itemize}
+  \item \textbf{E-step}: predict the most likely class for each data point:
+    \begin{align*}
+      z_i^{(t)}&=\arg\max_{z}P(z|\mathbf{x}_i,\theta^{(t-1)})\\
+      &= \arg\max_{z}\underbrace{P(z|\theta^{t-1})}_{w_z^{(t-1)}} \underbrace{P(\mathbf{x}_i|z,\theta^{(t-1)})}_{\mathcal{N}(\mathbf{x}_i|\mu_z^{(t-1)},\Sigma_z^{t-1})}
+    \end{align*}
+  \item The result is complete data.
+  \item \textbf{M-step}: compute the MLE as for the GBC, using:
+    \begin{equation*}
+      \theta^{(t)}=\arg\max_{\theta}P(D^{(t)}|\theta)
+    \end{equation*}
+  \end{itemize}
+\end{itemize}
+
+The problems with the EM algorithm is that points assigned a fixed label, even though the model is uncertain. Intuitively, this tries to extract too much information from a single point. In practice, this may work poorly if clusters are overlapping.
+
+Ideally we want to compute the posterior probabilities of belonging to a cluster. Suppose we're given a model $P(z|\theta)$, $P(\mathbf{x}|z,\theta)$. Then for each data point, we compute a posterior distribution over cluster membership. This means inferring distributions over latent hidden variables $z$ as follows:
+
+\begin{equation*}
+  \gamma_j*(\mathbf{x}) = P(Z=j|\mathbf{x},\Sigma,\mu,\mathbf{w}) = {w_j P(\mathbf{x}|\Sigma_j,\mu_j\over \sum_{\ell}w_{ell}P(\mathbf{x}|\Sigma_{ell},\mu_{\ell}))}
+\end{equation*}
+
+We can look at this optimality condition as a MLE problem.
+
+\begin{theorem}
+  At MLE
+  \begin{equation*}
+    (\mu^*,\Sigma^*,w^*)=\arg\min-\sum_i\log\sum_{j=1}^kw_j\mathcal{N}(\mathbf{x}_i|\mu_j,\Sigma_j)
+  \end{equation*}
+  the following must hold:
+  \begin{align*}
+    \mu_j^*&={\sum_{i=1^n}\gamma_j(\mathbf{x}_i)\mathbf{x}_i\over \sum_{i=1^n}\gamma_j(\mathbf{x}_i)}\\ \Sigma_j^*&={\sum_{i=1}^{n}\gamma_j(\mathbf{x})(\mathbf{x}_i-\mu_j^*)(\mathbf{x}_i-\mu_j^*)^T \over\sum_{i=1}^n\gamma_j(\mathbf{x}_i)}\\
+    w_j^*&={1\over n}\sum_{i=1}^{n}\gamma_j(\mathbf{x}_i)
+  \end{align*}
+\end{theorem}
+
+This allows us to define the soft EM algorithm.
+
+\begin{itemize}
+\item While not converged
+  \begin{itemize}
+  \item \textbf{E-step}: calculate cluster membership weights (aka. expected sufficient statistic or responsibilities) for each point. We calculate $\gamma_j^{(t)}(\mathbf{x}_i)$ for each $i$ and $j $ givenestimates of $\mu^{t-1}$,$\Sigma^{t-1}$,$\mathbf{w}^{(t-1)}$ from the previous iteration.
+  \item\textbf{M-step}: fit cluster to weighted data points which corresponds to the maximum likelihood solution:
+  \begin{align*}
+    w_j^{(t)}&\leftarrow{1\over n}\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x}_i)\\
+    \mu_j^{(t)}&\leftarrow{\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x}_i)\mathbf{x}_i\over\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x}_i)}\\
+    \Sigma_j^{(t)}&\leftarrow{\sum_{i=1}^n\gamma_j^{(t)}(\mathbf{x}_i)(\mathbf{x}_i-\mu_j^{(t)})(\mathbf{x}_i-\mu_j^{(t)})^T \over\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x}_i)}
+  \end{align*}
+  \end{itemize}
+\end{itemize}
+
+An illustration of the EM algorithm in action is shown in figure~\ref{fig:emalgopics}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.2\textwidth]{figures/EM1.png}
+  \includegraphics[width=.2\textwidth]{figures/EM2.png}
+  \includegraphics[width=.2\textwidth]{figures/EM3.png}
+  \includegraphics[width=.2\textwidth]{figures/EM4.png}
+  \caption{EM algorithm illustration}
+  \label{fig:emalgopics}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.4\textwidth]{figures/kmeans.png}
+  \includegraphics[width=.4\textwidth]{figures/gmm.png}
+  \caption{$k$-means vs. GMM}
+  \label{fig:gmmvskmeans}
+\end{figure}
+
+
+Note: we can also have constrained GMMs by tying together parameters in MLE:
+\begin{itemize}
+\item Spherical: $\Sigma_j=\sigma_j^2\cdot I_j$
+\item Diagonal: $\Sigma_j=
+  \begin{pmatrix}
+    \sigma_{j,1}^{2} & \ldots & 0\\
+    \vdots & \ddots & \vdots\\
+    0 & \ldots & \sigma_{j,1}^{2}
+  \end{pmatrix}
+  $ (a.k.a. GNB).
+\item Tied $\Sigma_1=\ldots=\Sigma_c$
+\item Full
+\end{itemize}
+
+The EM algorithm estimating using soft assignments to clusters is called soft EM. The intuitive first attempt we discussed first uses hard assignments, and is called hard EM. In general, soft EM will typically result in higher likelihood values. Reason it can deal better with overlapping cluster. The term EM alone typically refers to soft EM.
+
+\begin{theorem}
+  Hard EM with uniform weights and spherical covariances is equivalent to $k$-means.
+\end{theorem}
+For proof, see slide 32 of lecture 23.
+
+Initialization of EM:
+\begin{itemize}
+\item For weights, we can typically use a uniform distribution
+\item For means, we randomly initialize them and k-means++.
+\item For variances, we initialize them as spherical, e.g. according to empirical variance in the data.
+\end{itemize}
+
+Selecting $k$: in GMMs, we face a similar challenge of selecting the number of clusters. We can generally use the same techniques. However, in contrast to $k$-means, for GMMs typically cross-validation works fairly well. It aims to maximize log-likelihood on the validation set. If the data is truly generated from a GMM, using cross-validation can be used to select $k$. See Figure~\ref{fig:selecting_k_gmm}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/selecting_k_gmm.png}
+  \caption{Selecting $k$ in GMM.}
+  \label{fig:selecting_k_gmm}
+\end{figure}
+
+\subsection{Degeneracy of GMMs}
+
+Suppose we are given a single data point. What is the optimal log-likelihood that can be achieved? Well, because
+\begin{equation*}
+  -\log P(x|\mu,\sigma)={1\over 2}\log(2\pi\sigma^2)+{1\over 2\sigma^2}(x-\mu)^2
+\end{equation*}
+Small variances will be encouraged and the model won't generalize at all. See Figure~\ref{fig:degeneracy_gmm}. The loss essentially converges to 0 as $\mu=x,\sigma\rightarrow 0$. Thus, an optimal GMM chosses $k=n$, and puts one Gaussian around each data point with variance tending to 0. This is overfitting.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.3\textwidth]{figures/degeneracy_gmm_1.png}
+  \includegraphics[width=.3\textwidth]{figures/degeneracy_gmm_2.png}
+  \caption{Degeneracy of GMM. Red, what happens without regularization, green is what we want: wider variance for better generalization.}
+\label{fig:degeneracy_gmm}
+\end{figure}
+
+Overfitting can be avoided by adding a small term to the diagonal of the MLE as follows:
+\begin{equation*}
+  \Sigma_j\leftarrow {\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x})(\mathbf{x}-\mu_i^{(j)})(\mathbf{x}-\mu_i^{(j)})^T\over\sum_{i=1}^{n}\gamma_j^{(t)}(\mathbf{x})}+\mu^2\mathbf{I}
+\end{equation*}
+
+This can be motivated from a Bayesian standpoint: this is equivalent to placing a conjugate Wishart prior on the covariance matrix, and computing the MAP instead of the MLE to regularize. $\mu$ can be chosen by cross-validation.
+
+\subsection{Gaussian Mixtures Bayes Classifiers}
+
+GMMs are useful because:
+\begin{itemize}
+\item Can encode information about shape of clusters.
+\item Can be part of more complex statistical models.
+ \item Probabilistic models can output the likelihood $P(\mathbf{x})$ of a point $\mathbf{x}$, which is useful for anomaly or outlier detection, and therefore can
+   be naturally used for semi-supervised learning.
+ \end{itemize}
+
+ A Gaussian Mixture Bayes classifier is defined as follows:
+
+ \begin{itemize}
+ \item Given $\mathcal{D} = {(\mathbf{x}_1,y_1),\ldots,(\mathbf{x}_n,y_n)}$, where the label $y\in\{1,\ldots, m\}$, we estimate the class prior $P(y)$ and estimate the conditional distribution for each class:
+ \begin{equation*}
+   P(\mathbf{x}|y)=\sum_j w_j^{(y)}\mathcal{N}(\mathbf{x};\mu_{j}^{(y)},\Sigma_j^{(y)})
+ \end{equation*} as a Gaussian mixture model.
+\item To use this model for classification, we perform the following:
+  \begin{equation*}
+    P(y|\mathbf{x})={1\over Z}p(y)\sum_{j=1}^{k_y}w_j^{(y)}\mathcal{N}(\mathbf{x};\mu_j^{(y)},\Sigma_j^{(y)})
+  \end{equation*}
+ \end{itemize}
+
+ \begin{figure}
+   \centering
+   \includegraphics[width=.3\textwidth]{figures/clustering_for_non_linear_classification.png}
+   \includegraphics[width=.3\textwidth]{figures/gaussian_mixture_model.png}
+   \caption{Clustering for non linear features vs. Gaussian mixture Bayes classifier.}
+   \label{fig:power_of_bayes}
+ \end{figure}
+
+GMMs can also be used for density estimation. We may be interested in fitting a Gaussian mixture model not for clustering but for density estimation. This combines the advantage of accurate predictions and robustness from discriminative models with the ability to detect outliers.
+
+We can perform anomaly detection with mixture models by comparing the estimated density of the a data point against a threshold, see Figure~\ref{fig:gmm_anomaly_detection}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/anomaly_detection_with_mixture_models.png}
+  \caption{GMM for anomaly detection.}
+  \label{fig:gmm_anomaly_detection}
+\end{figure}
+
+Picking the threshold is tricky if we have no examples. If we do have some examples, varying the threshold trades false-positives and false-negatives. One can use PR-curves and ROC curves as evaluation criterion; e.g. maximize the F1 score. the threshold can also be optimized via cross-validation.
+
+GMMs allow one to combine unlabeled and labeled data in a semi supervised learning context. In SSL, for instances $\gamma_j(\mathbf{x}_i)=[j=y_i]$
+
+The EM algorithm for semi-supervised learning with GMM goes as follows:
+
+While not converged:
+\begin{itemize}
+\item \textbf{E-step}: for unlabeled points:
+  \begin{equation*}
+    \gamma_j^{(t)}(\mathbf{x}_i)=P(Z=j|\mathbf{x}_i,\mu^{(t-1)},\Sigma^{(t-1)},\mathbf{w}^{(t-1)})
+  \end{equation*}
+  and for labeled points
+  \begin{equation*}
+    \gamma_j^{(t)}(\mathbf{x}_i)=[j=y_i]
+  \end{equation*}
+  \item\textbf{M-step}: Fit clusters to weighted data points, which corresponds to the closed form of the maximum likelihood solution described above, i.e. maximize
+  \begin{equation*}
+    \theta^{(t)}=\arg\max_{\theta}Q(\theta;\theta^{(t-1)})
+  \end{equation*}
+\end{itemize}
+
+\subsection{Theory behind the EM algorithm}
+
+We can show that the EM algorithm is equivalent to the following procedure:
+\begin{itemize}
+\item \textbf{E-step}: calculate the expected complete data log likelihood, which is equivalent to a function of $\theta$:
+
+\begin{align*}
+  Q(\theta;\theta^{(t-1)})&=\mathrm{E}_{z_{1:n}}[\log P(\mathbf{x}_{1:n},\mathbf{z}_{1:n}|\theta)|\mathbf{x}_{1:n},\theta^{(t-1)}]\\
+                          &=\sum_{z_{1:n}} P(z_{1:n}|\mathbf{x}_{1:n},\theta^{(t-1)})\underbrace{\log P(\mathbf{x}_{1:n},z_{1:n}|\theta^{(t-1)})}_{\text{Complete data log-likelihood}}
+\end{align*}
+\item \textbf{M-step}: maximize $\theta^{(t)}=\arg\max_{\theta} Q(\theta;\theta^{(t-1)})$
+\end{itemize}
+
+Note that the EM objective function can be simplified to:
+\begin{equation*}
+  Q(\theta;\theta^{(t-1)}) = \sum_{i=1}^{n}\sum_{j=1}^{k}\underbrace{P(z_i=j|\mathbf{x}_i,\theta^{(t-1)})}_{\gamma_j(\mathbf{x}_i))}\log \underbrace{P(\mathbf{x}_i,z_i=j|\theta)}_{w_j\mathcal{N}(\mathbf{x}_i,\mu_j,\Sigma_j)}
+\end{equation*}
+Thus, the E-step is equivalent to computing $\gamma_z(\mathbf{x}_i)$, which are called expected sufficient statistics. See slide 25 of lecture 24 for the complete derivation.
+
+In the M-step, we need to compute:
+  \begin{equation*}
+    \theta^{(t)}=\arg\max_{\theta}Q(\theta;\theta^{(t-1)})
+  \end{equation*}
+  which is very similar to the MLE of the GBC:
+    \begin{equation*}
+    \theta^{*}=\arg\max_{\theta}\sum_{i-1}^{n}\log P(\mathbf{x},z_i|\theta)
+  \end{equation*}
+Thus, each iteration of the M-step is equivalent to training a GBC with weighted data and has a closed form solution.
+
+\begin{theorem}\label{th:emconvergence}
+  The EM algorithm monotonically increases the likelihood, i.e. the following holds:
+  \begin{equation*}
+    \log P(\mathbf{x}_{i:n}|\theta^{(t)})\geq \log P(\mathbf{x}_{i:n}|\theta^{(t-1)})
+  \end{equation*}
+\end{theorem}
+
+For GMMs, EM is guaranteed to converge to a local maximum. The quality of the solution highly depends on the initialization, as in $k$-means. A common strategy is to rerun the algorithm multiple times and use the solution with the largest likelihood. The proof of Theorem \ref{th:emconvergence} is shown in slides 29-31 of slide deck 24 and slides 1-9 of slide deck 25.
+
+The EM algorithm is much more widely applicable. It can be used whenever the E and M steps are tractable, that means we must just be able to compute and maximize the complete data likelihood. Furthermore, this algorithm can be used, for instance, for some missing features, and likelihoods beyond Gaussian (e.g. categorical).
+
+\section{Generative Modelling with Neural Networks}
+
+So far, we have considered very simple probabilistic models (hand selected priors, and likelihood functions). These fail to capture complex, high-dimensional data types like images and audio.
+
+\subsection{Implicit generative models}
+
+Given a sample of unlabeled points $\{\mathbf{x}_1,\ldots,\mathbf{x}_n\}$, the goal is to learn a model $\mathbf{X}=G(\mathbf{Z};\mathbf{w})$ where $\mathbf{Z}$ is a simple distribution (e.g. low dimensional Gaussian). and $G$ some flexible nonlinear function approximated by a neural net. A schemaic mapping of this function is shown in Figure~\ref{fig:implicit_generative_models}:
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/mapping_generative_models.png}
+  \caption{Implicit generative models}
+  \label{fig:implicit_generative_models}
+\end{figure}
+
+The key challenge here is to compute the likelihood of the data. Thus, we need an alternative/surrogate objective functions for training. Variants exist, such as VAE and GANs.
+
+\subsection{Generative Adversarial Networks}
+
+By Goodfellow et al, the goal is to optimize parameters $\mathbf{w}$ to make samples from model hard to distinguish from a data sample. Therefore, one can use a discriminative model to train a generative model. The generator tries to produce realistic examples which the discriminator tries to detect fake examples.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/GAN_scheme.png}
+  \caption{GAN setup}
+  \label{fig:gan_setup}
+\end{figure}
+
+Formally:
+
+\begin{align*}
+  D:\mathrm{R}^d&\rightarrow [0,1]\text{ wants }: D(\mathbf{x}) =
+  \begin{cases}
+    \approx 1\text{ if }x\text{is real}\\
+    \approx 0\text{ if }x\text{is fake}
+  \end{cases}
+  G:\mathrm{R}^m&\rightarrow \mathrm{R}^d\text{ wants }: D(G(\mathbf{z})) \approx 1\text{ for samples} z
+\end{align*}
+The overall training objective is:
+\begin{equation*}
+  \min_G\max_D\underbrace{\mathrm{E}_{\mathbf{X}\sim\mathcal{D}}\log D(\mathbf{x}) +\mathrm{E}_{\mathbf{X}\sim\text{Noise}}\log (1- D(\mathbf{x}))}_{M(G,D)}
+\end{equation*}
+
+Training a GAN requires finding a saddle point rather than a local minimimum, due to:
+\begin{equation*}
+  \min_{\mathbf{w}_G}\max_{\mathbf{w}_D}M(\mathbf{w}_G,\mathbf{w}_D)
+\end{equation*}
+as illustrated in Figure~\ref{fig:gan_optim_landscape}. Another illustration is shown in Figure to show how the training process approximates the distribution of the data.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/GAN_optim_landscape.png}
+  \caption{Gan optimization landscape and objective (red dot).}
+  \label{fig:gan_optim_landscape}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/GAN_training_process.png}
+  \caption{GAN training process, the number of iterations increases from left to right}
+  \label{fig:gan_iterations}
+\end{figure}
+
+GANs have a convergence guarantee. If $G$ and $D$ have enough capacity, then the data generating distribution is indeed the saddle point of:
+\begin{equation*}
+  \min_{\mathbf{w}_G}\max_{\mathbf{w}_D}M(\mathbf{w}_G,\mathbf{w}_D)
+\end{equation*}
+
+Key idea: the best possible discriminator $\ell^*=\max_{\mathbf{w_D}}M(\mathbf{w}_G,\mathbf{w}_D)$ is up to constants the Jensen-Shannon divergence $JS(p_{\text{Data}}||q_{\text{Generator}})$. Where:
+
+\begin{equation*}
+  JS(p||q) = {1\over 2}\text{KL}(p||{p+q\over 2})+{1\over 2}\text{KL}(q||{p+q\over 2}); JS(p||q)=0\Leftrightarrow p=q.
+\end{equation*}
+ In practice, we train a GAN on a finite sample. While we run into the danger of running into the memorization trap, diminishing the power of the discriminator can help alleviate that.
+
+Training approaches for GAN is to simultaneously apply stochastic gradient descent to the empirical GAN objective.
+
+\begin{align*}
+  \mathbf{w}_G^{(t+1)} &= \mathbf{w}_G^{(t)} - \eta\nabla_{\mathbf{w}_G}M(\mathbf{w}_G,\mathbf{w}_D^{(t)})\\
+  \mathbf{w}_G^{(t+1)} &= \mathbf{w}_G^{(t)} + \eta\nabla_{\mathbf{w}_D}M(\mathbf{w}_G^{(t)},\mathbf{w}_D)\\
+\end{align*}
+
+Gradients are approximated by samples of data points.
+
+Note that when training GANs, there is a risk of oscillations and divergence. See Figure~\ref{fig:oscillations_gan_training}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{figures/oscillations_gan_training.png}
+  \label{fig:oscillations_gan_training}
+  \caption{Oscillations: a challenge when training GANs.}
+\end{figure}
+
+Another issue that arises is mode collapse, when GANs only model parts of the mode of a distribution. One way to solve this is e.g. in VEEGAN, see Figure~\ref{fig:mode_collapse}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/gan_mode_collapse.png}
+  \caption{VEEGAN as a solution to mode collapse.}
+  \label{fig:mode_collapse}
+\end{figure}
+
+When evaluating GANs, it is not possible to compute the likelihood on a holdout set. Generally, it's a difficult problem with no well-accepted and domain independent solution. There are various heuristics though such as the inception score \& FID for images. This remains an open area of research.
 
 \end{document}
