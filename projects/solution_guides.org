@@ -1,0 +1,98 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: TITLE
+#+AUTHOR: Philip Hartout
+#+EMAIL: <philip.hartout@protonmail.com>
+#+DATE: July 21, 2020
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS:[a4paper,12pt,twoside]
+#+LaTeX_HEADER:\usepackage[usenames,dvipsnames,figures]{xcolor}
+#+LaTeX_HEADER:\usepackage[autostyle]{csquotes}
+#+LaTeX_HEADER:\usepackage[final]{pdfpages}
+#+LaTeX_HEADER:\usepackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
+#+LATEX_HEADER_EXTRA:\hypersetup{colorlinks=false, linkcolor=black, citecolor=black, filecolor=black, urlcolor=black}
+#+LATEX_HEADER_EXTRA:\newtheorem{definition}{Definition}[section]
+#+LATEX_HEADER_EXTRA:\pagestyle{fancy}
+#+LATEX_HEADER_EXTRA:\setlength{\headheight}{25pt}
+#+LATEX_HEADER_EXTRA:\lhead{\textbf{Philip Hartout}}
+#+LATEX_HEADER_EXTRA:\rhead{\textbf{}}
+#+LATEX_HEADER_EXTRA:\rfoot{}
+#+MACRO: NEWLINE @@latex:\\@@ @@html:<br>@@
+#+PROPERTY: header-args :exports both :session python_emacs_session :cache :results value
+#+OPTIONS: ^:nil
+#+STARTUP: latexpreview
+#+LATEX_COMPILER: pdflatexorg-mode restarted
+
+Dear students,
+
+the IML project is over, and you can now discuss your solutions among each other. To spark the
+discussion, we publish the descriptions of our hard baselines. Be aware that our solutions are not
+the best solutions to the problem.
+
+The public and private scores for our hard baselines:
+
+Task2:
+- public: 0.772
+- private: 0.766
+
+Task3:
+- public: 0.895
+- private: 0.881
+
+Task4:
+- public: 0.688,
+- private: 0.691
+
+Task1b: Lasso with 3-fold CV. Task2: A large part of the challenge in this task is to address
+missing values and temporal aspect of the input. The features we work are created with 3 types of
+preprocessing, which are:Last observed value in the 12 recorded hours for each channel (patient
+features) separately. If there was no observed value for a channel we impute this with the Mean
+value for that channel in the training set. The motivation of this is to provide the most accurate
+estimate of the patient state for that variable at the beginning of the forecasting horizon.
+Number of observations for a channel in the first 12 recorded hours of the stay, for each channel
+separately. The motivation of this is to use the fact that previous clinicians actions, such as
+ordering of tests, can be indicative for future events in some of the tasks. 3 Summary statistics
+(Median, Interquartile Range, Slope of regression line fit) on the imputed time series, for each
+channel separately. Imputation was done using forward filling, with the edge cases of filling
+values with no previous observation, or all values if there was no observation for the patient in
+the first 12 recorded hours, with the mean value of that channel in the training data-set. The
+motivation for this is to capture the typical value, instability, trend of the patient, for each
+channel separately. This implies the length of the feature vector is 5 x (number of channels) for
+a given patient. The feature vectors are normalized by subtracting the mean vector over the
+training set, and dividing by the standard deviation vector in the training set, feature-wise,
+such that assumptions of Kernel SVM methods are satisfied. The training set is then randomly
+divided into new 'development set' and 'validation set' row-wise in proportions 75:25 %. As the
+machine learning model we use a sk.svm.SVC model with RBF kernel and with
+(class_weight="balanced",gamma="scale") as default parameter. [the motivation of this is to find
+non-linear interaction between the per-channel features defined above] We search for the optimal
+hyperparameter which optimizes the performance on the validation set. Each task is treated
+separately and the evaluation metric for binary classification tasks was AUROC, and for regression
+tasks was Mean Absolute Error.
+
+
+
+Task3: In order to solve this task, we used one hot encodings for each amino acid concatenated
+together. This creates 80 dimensional feature vector. The hard baseline implements a two layer
+fully connected neural network with ReLU activations and batch normalization. We trained with
+cross entropy loss and Adam optimizer for around 100 epochs with large batch size to account for
+the class imbalance. Improvements over this include hyperparameter search to optimize the
+network architecture to optimize F1 score.
+
+
+
+Task 4: For each image, get the last layer embedding of a ResNet-50 pretrained on ImageNet
+(available in Keras), by making sure that the images are scaled and normalized properly.
+Formulate the problem as binary classification: for each triplet in the training data, create 2
+training samples: first, concatenate the three embeddings according to the order in the triplet,
+and associate label 1; then swap the last two embeddings, concatenate again, and associate
+label 0. On this data, fit a 2-layer fully-connected net. Note: prone to overfitting, use high
+dropout rate and early stopping, monitored on a properly chosen validation set. Training time:
+less than 60 mins on a Dual-Core CPU (including generation of embeddings). Possible improvements
+on the hard baseline: use image augmentations, use other (even multiple) pretrained nets.
+
+
+From 29 June, the server will be online again, and you can check your private scores for your task
+among other things with your submission.
+
+Best,
+
+IML Team.
