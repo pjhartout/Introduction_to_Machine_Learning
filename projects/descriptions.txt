@@ -1,0 +1,33 @@
+Project 2:
+For this task, we opted for using XGBoost (the classifier version for subtasks 1
+and 2 and the regressor for subtasks 3), which is able to cope with missing
+values and does not require excessive imputation. To conserve as much of the
+data as possible, we decided to unstack all the variables for which more than
+80% of the data is available and interpolate missing values using linear
+regression. For all variables that were no unstacked, we took the median value
+of the data. Additionally, we also added masking variables to extract knowledge
+from the missingness patterns. Finally, prior to fitting the model we normalized
+the data. When fitting the models, we used 10 fold CV and did a random search CV
+to sample from the parameter distribution 200 times.
+
+Project 3:
+In this project, we used a one hot encoder to encode the features (the amino
+acid mutation sequences) and transform them using Powertransform. We then used
+adaptive synthetic sampling onversampling method to balance the dataset.
+We then trained a neural network with 3 dense layers and 125 hidden
+units each, using the Adam optimizer and the binary crossentropy loss using
+minibatch gradient descent with a batch size of 65, a dropout rate of 0.5, and a
+relu activation function. The labels used were whether or not the mutant was
+active or inactive.
+
+Project 4:
+We used the recommended standard keras preprocessing functions to preprocess our
+data. We defined the triplet loss as commonly defined in the
+literature and passed each image as a list of arrays where one array correponds
+to one image through the same network. The loss is then backpropagated through
+the network to update the weights. The network that we used was the keras
+Xception model pretrained on the imagenet dataset. In order to compute the
+triplet loss, we essentially made an embedding of the dataset, where we computed
+the euclidean distance between the anchor and the positive and tried to minimize
+this one while maximizing the distance between the anchor and the negative
+sample.
