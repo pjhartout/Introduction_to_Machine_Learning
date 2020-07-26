@@ -517,7 +517,7 @@ Computing the gradient requires summing over all data, which is inefficient for 
     \begin{itemize}
         \item Pick data point $(\mathbf{x}',y')\in D$ from training set uniformly at random (with replacement), and set:
         \begin{equation*}
-            \mathbf{w}_{t+1}=\mathbf{w}_t-\eta_t\nabla\mathcal{l}(\mathbf{w}_t;\mathbf{x}',y')
+            \mathbf{w}_{t+1}=\mathbf{w}_t-\eta_t\nabla\ell(\mathbf{w}_t;\mathbf{x}',y')
         \end{equation*}
     \end{itemize}
 \end{enumerate}
@@ -526,7 +526,7 @@ Where $\eta_t$ is called the learning rate. Guaranteed to converge under mild co
     \sum_{t}\eta_t=\infty \text{ and }\sum_{t}\eta_t^2<\infty
 \end{equation*}
 for instance $\eta_t=\frac{1}{t}$ and $\eta_t=\min (c, \frac{c'}{t})$.\\
-The perceptron algorithm is just stochastic gradient descent on the perceptron loss function $\mathcal{l}_P$ with learning rate 1.
+The perceptron algorithm is just stochastic gradient descent on the perceptron loss function $\ell_P$ with learning rate 1.
 \begin{theorem}[Perceptron algorithm]
     If the data is linearly separable, the perceptron will obtain a linear separator.
 \end{theorem}
@@ -534,7 +534,7 @@ The variance of the gradient estimate can be reduced by averaging over the gradi
 \subsection{Hinge loss vs. perceptron loss}
 The Hinge loss encourages the margin of the classifier, and is defined as follows:
 \begin{equation*}
-    \mathcal{l}_H(\mathbf{w}; \mathbf{x}, y)=\max\left\{0,1-y\mathbf{w}^T\mathbf{x}\right\}
+    \ell_H(\mathbf{w}; \mathbf{x}, y)=\max\left\{0,1-y\mathbf{w}^T\mathbf{x}\right\}
 \end{equation*}
 
 \subsection{Support vector machines}
@@ -562,11 +562,11 @@ It can be optimized using a stochastic gradient descent. A safe choice for the l
 
 Let's recall the ojective function:
 \begin{equation*}
-    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\mathcal{l}_{H}(\mathbf{w}_i; x_i,y_i) + \lambda\norm[{\mathbf{w}}_2^2
+    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\ell_{H}(\mathbf{w}_i; x_i,y_i) + \lambda\norm[{\mathbf{w}}_2^2
 \end{equation*}
 This requires taking care of the regularizer, as follows:
 \begin{equation*}
-    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\left(\mathcal{l}_{H}(\mathbf{w}_i; x_i,y_i) + \frac{\lambda}{n}\norm[{\mathbf{w}}_2^2\right)=f_i(\mathbf{w})
+    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\left(\ell_{H}(\mathbf{w}_i; x_i,y_i) + \frac{\lambda}{n}\norm[{\mathbf{w}}_2^2\right)=f_i(\mathbf{w})
 \end{equation*}
 So, in order to estimate the gradient $\nabla_{\mathbf{w}}\hat{R}(\mathbf{w})$ which is equivalent to:
 \begin{equation*}
@@ -574,11 +574,11 @@ So, in order to estimate the gradient $\nabla_{\mathbf{w}}\hat{R}(\mathbf{w})$ w
 \end{equation*}
 where:
 \begin{equation*}
-    \nabla_{\mathbf{w}}f_{i}(\mathbf{w}) = \nabla\mathcal{l}_{H}(\mathbf{w}+\frac{\lambda}{n}\nabla\norm{\mathbf{w}}_2^2)
+    \nabla_{\mathbf{w}}f_{i}(\mathbf{w}) = \nabla\ell_{H}(\mathbf{w}+\frac{\lambda}{n}\nabla\norm{\mathbf{w}}_2^2)
 \end{equation*}
 so the gradient of the regularization term is just $2\mathbf{w}$. For the Hinge loss:
 \begin{equation*}
-    \nabla\mathcal{l}_H = \nabla\max(0,1-y_i\mathbf{w}^Tx_i)
+    \nabla\ell_H = \nabla\max(0,1-y_i\mathbf{w}^Tx_i)
     = \begin{cases}
         0\text{ if } y_iw^Tx_i\geq 1\\
         -y_ix_i\text{ otherwise.}
