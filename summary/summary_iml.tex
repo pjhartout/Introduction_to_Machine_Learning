@@ -633,7 +633,7 @@ We then train the model on $\left\{x_{j,1},y_1,\ldots,x_{j,n},y_n\right\}$, in o
 \subsection{Greedy forward selection}
 Start with $S=\emptyset$ and $E_0=\infty$, then for $i=1:d$, we find the best element to add, i.e.:
 \begin{equation*}
-    s_i=\arg\min{j\in V \setminus S}\hat{L}()S\cup \left\{j\right\}
+    s_i=\arg\min{j\in V \setminus S}\hat{L}(S\cup \left\{j\right\})
 \end{equation*}
 then we compute the error:
 \begin{equation*}
