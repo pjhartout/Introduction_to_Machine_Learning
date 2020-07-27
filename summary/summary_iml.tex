@@ -644,7 +644,7 @@ if $E_i>E_{i-1}$ break, else set $S\leftarrow \cup\left\{s_i\right\}$
 \subsection{Greedy backward selection}
 Start with $S=V$ and $E_{d+1}=\infty$, then for $i=d:-1:1$, we find the best element to remove, i.e.:
 \begin{equation*}
-    s_i=\arg\min{j\in S}\hat{L}(S\setminus\left\{j\right\})
+    s_i=\arg\min_{j\in S}\hat{L}(S\setminus\left\{j\right\})
 \end{equation*}
 then we compute the error:
 \begin{equation*}
