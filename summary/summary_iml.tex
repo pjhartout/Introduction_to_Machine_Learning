@@ -806,7 +806,7 @@ At the time of prediction, for a new point $x$, we predict:
         \begin{equation*}
             K = \begin{bmatrix}
                 k(\mathbf{x}_1, \mathbf{x}_1) & \ldots & k(\mathbf{x}_1, \mathbf{x}_n)\\
-                \vdots & & \vdots\\
+                \vdots & \ddots & \vdots\\
                 k(\mathbf{x}_n, \mathbf{x}_1) & \ldots & k(\mathbf{x}_n, \mathbf{x}_n)\\
             \end{bmatrix}
         \end{equation*}
@@ -825,6 +825,7 @@ Suppose the data space $X=\left\{1,\ldots,n\right\}$ is finite, and we are given
     \phi:Z\rightarrow \mathbb{R}^n
 \end{equation*}
 such that $\mathbf{K}_{i,j}=\phi(i)^T\phi(j)$.
+
 \begin{proof}[Proof]
     $\mathbf{K}$ is p.s.d. $\Rightarrow\mathbf{K}=UDU^T$ where $D=\begin{bmatrix}
         \lambda_1 & \ldots & 0\\
