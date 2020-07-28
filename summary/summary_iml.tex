@@ -3162,7 +3162,7 @@ The typical approach for generative modelling is to follow these steps:
   \end{equation*}
 \end{enumerate}
 
-Generative modeling attempts to infer the process, according to which examples are generated ($P(\mathbf{x},y)$). First, we generate class label $P(y)$. Then, we generate features given class $P(\mathbf{x}|y)$. An example of generative modelling is shown in figure~\ref{fig:example_generative_modelling}.
+Generative modeling attempts to infer the process according to which examples are generated ($P(\mathbf{x},y)$). First, we generate class label $P(y)$. Then, we generate features given class $P(\mathbf{x}|y)$. An example of generative modelling is shown in figure~\ref{fig:example_generative_modelling}.
 
 \begin{figure}
   \centering
@@ -3920,14 +3920,16 @@ Training approaches for GAN is to simultaneously apply stochastic gradient desce
 
 Gradients are approximated by samples of data points.
 
-Note that when training GANs, there is a risk of oscillations and divergence. See Figure~\ref{fig:oscillations_gan_training}.
-
 \begin{figure}
   \centering
   \includegraphics[width=.6\textwidth]{figures/oscillations_gan_training.png}
   \label{fig:oscillations_gan_training}
   \caption{Oscillations: a challenge when training GANs.}
 \end{figure}
+
+
+Note that when training GANs, there is a risk of oscillations and divergence. See Figure~\ref{fig:oscillations_gan_training}.
+
 
 Another issue that arises is mode collapse, when GANs only model parts of the mode of a distribution. One way to solve this is e.g. in VEEGAN, see Figure~\ref{fig:mode_collapse}.
 
