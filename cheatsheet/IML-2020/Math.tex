@@ -1,0 +1,66 @@
+\section*{Useful Math}
+
+\subsection*{Probabilities}
+$\mathbb{E}_x[X] = \begin{cases}
+   \int x \cdot p(x) \partial x  & \text{if continuous}\\
+   \sum_x x \cdot p(x) & \text{otherwise}
+  \end{cases}$\\
+$\operatorname{Var}[X] = \mathbb{E}[(X-\mu_X)^2] = \mathbb{E}[X^2] - \mathbb{E}[X]^2$\\
+$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$; $p(Z|X,\theta) = \frac{p(X,Z|\theta)}{p(X|\theta)}$\\
+$P(x,y) = P(y|x) \cdot  P(x) = P(x|y) \cdot P(y)$ \\
+$\mathbb{E}_x[b+ cX] = b+c\cdot \mathbb{E}_x[X]$ \\
+$\mathbb{E}_x[b+ CX] = b+C\cdot\mathbb{E}_x[X],\quad C \in \mathbb{R}^{n\times n}$ \\
+$\mathbb{V}_x[b+cX] = c^2\mathbb{V}_x[X]$\\
+$\mathbb{V}_x[b+ CX] = C\mathbb{V}_x[X]C^\top,\quad C \in \mathbb{R}^{n\times n}$\\
+$\operatorname{Cov}[X,Y] = \mathbb{E}[(X-\mathbb{E}(X)(Y-\mathbb{E}(Y))] =\mathbb{E}[XY]-\mathbb{E}[X]\mathbb{E}[Y]$ \\
+$\mathbb{V}[X+Y] = \mathbb{V}[X]+\mathbb{V}[Y]+2\operatorname{Cov}[X,Y]$
+
+\subsection*{Distributions}
+
+Normal (Gauss): ${\displaystyle f(x)={\frac {1}{\sigma {\sqrt {2\pi }}}}e^{-{\frac {1}{2}}\left({\frac {x-\mu }{\sigma }}\right)^{2}}}$
+
+\subsection*{Bayes Rule}
+$P(A|B) = \frac{P(B|A)P(A)}{P(B)} = \frac{P(B|A)P(A)}{\sum_{A}P(B|A)P(A)}$
+
+\subsection*{P-Norm}
+$||x||_p = (\sum_{i=1}^n|x_i|^p)^{\frac{1}{p}}$, $1 \leq p < \infty$
+
+\subsection*{Some gradients}
+- $\nabla_x ||x||_2^2 = 2 x$\\
+- $f(x) = x^T A x$; $\nabla_x f(x) = (A + A^T) x$\\
+ e.g. $\nabla_w \operatorname{log}(1+\operatorname{exp(-y w^T x)}) = \\
+\frac{1}{1+\operatorname{exp}(-y w^T x)} \cdot \operatorname{exp}(-y w^T x) \cdot (-y x) = \\
+\frac{1}{1 + \operatorname{exp}(y w^T x)} \cdot(-yx)$
+
+\begin{comment}
+\subsection*{Convex / Jensen's inequality}
+$\text{g(x) convex} \Leftrightarrow g''(x) > 0 \Leftrightarrow x_1,x_2 \in \mathbb{R}, \lambda \in [0,1]: 
+g(\lambda x_1 + (1-\lambda) x_2) \leq \lambda g(x_1) + (1-\lambda) g(x_2)$
+
+
+\subsection*{Gaussian / Normal Distribution}
+$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} exp(-\frac{(x-\mu)^2}{2\sigma^2})$
+
+\subsection*{Multivariate Gaussian}
+$\Sigma =$ covariance matrix, $\mu$ = mean\\
+$f(x) = \frac{1}{2\pi \sqrt{|\Sigma|}} e^{- \frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)}$\\
+Empirical: $\hat{\Sigma} = \frac{1}{n}\sum_{i=1}^n x_i x_i^T$ (needs centered data points)
+\end{comment}
+
+\subsection*{Invertible/nonsingular Matrices}
+$A^{m\times m } : A^{-1}A = I_d = AA^{-1}$ only if $\det(A) \neq 0$; $Ax = 0$ has only trivial solution $x=0$. 
+
+\subsection*{Orthogonal Matrices}
+$A^{m\times m } : A^{\top}A = I_d = AA^{\top} \Leftrightarrow A^{\top} = A^{-1}$ 
+
+\subsection*{Symmetric Positive Definite Matrices}
+Symmetric: $A^{n\times n}: A^{\top} = A$, symmetric positive definite if:  $\forall x \backslash \{0\} \in \mathbb{R}^n: x^{\top}A x > 0$ (semi-definite if: $\geq 0$) $\Leftrightarrow$ all eigenvalues of $A$ are positive.
+
+\subsection{Eigendecomposition}
+$AP = PD \Leftrightarrow A = PDP^{-1}$ iff eigenvectors of $A$ form a basis in $\mathbb{R}^n$. $D$ diagonal matrix of eigenvalues, Eigenvectors in $P$. $\qquad Ap = \lambda p$
+
+\subsection{Cholesky decomposition}
+$A^{n\times n}: A = LL^{\top}$, symmetric and positive definite.
+
+\subsection{Singular value decomposition}
+$ A = U \Sigma V^{\top}$; $A^{m \times n}; U^{m \times m}, V^{n \times n}: U,V$ orthogonal and $\Sigma^{m \times n}$ diagonal with singular values $\sigma = \sqrt{\lambda (A^{\top}A)}$ $\qquad A v = \sigma u$

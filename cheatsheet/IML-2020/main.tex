@@ -1,0 +1,73 @@
+\documentclass[11pt,landscape,a4paper]{extarticle}
+\input{setup.tex}
+
+\usepackage[headings]{fullpage}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{comment}
+
+\usepackage{mathptmx}
+
+
+%Custom commands
+\newcommand{\miss}{\\{\hspace{1cm}\color{red} \textbf{MISSING CONTENT}}\\}
+
+% Custom math operators
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\E}{\mathrm{E}}
+\DeclareMathOperator*{\Var}{\mathrm{Var}}
+\DeclareMathOperator*{\w}{\mathbf{w}}
+\DeclareMathOperator*{\W}{\mathbf{W}}
+\DeclareMathOperator*{\x}{\mathbf{x}}
+\DeclareMathOperator*{\X}{\mathbf{X}}
+\DeclareMathOperator*{\y}{\mathbf{y}}
+\DeclareMathOperator*{\z}{\mathbf{z}}
+\DeclareMathOperator*{\vv}{\mathbf{v}}
+\newcommand{\eqqcolon}{\mathrel{\rotatebox[units=360]{180}{\ensuremath{\coloneqq}}}}
+
+
+\usepackage[all=tight]{savetrees}
+\usepackage{multicol}
+\setlength{\columnsep}{1mm}
+
+
+\fancyhf{}
+\rfoot{\raisebox{1cm}{Page \thepage}}
+
+\geometry{top=0.5mm,left=0.5mm,right=0.5mm,bottom=2mm}
+\linespread{.2}
+\setlist{nosep}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\begin{multicols*}{4}
+
+\section*{Introduction to Machine Learning SS20}
+%\normalsize{Let's learn some CBB\hspace{0.5cm}}\vspace{0.1cm}\hrule
+
+\input{Basics}
+\input{Regression}
+\input{Classification}
+\input{Kernels}
+\input{Imbalance}
+\input{MultiClass}
+\input{NeuralNetworks}
+\input{Clustering}
+\input{DimensionReduction}
+\input{ProbabilisticModeling}
+\input{DecisionTheory}
+\input{Generative}
+\input{Latent}
+\input{Math}
+
+\end{multicols*}
+
+\end{document}

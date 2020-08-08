@@ -1,0 +1,46 @@
+\section*{Neural networks}
+Parameterize feature map with $\theta$: $\phi(x,\theta) = \varphi(\theta^T x) = \varphi(z)$ (activation function $\varphi$)\\
+$\Rightarrow w^* = {\operatorname{argmin}_{w, \theta}} \sum_{i=1}^n l(y_i; \sum_{j=1}^m w_j \phi(x_i, \theta_j))$\\
+$f(x; w, \theta_{1:d}) = \sum_{j=1}^m w_j \varphi(\theta_j^T x) = w^T \varphi(\Theta x)$
+
+\subsection*{Activation functions}
+Sigmoid: $\frac{1}{1+exp(-z)}$,  $\varphi'(z) = (1 - \varphi(z))\cdot\varphi(z)$\\
+tanh: $\varphi(z) = tanh(z) = \frac{exp(z)-exp(-z)}{exp(z)+exp(-z)}$\\
+ReLU:  $\varphi(z) = \max(z,0)$
+
+\begin{comment}
+\subsection*{Predict: forward propagation}
+$v^{(0)} = x$ (\textit{input}); for $l = 1,...,L-1$: \\
+$v^{(l)} = \varphi(z^{(l)})$, $z^{(l)} = W^{(l)}v^{(l-1)}$ (\textit{hidden})\\
+$f = W^{(L)}v^{(L-1)}$ (\textit{output})\\
+Predict $f$ for regression, $\operatorname{sign}(f)$ for class.
+
+\subsection*{Compute gradient: backpropagation}
+Output layer: 
+$\delta_j = l_j'(f_j)$,
+$\frac{\partial}{\partial w_{j,i}} = \delta_j v_i$\\
+Hidden layer $l=L-1,...,1$:\\
+$\delta_j = \varphi'(z_j) \cdot \sum_{i\in Layer_{l+1}} w_{i,j}\delta_i$,
+$\frac{\partial}{\partial w_{j,i}} = \delta_j v_i$
+\end{comment}
+
+\subsection*{Forward Propagation}
+\textbf{Input layer:} $\vv^{(0)}=\x$ \\
+\textbf{Hidden layers:} $\z^{(\ell)}=\W^{(\ell)}\vv^{(\ell-1)}$, $\vv^{(\ell)}=\phi(\z^{(\ell)})$
+\textbf{Output layer:} $f=\W^{(L)}\vv^{(L-1)}$
+
+\subsection*{SGD for ANNs}
+$\hat{\W}=\argmin_{\W}\sum_{i=1}^n\ell(\W;\x_i,y_i)$ \\
+$\ell(\W;\x,\y)=\ell(\y-f(\x,\W))$ \\
+For random $(\x,\y)$, $\W_{t+1}=\W_t-\eta_t\nabla_{\W}\ell(\W;\x,\y)$
+
+\subsection*{Backpropagation}
+\textbf{Output layer:}\\
+Error: $\delta^{(L)}=\mathbf{l}'(\mathbf{f})=[l'(f_1),\ldots,l'(f_p)]$\\
+Gradient: $\nabla_{\W^{(L)}}\ell(\W;\y,\x)=\delta^{(L)}\vv^{(L-1)T}$\\
+\textbf{Hidden layers:}\\
+Error: $\delta^{(\ell)}=\phi'(\z^{(\ell)})\odot\W^{(\ell+1)T}\delta^{(\ell+1)}$\\
+Gradient: $\nabla_{\W^{(\ell)}}\ell(\W;\y,\x)=\delta^{(\ell)}\vv^{(\ell-1)T}$
+
+\subsection*{Learning with momentum}
+$a \leftarrow m \cdot a + \eta_t \nabla_W l(W;y,x)$; $W_{t+1} \leftarrow W_t - a$

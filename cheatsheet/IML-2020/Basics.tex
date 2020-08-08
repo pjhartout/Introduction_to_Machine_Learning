@@ -1,0 +1,33 @@
+\subsection*{Fundamental Assumption}
+Data is iid for unknown $P$: $(x_i, y_i) \sim P(X,Y)$
+
+\subsection*{True risk and estimated error}
+True risk: $R(w) = \int P(x,y) (y-w^Tx)^2 \partial x \partial y = \mathbb{E}_{x,y}[(y-w^Tx)^2]$ \\
+Est. error: $\hat{R}_D(w) = \frac{1}{|D|}\sum_{(x,y)\in D} (y-w^Tx)^2$
+
+\subsection*{Standardization}
+Centered data with unit variance:
+$\tilde{x}_{i} = \frac{x_{i}-\hat{\mu}}{\hat{\sigma}}$\\
+$\hat{\mu} = \frac{1}{n}\sum_{i=1}^n x_{i}$, $\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n {(x_{i}-\hat{\mu})}^2$ 
+
+\subsection*{Cross-Validation}
+For all models $m$, for all $i \in \{ 1, ..., k \}$ do: \\
+1. Split data: $D = D_{train}^{(i)} ~ \uplus ~ D_{test}^{(i)} $ (Monte-Carlo or k-Fold) 2. Train model: $\hat{w}_{i,m} = {\operatorname{argmin}_w} ~ \hat{R}_{train}^{(i)} (w)$ \\
+3. Estimate error: $\hat{R}_{m}^{(i)} = \hat{R}_{test}^{(i)} (\hat{w}_{i,m})$ \\
+Select best model: $\hat{m} = {\operatorname{argmin}_m} ~ \frac{1}{k} \sum_{i=1}^{k} \hat{R}_{m}^{(i)}$
+
+\begin{comment}
+\subsection*{Parametric vs. Nonparametric models}
+\emph{Parametric}: have finite set of parameters. 
+e.g. linear regression, linear perceptron\\
+\emph{Nonparametric}: grow in complexity with the size of the data, more expressive.
+e.g. k-NN
+\end{comment}
+
+\subsection*{Gradient Descent}
+1. Pick arbitrary $w_0 \in \mathbb{R}^d$\\
+2. $w_{t+1} = w_t - \eta_t \nabla \hat{R}(w_t)$
+
+\subsection*{Stochastic Gradient Descent (SGD)}
+1. Pick arbitrary $w_0 \in \mathbb{R}^d$\\
+2. $w_{t+1} = w_t - \eta_t \nabla_w l(w_t;x',y')$, with u.a.r.\\ data point $(x',y') \in D$
