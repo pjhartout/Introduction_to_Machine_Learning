@@ -2191,7 +2191,7 @@ The solution to the PCA problem is given below:
 \end{equation*}
 where $\mathbf{W}\in\mathbb{R}^{d\times k}$ is orthogonal, $\mathbf{z}_1, \ldots, \mathbf{z}_n\in\mathbb{R}^k$ is given by $\mathbf{W}=(\mathbf{v}_1|\ldots|\mathbf{v}_k)$ and $\mathbf{z}_i=\mathbf{W}^T\mathbf{x}_i$ where:
 \begin{equation*}
-    \Sigma = \sum_{i=1}^{d}\lambda_i\mathbb{v}_i\mathbb{v}_i^T \qquad \lambda_1\geq \ldots\geq \lambda_d\geq 0
+    \Sigma = \sum_{i=1}^{d}\lambda_i\mathbf{v}_i\mathbf{v}_i^T \qquad \lambda_1\geq \ldots\geq \lambda_d\geq 0
 \end{equation*}
 
 Essentially, PCA is a projection. The linear mapping $\mathbf{f}(\mathbf{x})=\mathbf{W}^T\mathbf{x}$ obtained from PCA projects vectors $\mathbf{x}\in\mathbb{R}^d$ into a $k$-dimensional subspace. \footnote{If $\mathbf{f}(\mathbf{f}(\mathbf{x}))=\mathbf{f}(\mathbf{x})$, then it holds that $\mathbf{f}$ is a projection}. This projection is chosen to minimize the reconstruction error, measured in Euclidean norm.
