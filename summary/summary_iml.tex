@@ -2016,7 +2016,7 @@ The algorithm consists of the following steps:
     \item Add centers 2 to $k$ randomly, proportionally to the squared distance to the closest selected center, i.e. for $j=2:k$, pick $ij$ with probability $\frac{1}{z}\cdot d(x_{ij};\mu_{1:j-1}^{(0)})$ where $d(x_{ij};\mu_{1:j-1}^{(0)})=\min_{\ell\in\left\{1,\ldots, j-1\right\}}\norm{\mathbf{x}_ij-\mu_{\ell}^{(0)}}_2^2$ and assign: $\mu_j^{(0)}=x_{ij}$
 \end{enumerate}
 
-We can show that the expected cost of this procedure is in $\mathcal{O(\log(k))}$ times that of optimal $k$-means solutions: $\mathbb{E}[\hat{R}(\mu^{(0)})]\leq\mathcal{O}(\log k)\min_{\mu}\hat{R}(\mu)$
+We can show that the expected cost of this procedure is in $\mathcal{O}(\log{k})$ times that of optimal $k$-means solutions: $\mathbb{E}[\hat{R}(\mu^{(0)})]\leq\mathcal{O}(\log {k})\min_{\mu}\hat{R}(\mu)$
 
 \subsection{Model selection in clustering}
 
