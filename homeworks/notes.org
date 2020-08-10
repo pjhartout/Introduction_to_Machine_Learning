@@ -23,7 +23,8 @@
 #+LATEX_COMPILER: pdflatexorg-mode restarted
 
 Discuss following with peers:
-HW1: 6, 20
+HW1: 6 (why is the variance $AA^T$?
+where does the variance of $X$ come in?), 20
 HW2: 2, 3, 8, 15, 16
 HW3: 3, 4, 5
 HW4: 4, 5 (how to calculate variance), 8 (how to calculate
@@ -32,3 +33,7 @@ HW5: 2 (why e. and f. false? Can the loss be negative? also how about Q5?)
 HW6: 8 -> When can't parameters of the conditional distribution be
 estimated separately?
 HW7: 7: formula wrong?
+
+
+Exam 2019:
+7.4 -> wtf?
