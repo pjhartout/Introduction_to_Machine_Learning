@@ -37,7 +37,7 @@
 
 \setlength\columnsep{26pt}
 
-\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\newcommand\norm{\left\lVert#1\right\rVert}
 
 \newcommand\MyBox[2]{
   \fbox{\lower0.75cm
@@ -88,6 +88,7 @@ Here is an overview of the courses given in the diagrams below.
   \includegraphics[width=.8\textwidth]{figures/overview_3.png}
 \end{figure}
 \begin{figure}[H]
+
   \includegraphics[width=.8\textwidth]{figures/overview_4.png}
 \end{figure}
 \section{Linear Regression}
@@ -377,7 +378,7 @@ For each candidate model $m$, we repeat the following procedure for $i=1:k$:
     \end{equation*}
     \item We train the model:
     \begin{equation*}
-        \hat{\mathbb{w}}_[i,m]=\arg\min_{\mathbf{w}}\hat{R}_{\text{train}}^{(i)}(\mathbf{w})
+        \hat{\mathbf{w}}_[i,m]=\arg\min_{\mathbf{w}}\hat{R}_{\text{train}}^{(i)}(\mathbf{w})
     \end{equation*}
     \item Then we estimate the error:
     \begin{equation*}
@@ -491,7 +492,7 @@ Linear classification works well in high-dimensional settings when using the rig
 Writing the search for a classifier can be seen as an optimization problem:
 we seek the set of weights $\mathbf{w}$ that minimizes the number of mistakes, i.e.:
 \begin{align*}
-    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^Tx_i)]\\
+    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^Tx_i)]
     =\begin{cases}
         1\text{ if } y_i\neq \text{sign}(w^Tx_i)\\
         0\text{ otherwise.}
@@ -500,8 +501,8 @@ we seek the set of weights $\mathbf{w}$ that minimizes the number of mistakes, i
 
 The goal is then to optimize the following function:
 \begin{align*}
-    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\frac{1}{n}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^Tx_i)]\\
-    &= \frac{1}{n}\sum_{i=1}^{n}\mathcal{l}(w; x_i,y_i)
+    \hat{\mathbf{w}} &= \arg\min_{\mathbf{w}\in\mathbb{R}}\frac{1}{n}\sum_{i=1}^{n}[y_i\neq \text{sign}(w^T x_i)]\\
+    &= \frac{1}{n}\sum_{i=1}^{n}\ell(w; x_i,y_i)
 \end{align*}
 Note that this poses as challenge as it is not convex or even differentiable. Therefore we need to replace this loss by a tractable loss function for the sake of optimization/model fitting. When evaluating a model, we then use the original cost/performance function. The function we can use to optimize in this case is the surrogate loss:
 \begin{equation*}
@@ -514,14 +515,14 @@ The gradient of the perceptron loss function can be computed as follows:
     \hat{R(w)}&=\sum_{i=1}^{n}\max (0, -y_iw^Tx_i)\\
     \nabla\hat{R(w)}&=\sum_{i=1}^{n}\nabla_{\mathbf{w}}\max (0, -y_iw^Tx_i)\\
     &=\begin{cases}
-        0\text{ if } y_iw^Tx_i\geq 0 \text{ i.e. correctly classified }
+        0\text{ if } y_iw^Tx_i\geq 0 \text{ i.e. correctly classified }\\
         -y_ix_i\text{ otherwise}
     \end{cases}
 \end{align*}
 
 So we have the following update rule:
 \begin{equation*}
-    \mathbf{w}_{t+1} \leftarrow \mathbf{w}w_t+\eta_t\sum_{i:(x_i,y_i) {incorrectly classified by} w}^{x_iy_i}
+    \mathbf{w}_{t+1} \leftarrow \mathbf{w}w_t+\eta_t\sum_{i:(x_i,y_i) \text{incorrectly classified by } w}^{x_iy_i}
 \end{equation*}
 
 \subsection{Stochastic gradient descent}
@@ -563,7 +564,7 @@ The optimization objective for the support vector machine is defined as minimizi
     \label{planes_svm}
 \end{figure}
 
-Support vector machinea re widely used, very effective linear classifiers. They behave almost like a perceptron. The only differences include:
+Support vector machinea are widely used, very effective linear classifiers. They behave almost like a perceptron. The only differences include:
 \begin{itemize}
     \item Optimize slightly different, shifted loss (hinge loss)
     \item They regularize the weights
@@ -581,7 +582,7 @@ Let's recall the ojective function:
 \end{equation*}
 This requires taking care of the regularizer, as follows:
 \begin{equation*}
-    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\left(\ell_{H}(\mathbf{w}_i; x_i,y_i) + \frac{\lambda}{n}\norm[{\mathbf{w}}_2^2\right)=f_i(\mathbf{w})
+    \hat{R}(\mathbf{w})=\sum_{i=1}^{n}\left(\ell_{H}(\mathbf{w}_i; x_i,y_i) + \frac{\lambda}{n}\norm{\mathbf{w}}_2^2\right)=f_i(\mathbf{w})
 \end{equation*}
 So, in order to estimate the gradient $\nabla_{\mathbf{w}}\hat{R}(\mathbf{w})$ which is equivalent to:
 \begin{equation*}
@@ -629,7 +630,7 @@ Summary so far:
 Reasons why we don't want to work with all potentially available features:
 \begin{itemize}
     \item interpretability: understand which features are most important
-    \item generalizationL simpler models may generalize better
+    \item generalization: simpler models may generalize better
     \item storage computation and cost: if we select the most important features we don't need to store, sum and acquire data for unused features.
 \end{itemize}
 The naive way to select features is to try all subsets and pick the best features via cross-validation. Greedy feature selection, which is a general purpose approach, consists of greedily add or remove features to maximize cross-validated prediction accuracy and mutual information or other notions of informativeness not discussed here. It can be used for any method, not only linear regression or classifiers.
@@ -1077,14 +1078,14 @@ For prediction, given a data point $\mathbf{x}$, we predict the response $y$ as:
 Often, parametric models are too rigid and non-parametric models fail to extrapolate. The solution to this problem is to use additive combination of linear and non-linear kernel function as shown below:
 
 \begin{equation*}
-    k(\mathbf{x}, \mathbf{x}') = c_1\exp\left(\norm[]{\mathbf{x} - \mathbf{x}'}_2^2/h^2\right) + c_2\mathbf{x}^T\mathbf{x}'
+    k(\mathbf{x}, \mathbf{x}') = c_1\exp\left(\norm{\mathbf{x} - \mathbf{x}'}_2^2/h^2\right) + c_2\mathbf{x}^T\mathbf{x}'
 \end{equation*}
 
 The decision function is then defined as follows:
 
 \begin{align*}
-    f(\mathbf{x}) &= \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i, \mathbf{x})=\sum_{i=1}^{n}\left(\alpha_i(c_i \exp(-\norm[]{\mathbf{x}_i-\mathbf{x}}_2^2/h^2))+c_2\mathbf{x}_i\mathbf{x}'\right)\\
-    &= c_1 \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i,\mathbf{x}) = \sum_{i=1}^{n}\left(\alpha_i(c_1\exp\left(\norm[]{\mathbf{x_i-\mathbf{x}}_2^2/h^2}\right))+c_2\mathbf{x}_i^T\mathbf{x}'\right)\\
+    f(\mathbf{x}) &= \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i, \mathbf{x})=\sum_{i=1}^{n}\left(\alpha_i(c_i \exp(-\norm{\mathbf{x}_i-\mathbf{x}}_2^2/h^2))+c_2\mathbf{x}_i\mathbf{x}'\right)\\
+    &= c_1 \sum_{i=1}^{n}\alpha_i k(\mathbf{x}_i,\mathbf{x}) = \sum_{i=1}^{n}\left(\alpha_i(c_1\exp\left(\norm{\mathbf{x_i-\mathbf{x}}_2^2/h^2}\right))+c_2\mathbf{x}_i^T\mathbf{x}'\right)\\
     &= c_1\sum_{i=1}^{n}\alpha_i\exp\left(-\norm{\mathbf{x}_i-\mathbf{x}}_2^2/h^2\right) + \left(c_2\sum_{i=1}^{n}\alpha_ix_i\right)^T\mathbf{x}
     &= f_1(\mathbf{x})+\mathbf{w}^T\mathbf{x}
 \end{align*}
@@ -1104,7 +1105,7 @@ This approach can be used to design P450 chimeras, predict protein fitness lands
 
 Choosing correct kernels is a combination of domain knowledge, brute force or heuristic search using cross-validation. Since kernels map to very high dimensional spaces, it is difficult to see what we hope to be able to learn. Typically the number of parameters is drastically smaller than the number of dimensions. One way of tackling this problem is to set the number of parameters equal to that of the number of datapoints, which in this case would be called non-parametric learning. Another way of tackling this problem is to use regularization, which is built into kernelized linear regression and SVMs but not into the kernelized Perceptron. Recall the formulations of KLR and SVM:
 \begin{align*}
-    \hat{\alpha} &= \arg\min_{\alpha}\frac{1}{n}\norm[]{\alpha^T\mathbf{K}=\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha\\
+    \hat{\alpha} &= \arg\min_{\alpha}\frac{1}{n}\norm{\alpha^T\mathbf{K}=\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha\\
     \hat{\alpha} &= \arg\min_{\alpha}\frac{1}{n}\sum_{i=1}^{n}\max\left\{0,1-y_i\alpha^T\mathbf{k}_i\right\} + \lambda\alpha^T\mathbf{D}_{\mathbf{y}}\mathbf{K}\mathbf{D}_\mathbf{y}\alpha
 \end{align*}
 
@@ -1269,7 +1270,7 @@ The confidence in a classification decision can be visualized as in figure \ref{
 Thus although $\alpha\mathbf{w}$ and $\mathbf{w}$ implement the same decision boundary, they have a different confidence level. There are two solutions to this problem:
 \begin{enumerate}
     \item $\mathbf{w}\leftarrow \frac{\mathbf{w}}{\norm{\mathbf{w}}_2}$, i.e. this is normalized to unit length.
-    \item In practice, when using regularization, the magnitude of $\norm[]{\mathbf{w}}_2$ is kept under control.
+    \item In practice, when using regularization, the magnitude of $\norm{\mathbf{w}}_2$ is kept under control.
 \end{enumerate}
 
 \begin{figure}
@@ -1989,7 +1990,7 @@ $k$-means is guaranteed to monotonically decrease the average squared distance i
     We know that $\hat{R}(\mu^{(t)})$ is defined by \\
     $\hat{R}(\mu^{(t)})=\sum_{i=1}^{n}\min_{j\in\left\{1,\ldots, k\right\}}\norm{\mathbf{x}_i-\mu_j^{(t)}}_2^2$ at a given timestep $t$. Our objective is to find $\mu_{z_i}$ s.t. $\hat{R}(\mu)=\min_{z}\hat{R}(\mu, z)$ (i.e. the set of cluster center assignments such that the distance is minimized). \\
 
-    We know that $\hat{R}(\mu,z)=\sum_{i=1}^{n}\norm[]{\mathbf{x}_i-\mu_{z_i}}_2^2$. Then, it can be shown that:
+    We know that $\hat{R}(\mu,z)=\sum_{i=1}^{n}\norm{\mathbf{x}_i-\mu_{z_i}}_2^2$. Then, it can be shown that:
 
 
     \begin{equation*}
