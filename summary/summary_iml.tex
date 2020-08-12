@@ -37,7 +37,7 @@
 
 \setlength\columnsep{26pt}
 
-\newcommand\norm{\left\lVert#1\right\rVert}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
 
 \newcommand\MyBox[2]{
   \fbox{\lower0.75cm
@@ -1061,8 +1061,8 @@ and
 \end{align*}
 hence we have:
 \begin{align*}
-    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R^n}}\frac{1}{n}\sum_{i=1}^{n}(\alpha^Tk_i-y_i)^2+\lambda\alpha^T\mathbf{K}\alpha\\
-    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R^n}}\frac{1}{n}\norm{\alpha^T\mathbf{K}-\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha
+    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R}^{n}}\frac{1}{n}\sum_{i=1}^{n}(\alpha^Tk_i-y_i)^2+\lambda\alpha^T\mathbf{K}\alpha\\
+    \hat{\alpha}&=\arg\min_{\alpha\in\mathbb{R}^{n}}\frac{1}{n}\norm{\alpha^T\mathbf{K}-\mathbf{y}}_2^2+\lambda\alpha^T\mathbf{K}\alpha
 \end{align*}
 which has a closed-form solution:
 \begin{equation*}
