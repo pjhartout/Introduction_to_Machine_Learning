@@ -1,2 +1,2 @@
-# Introduction_to_Machine_Learning
+# Introduction to Machine Learning
 Repository of course ressources for Introduction to Machine Learning @ ETH Zurich
