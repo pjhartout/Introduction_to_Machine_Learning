@@ -88,7 +88,6 @@ Here is an overview of the courses given in the diagrams below.
   \includegraphics[width=.8\textwidth]{figures/overview_3.png}
 \end{figure}
 \begin{figure}[H]
-
   \includegraphics[width=.8\textwidth]{figures/overview_4.png}
 \end{figure}
 \section{Linear Regression}
@@ -3634,7 +3633,7 @@ The problems with the EM algorithm is that points assigned a fixed label, even t
 Ideally we want to compute the posterior probabilities of belonging to a cluster. Suppose we're given a model $P(z|\theta)$, $P(\mathbf{x}|z,\theta)$. Then for each data point, we compute a posterior distribution over cluster membership. This means inferring distributions over latent hidden variables $z$ as follows:
 
 \begin{equation*}
-  \gamma_j*(\mathbf{x}) = P(Z=j|\mathbf{x},\Sigma,\mu,\mathbf{w}) = {w_j P(\mathbf{x}|\Sigma_j,\mu_j\over \sum_{\ell}w_{ell}P(\mathbf{x}|\Sigma_{ell},\mu_{\ell}))}
+  \gamma_j*(\mathbf{x}) = P(Z=j|\mathbf{x},\Sigma,\mu,\mathbf{w}) = {w_j P(\mathbf{x}|\Sigma_j,\mu_j)\over \sum_{\ell}w_{\ell}P(\mathbf{x}|\Sigma_{\ell},\mu_{\ell}))}
 \end{equation*}
 
 We can look at this optimality condition as a MLE problem.
