@@ -1,5 +1,5 @@
 #+BIND: org-export-use-babel nil
-#+TITLE: TITLE
+#+TITLE: Solution guides
 #+AUTHOR: Philip Hartout
 #+EMAIL: <philip.hartout@protonmail.com>
 #+DATE: July 21, 2020
